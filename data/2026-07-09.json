@@ -2,7 +2,18 @@
   "date": "2026-07-09",
   "dayType": "DIARIA",
   "pollings": [],
-  "backups": [],
+  "backups": [
+    {
+      "name": "Pinot",
+      "iniDate": "2026-07-09",
+      "iniTime": "12:00",
+      "endDate": "2026-07-09",
+      "endTime": "13:32",
+      "job": "BKPDIARIO",
+      "duration": null,
+      "status": null
+    }
+  ],
   "processes": [],
   "notes": ""
 }
