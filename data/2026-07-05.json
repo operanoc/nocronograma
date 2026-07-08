@@ -1,0 +1,351 @@
+{
+  "date": "2026-07-05",
+  "dayType": "FIN_DE_SEMANA",
+  "pollings": [
+    {
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "time": "01:22:27"
+    },
+    {
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "time": "01:25:23"
+    },
+    {
+      "server": "Argentina P1",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "time": "01:38:45"
+    },
+    {
+      "server": "Argentina P1",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "time": "02:13:14"
+    },
+    {
+      "server": "Perú D1",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "time": "07:25:08"
+    },
+    {
+      "server": "Perú D1",
+      "region": "PERU",
+      "phase": "ENDING",
+      "time": "10:13:25"
+    },
+    {
+      "server": "Perú D2",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "time": "21:31:27"
+    },
+    {
+      "server": "Perú D2",
+      "region": "PERU",
+      "phase": "ENDING",
+      "time": "21:42:03"
+    },
+    {
+      "server": "Perú D3",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "time": "00:19:35"
+    },
+    {
+      "server": "Perú D3",
+      "region": "PERU",
+      "phase": "ENDING",
+      "time": "00:27:10"
+    },
+    {
+      "server": "Panamá D1",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "time": "07:24:55"
+    },
+    {
+      "server": "Panamá D1",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "time": "16:38:42"
+    },
+    {
+      "server": "Panamá MT",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "time": "15:44:23"
+    },
+    {
+      "server": "Panamá OC",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "time": "16:43:11"
+    },
+    {
+      "server": "Panamá OC",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "time": "17:08:51"
+    },
+    {
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "time": "17:20"
+    },
+    {
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "time": "17:44:15"
+    },
+    {
+      "server": "Panamá Mas Me Dan",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "time": "17:47:14"
+    },
+    {
+      "server": "Panamá Mas Me Dan",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "time": "18:11:25"
+    },
+    {
+      "server": "Perú Aserviban MT",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "time": "15:45:56"
+    },
+    {
+      "server": "Perú Aserviban MT",
+      "region": "PERU",
+      "phase": "ENDING",
+      "time": "16:40:18"
+    },
+    {
+      "server": "Perú OC",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "time": "16:48:02"
+    },
+    {
+      "server": "Perú OC",
+      "region": "PERU",
+      "phase": "ENDING",
+      "time": "17:54:11"
+    },
+    {
+      "server": "Perú X30",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "time": "18:20:41"
+    },
+    {
+      "server": "Perú X30",
+      "region": "PERU",
+      "phase": "ENDING",
+      "time": "19:15:12"
+    },
+    {
+      "server": "Chile MT",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "time": "15:50:01"
+    },
+    {
+      "server": "Chile MT",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "time": "16:22:31"
+    },
+    {
+      "server": "Chile OP",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "time": "16:35:40"
+    },
+    {
+      "server": "Chile OP",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "time": "16:46:33"
+    },
+    {
+      "server": "Chile Vigo",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "time": "16:55:29"
+    },
+    {
+      "server": "Chile Vigo",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "time": "17:19:53"
+    },
+    {
+      "server": "Chile OC",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "time": "17:28:11"
+    },
+    {
+      "server": "Chile OC",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "time": "17:54:23"
+    },
+    {
+      "server": "Chile Cencosud",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "time": "17:58:13"
+    },
+    {
+      "server": "Chile Cencosud",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "time": "18:19:26"
+    },
+    {
+      "server": "Chile Los Heroes",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "time": "",
+      "note": "SIN AC"
+    },
+    {
+      "server": "Chile CencoPay",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "time": "18:30:23"
+    },
+    {
+      "server": "Chile CencoPay",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "time": "18:51"
+    },
+    {
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "BEGINNING",
+      "time": "15:56:20"
+    },
+    {
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "ENDING",
+      "time": "16:05:29"
+    },
+    {
+      "server": "México - GDE - M2",
+      "region": "MEXICO",
+      "phase": "BEGINNING",
+      "time": "16:32:20"
+    },
+    {
+      "server": "México - GDE - M2",
+      "region": "MEXICO",
+      "phase": "ENDING",
+      "time": "16:39:04"
+    }
+  ],
+  "backups": [
+    {
+      "name": "Regional",
+      "iniTime": "",
+      "endTime": "",
+      "job": "OP.21",
+      "duration": "",
+      "status": "Robot Fail"
+    },
+    {
+      "name": "Pinot",
+      "iniTime": "02:30",
+      "endTime": "12:56",
+      "job": "OP.21",
+      "duration": "10:26",
+      "status": null
+    },
+    {
+      "name": "REGDRS",
+      "iniTime": "02:50",
+      "endTime": "06:36",
+      "job": "OP.21",
+      "duration": "03:46",
+      "status": null
+    },
+    {
+      "name": "Merlot",
+      "iniTime": "02:41",
+      "endTime": "10:30",
+      "job": "OP.21",
+      "duration": "07:49",
+      "status": null
+    },
+    {
+      "name": "Semillón",
+      "iniTime": "02:38",
+      "endTime": "05:44",
+      "job": "OP.21",
+      "duration": "03:06",
+      "status": null
+    }
+  ],
+  "processes": [
+    {
+      "name": "Informes AS",
+      "status": "OK"
+    },
+    {
+      "name": "Informes NT",
+      "status": "OK"
+    },
+    {
+      "name": "Informes FTP",
+      "status": "OK"
+    },
+    {
+      "name": "ARBA",
+      "status": "N/A"
+    },
+    {
+      "name": "Banco Provincia",
+      "status": "N/A"
+    },
+    {
+      "name": "Metrogas",
+      "status": "N/A"
+    },
+    {
+      "name": "Tarjeta Naranja",
+      "status": "N/A"
+    },
+    {
+      "name": "EPE",
+      "status": "N/A"
+    },
+    {
+      "name": "Rentas de Córdoba",
+      "status": "N/A"
+    },
+    {
+      "name": "AFIP 72",
+      "status": "N/A"
+    },
+    {
+      "name": "AFIP 48",
+      "status": "N/A"
+    },
+    {
+      "name": "Cierre AFIP",
+      "status": "N/A"
+    }
+  ]
+}
