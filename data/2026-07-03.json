@@ -338,5 +338,30 @@
       "name": "Reset Flag",
       "status": "N/C"
     }
+  ],
+  "handovers": [
+    {
+      "id": "mrcihxtjk4w1p",
+      "operator": "Hugo Magariños",
+      "shift": "NOCHE",
+      "shiftLabel": "Noche",
+      "timestamp": "2026-07-08 17:09:57",
+      "text": "1",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
+    }
+  ],
+  "notifications": [
+    {
+      "id": "mrcihxtjqzuab",
+      "type": "handover",
+      "title": "Cierre de Turno - Noche",
+      "desc": "Hugo Magariños: 1",
+      "timestamp": "2026-07-08 17:09:57",
+      "shift": "NOCHE",
+      "readBy": {}
+    }
   ]
 }
