@@ -3,18 +3,6 @@
   "dayType": "DIARIA",
   "pollings": [
     {
-      "server": "Argentina P$",
-      "region": "ARGENTINA",
-      "phase": "BEGINNING",
-      "time": "01:21:24"
-    },
-    {
-      "server": "Argentina P$",
-      "region": "ARGENTINA",
-      "phase": "ENDING",
-      "time": "03:09:07"
-    },
-    {
       "server": "Argentina P1",
       "region": "ARGENTINA",
       "phase": "BEGINNING",
