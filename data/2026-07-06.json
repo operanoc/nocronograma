@@ -2,7 +2,18 @@
   "date": "2026-07-06",
   "dayType": "DIARIA",
   "pollings": [],
-  "backups": [],
+  "backups": [
+    {
+      "name": "Regional",
+      "iniDate": "2026-07-06",
+      "iniTime": "23:00",
+      "endDate": "2026-07-08",
+      "endTime": null,
+      "job": "BKPDIARIOU",
+      "duration": null,
+      "status": "ok"
+    }
+  ],
   "processes": [],
   "notes": ""
 }
