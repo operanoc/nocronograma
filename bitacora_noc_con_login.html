@@ -461,6 +461,10 @@ html.dark .notif-item.unread{background:#082f49}
       <button class="btn btn-ghost btn-sm" id="dashBtn" onclick="openDashboard()" title="Dashboard" style="display:none">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       </button>
+      <button class="btn btn-ghost btn-sm" id="clearDataBtn" onclick="startClearData()" title="Borrar todos los datos" style="display:none;color:#dc2626">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Borrar Datos
+      </button>
       <div class="user-bar" id="userBar" style="display:none">
         <span class="user-name" id="userNameDisplay"></span>
         <span class="shift-badge" id="userShiftBadge"></span>
@@ -991,8 +995,33 @@ function doLogin(){
   badge.className='shift-badge '+user.cssClass;
   if(user.role==='admin'){
     document.getElementById('dashBtn').style.display='';
+    document.getElementById('clearDataBtn').style.display='';
   }
   document.getElementById('loginError').textContent='';
+}
+function startClearData(){
+  if(!isAdmin())return;
+  if(!confirm('PRIMERA ADVERTENCIA:\n\nEsta a punto de BORRAR TODOS los datos de polling ingresados en el sistema.\n\nEsta accion no se puede deshacer.\n\nDesea continuar?'))return;
+  if(!confirm('SEGUNDA ADVERTENCIA:\n\nSe eliminaran TODOS los registros de polling de TODOS los dias.\n\nLos backups, procesos y notas NO se eliminan.\n\nEsta completamente seguro?'))return;
+  if(!confirm('TERCERA ADVERTENCIA:\n\nUltima oportunidad para cancelar.\n\nSi continua, se borraran los datos de polling de forma permanente.\n\nContinuar?'))return;
+  const kw=prompt('Para confirmar, escriba la palabra clave:');
+  if(kw!=='atosoperacionesnoc'){toast('Palabra clave incorrecta. Operacion cancelada.');return;}
+  clearAllPollingData();
+}
+async function clearAllPollingData(){
+  toast('Borrando datos de polling...');
+  const dates=Object.keys(store);
+  let count=0;
+  for(const d of dates){
+    if(store[d]&&store[d].pollings&&store[d].pollings.length){
+      store[d].pollings=[];
+      count++;
+      try{await ghPushDay(d,store[d]);}catch(e){console.warn('Error clearing '+d,e);}
+    }
+  }
+  try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}
+  render();
+  toast('Se borraron los datos de polling de '+count+' dias');
 }
 function doLogout(){
   // Check if cierre de turno was done today
@@ -1009,6 +1038,7 @@ function doLogout(){
   document.getElementById('loginOverlay').classList.remove('hide');
   document.getElementById('userBar').style.display='none';
   document.getElementById('dashBtn').style.display='none';
+  document.getElementById('clearDataBtn').style.display='none';
   document.getElementById('loginUser').value='';
   document.getElementById('loginPass').value='';
 }
@@ -1025,6 +1055,7 @@ function checkSession(){
     badge.className='shift-badge '+USERS[u].cssClass;
     if(USERS[u].role==='admin'){
       document.getElementById('dashBtn').style.display='';
+      document.getElementById('clearDataBtn').style.display='';
     }
   }
 }
