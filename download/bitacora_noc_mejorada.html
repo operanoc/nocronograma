@@ -540,15 +540,18 @@ function renderPollings(day){
   const byR={};Object.entries(byS).forEach(([s,e])=>{const r=e[0].region||'REGIONAL';if(!byR[r])byR[r]=[];byR[r].push({server:s,entries:e});});
   const order=['ARGENTINA','PERU','PANAMA','CHILE','MEXICO','REGIONAL'];
   const regions=order.filter(r=>byR[r]);
-  if(!regions.length){el.innerHTML='<div class="card"><div class="card-header"><h2>Pollings de Servidores</h2><button class="btn btn-primary btn-sm" onclick="openPollingModal()">+ Agregar</button></div><div class="empty-state"><p>No hay pollings para este día</p></div></div>';return;}
+  if(!regions.length){el.innerHTML='<div class="card"><div class="card-header"><h2>Pollings de Servidores</h2><button class="btn btn-primary btn-sm" onclick="openPollingModal()">+ Agregar</button></div><div class="empty-state"><p>No hay pollings para este día</p><div class="empty-actions"><button class="btn btn-outline btn-sm" onclick="copyFromPrev()">Copiar día anterior</button><button class="btn btn-primary btn-sm" onclick="openPollingModal()">+ Agregar servidor</button></div></div></div>';return;}
   let h='<div class="card"><div class="card-header"><h2>Pollings de Servidores</h2><button class="btn btn-primary btn-sm" onclick="openPollingModal()">+ Agregar</button></div><div class="card-body">';
-  regions.forEach(r=>{h+='<div class="region-group'+(matchesFilter(RL[r])?'':' hidden')+'"><span class="badge '+RB[r]+'">'+RL[r]+'</span><div style="margin-top:6px">';
+  regions.forEach(r=>{h+='<div class="region-group'+(matchesFilter(RL[r],r)?'':' hidden')+'"><span class="badge '+RB[r]+'">'+RL[r]+'</span><div style="margin-top:6px">';
     byR[r].forEach(({server:srv,entries})=>{
-      if(!matchesFilter(srv))return;
       const beg=entries.find(e=>e.phase==='BEGINNING'),end=entries.find(e=>e.phase==='ENDING');
       const sinAc=beg&&beg.note==='SIN AC'||end&&end.note==='SIN AC';
       const dur=beg&&end?calcDur(beg.time,end.time):'';
-      h+='<div class="server-row'+(sinAc?' error':'')+'"><div style="display:flex;align-items:center;gap:6px;flex:1;min-width:100px"><span class="server-name">'+srv+'</span>'+(sinAc?'<span class="badge badge-red">Sin AC</span>':'')+'</div><div class="server-meta"><span><span class="label">Ini </span><span class="time-val">'+(beg?beg.time||'—':'—')+'</span></span><span><span class="label">Fin </span><span class="time-val">'+(end?end.time||'—':'—')+'</span></span>'+(dur&&dur!=='—'?'<span class="dur">'+dur+'</span>':'')+'<span class="server-actions"><button class="btn-icon" title="Editar" onclick="openPollingModal(\''+srv+'\')">'+PENCIL+'</button><button class="btn-icon danger" title="Eliminar" onclick="deletePolling(\''+srv+'\')">'+TRASH+'</button></span></div></div>';
+      const late=!sinAc&&beg&&end&&beg.time&&end.time&&isLate(srv,beg.time,end.time);
+      const stCat=sinAc?'fail':'';
+      if(!matchesFilter(srv,r,stCat))return;
+      const srvEsc=esc(srv);
+      h+='<div class="server-row'+(sinAc?' error':'')+(late?' late':'')+'"><div style="display:flex;align-items:center;gap:6px;flex:1;min-width:100px"><span class="server-name">'+srvEsc+'</span>'+(sinAc?'<span class="badge badge-red">Sin AC</span>':'')+(late?'<span class="badge badge-amber">Fuera de horario</span>':'')+'</div><div class="server-meta"><span><span class="label">Ini </span><span class="time-val">'+(beg?beg.time||'\u2014':'\u2014')+'</span></span><span><span class="label">Fin </span><span class="time-val">'+(end?end.time||'\u2014':'\u2014')+'</span></span>'+(dur&&dur!=='\u2014'?'<span class="dur">'+dur+'</span>':'')+'<span class="server-actions"><button class="btn-icon" title="Editar" onclick="openPollingModal(\''+srv+'\')">'+PENCIL+'</button><button class="btn-icon danger" title="Eliminar" onclick="deletePolling(\''+srv+'\')">'+TRASH+'</button></span></div></div>';
     });h+='</div></div>';});h+='</div></div>';el.innerHTML=h;
 }
 
@@ -749,7 +752,7 @@ function doExportRange(){
   if(!from||!to||from>to){toast('Rango de fechas invalido');return;}
   let csv='Fecha,Tipo,Nombre,Region/Detalle,Fase,Hora Ini,Hora Fin,Duracion,Estado,JOB,Operador,Turno,Notas\n';
   const d=new Date(from+'T12:00:00');const end=new Date(to+'T12:00:00');
-  while(d<=end){const ds=d.toISOString().split('T')[0];const day=store[ds];if(day){(day.pollings||[]).forEach(p=>{csv+=ds+',Polling,'+p.server+','+p.region+','+p.phase+','+(p.phase==='BEGINNING'?p.time:'')+','+(p.phase==='ENDING'?p.time:'')+',,'+(p.note||'')+',,'+(day.operator||'')+','+(day.shift||''),\n';});(day.backups||[]).forEach(b=>{csv+=ds+',Backup,'+b.name+',,,'+(b.iniTime||'')+','+(b.endTime||'')+','+(b.duration||'')+','+(b.status||'')+','+(b.job||'')+','+(day.operator||'')+','+(day.shift||''),\n';});(day.processes||[]).forEach(p=>{csv+=ds+',Proceso,'+p.name+',,,,,,,'+(p.status||'')+','+(day.operator||'')+','+(day.shift||''),\n';});}d.setDate(d.getDate()+1);}
+  while(d<=end){const ds=d.toISOString().split('T')[0];const day=store[ds];if(day){(day.pollings||[]).forEach(p=>{csv+=ds+',Polling,'+p.server+','+p.region+','+p.phase+','+(p.phase==='BEGINNING'?p.time:'')+','+(p.phase==='ENDING'?p.time:'')+',,'+(p.note||'')+',,'+(day.operator||'')+','+(day.shift||'')+'\n';});(day.backups||[]).forEach(b=>{csv+=ds+',Backup,'+b.name+',,,'+(b.iniTime||'')+','+(b.endTime||'')+','+(b.duration||'')+','+(b.status||'')+','+(b.job||'')+','+(day.operator||'')+','+(day.shift||'')+'\n';});(day.processes||[]).forEach(p=>{csv+=ds+',Proceso,'+p.name+',,,,,,,'+(p.status||'')+','+(day.operator||'')+','+(day.shift||'')+'\n';});}d.setDate(d.getDate()+1);}
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bitacora_'+from+'_a_'+to+'.csv';a.click();closeModal();toast('CSV descargado ('+from+' a '+to+')');
 }
 
