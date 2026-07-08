@@ -287,11 +287,11 @@
     {
       "name": "Regional",
       "iniDate": "2026-07-04",
-      "iniTime": "22:00",
+      "iniTime": "23:00",
       "endDate": "2026-07-05",
-      "endTime": null,
+      "endTime": "03:00",
       "job": "BKPDIARIOU",
-      "duration": null,
+      "duration": "4:00",
       "status": null
     }
   ],
