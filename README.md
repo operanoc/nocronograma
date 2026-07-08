@@ -23,9 +23,9 @@ Sistema web para el registro operativo del NOC (Network Operations Center). Perm
 
 ### Registro de datos por dia
 - **Pollings:** Registro de inicio y fin de cada polling por servidor, agrupados por pais (Argentina, Peru, Panama, Chile, Mexico)
-- **Backups:** Control de backups con horario de inicio/fin, duracion y estado
-- **Procesos:** Checklist de procesos batch (AFIP, BANCOR, Tarjeta Naranja, EPE, etc.)
-- **Notas del turno:** Timeline cronologico de novedades por operador
+- **Backups:** Control de backups con **fecha y hora de inicio/fin**, duracion calculada automaticamente (soporta backup que cruza medianoche, ej: lunes 22hs a martes 06hs), JOB y estado
+- **Procesos:** Checklist con 9 procesos fijos (Tarjeta Naranja, EPE, BANCOR, Rentas de Cordoba, AFIP 72, AFIP 24, AFIP 48, Cierre AFIP, Montaje de cintas) con estados **OK / Error**, mas opcion de crear procesos personalizados
+- **Notas del turno:** Timeline cronologico de novedades por operador (se pueden agregar incluso en dias cerrados)
 - **Copia de dia anterior:** Con un boton se copia la estructura del dia previo
 
 ### Cierre de turno (OBLIGATORIO)
@@ -36,8 +36,9 @@ Sistema web para el registro operativo del NOC (Network Operations Center). Perm
 ### Bloqueo de dia cerrado
 - Cuando un turno realiza el cierre de turno, **el dia queda bloqueado para operadores**
 - Solo los usuarios con rol **Admin** pueden modificar datos de un dia cerrado
-- Se muestra un banner rojo indicando que el dia esta cerrado
+- Se muestra un modal centrado indicando que el dia esta cerrado
 - Los botones de agregar, editar y eliminar se ocultan para operadores
+- Las notas del timeline se pueden seguir agregando en dias cerrados
 
 ### Dashboard administrativo (solo Admin)
 - Metricas y estadisticas por periodo (semanal, mensual, anual, historico)
@@ -53,15 +54,13 @@ Sistema web para el registro operativo del NOC (Network Operations Center). Perm
 - Modo oscuro/claro
 - Sincronizacion automatica con GitHub (almacenamiento en la nube)
 - Indicador de estado de sincronizacion en el header
+- Colores institucionales Semantix (violeta #6A0DAD, teal #00E5B8, azul #4A90E2)
 
 ## Arquitectura
 
-- Aplicacion de un solo archivo HTML (sin dependencias externas)
-- Almacenamiento: GitHub API (Contents API)
-- Cada dia se guarda como un archivo JSON en 
+- Aplicacion de un solo archivo HTML (sin dependencias externas, sin build tools)
+- Almacenamiento: GitHub Contents API
+- Cada dia se guarda como un archivo JSON en `data/`
 - Sincronizacion automatica con debounce de 500ms
 - Cache de SHA para evitar GET antes de PUT
-
-## Estructura de datos por dia
-
-
+- Token de acceso embebido (ofuscado como array de char codes)
