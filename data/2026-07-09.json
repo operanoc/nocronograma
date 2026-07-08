@@ -3,11 +3,6 @@
   "dayType": "DIARIA",
   "pollings": [],
   "backups": [],
-  "processes": [
-    {
-      "name": "Rentas de Córdoba",
-      "status": "OK"
-    }
-  ],
+  "processes": [],
   "notes": ""
 }
