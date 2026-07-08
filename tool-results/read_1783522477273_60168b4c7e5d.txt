@@ -1,0 +1,489 @@
+     1→     1→<!DOCTYPE html>
+     2→     2→<html lang="es">
+     3→     3→<head>
+     4→     4→<meta charset="UTF-8">
+     5→     5→<meta name="viewport" content="width=device-width, initial-scale=1.0">
+     6→     6→<title>Bitácora NOC — bitacoranoc.com</title>
+     7→     7→<style>
+     8→     8→*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+     9→     9→:root{
+    10→    10→  --bg:#f8fafc;--white:#fff;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;
+    11→    11→  --gray-300:#d1d5db;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;
+    12→    12→  --gray-700:#374151;--gray-800:#1f2937;--gray-900:#111827;
+    13→    13→  --emerald-50:#ecfdf5;--emerald-100:#d1fae5;--emerald-600:#059669;--emerald-700:#047857;--emerald-800:#065f46;
+    14→    14→  --red-50:#fef2f2;--red-100:#fee2e2;--red-500:#ef4444;--red-600:#dc2626;--red-800:#991b1b;
+    15→    15→  --amber-50:#fffbeb;--amber-100:#fef3c7;--amber-600:#d97706;--amber-800:#92400e;
+    16→    16→  --sky-50:#f0f9ff;--sky-100:#e0f2fe;--sky-600:#0284c7;--sky-800:#075985;
+    17→    17→  --violet-50:#f5f3ff;--violet-100:#ede9fe;--violet-600:#7c3aed;--violet-800:#5b21b6;
+    18→    18→  --orange-50:#fff7ed;--orange-100:#ffedd5;--orange-800:#9a3412;
+    19→    19→  --radius:8px;--shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+    20→    20→  --shadow-md:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);
+    21→    21→}
+    22→    22→html.dark{
+    23→    23→  --bg:#0f172a;--white:#1e293b;--gray-50:#1e293b;--gray-100:#334155;
+    24→    24→  --gray-200:#475569;--gray-300:#64748b;--gray-400:#94a3b8;--gray-500:#94a3b8;
+    25→    25→  --gray-600:#cbd5e1;--gray-700:#e2e8f0;--gray-800:#f1f5f9;--gray-900:#f8fafc;
+    26→    26→  --emerald-50:#064e3b;--emerald-100:#065f46;--emerald-600:#34d399;--emerald-700:#6ee7b7;--emerald-800:#a7f3d0;
+    27→    27→  --red-50:#450a0a;--red-100:#7f1d1d;--red-500:#f87171;--red-600:#fca5a5;--red-800:#fecaca;
+    28→    28→  --amber-50:#451a03;--amber-100:#78350f;--amber-600:#fbbf24;--amber-800:#fde68a;
+    29→    29→  --sky-50:#082f49;--sky-100:#0c4a6e;--sky-600:#38bdf8;--sky-800:#7dd3fc;
+    30→    30→  --violet-50:#2e1065;--violet-100:#4c1d95;--violet-600:#a78bfa;--violet-800:#c4b5fd;
+    31→    31→  --orange-50:#431407;--orange-100:#7c2d12;--orange-800:#fdba74;
+    32→    32→  --shadow:0 1px 3px rgba(0,0,0,.4);
+    33→    33→  --shadow-md:0 4px 6px rgba(0,0,0,.5);
+    34→    34→}
+    35→    35→body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--gray-800);line-height:1.5;min-height:100vh;display:flex;flex-direction:column;transition:background .3s,color .3s}
+    36→    36→a{color:inherit;text-decoration:none}
+    37→    37→button{cursor:pointer;font:inherit;border:none;background:none}
+    38→    38→input,select,textarea{font:inherit;border:1px solid var(--gray-300);border-radius:var(--radius);padding:8px 12px;outline:none;transition:border .15s;background:var(--white);color:var(--gray-800)}
+    39→    39→input:focus,select:focus,textarea:focus{border-color:var(--sky-600);box-shadow:0 0 0 3px rgba(2,132,199,.15)}
+    40→    40→textarea{resize:vertical;min-height:60px}
+    41→    41→
+    42→    42→.header{background:var(--white);border-bottom:1px solid var(--gray-200);padding:10px 16px;position:sticky;top:0;z-index:100;transition:background .3s}
+    43→    43→.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    44→    44→.header h1{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
+    45→    45→.header h1 svg{color:var(--emerald-600)}
+    46→    46→.header-actions{display:flex;align-items:center;gap:6px}
+    47→    47→.btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;transition:all .15s;white-space:nowrap}
+    48→    48→.btn-primary{background:var(--emerald-600);color:#fff}.btn-primary:hover{background:var(--emerald-700)}
+    49→    49→.btn-outline{border:1px solid var(--gray-300);color:var(--gray-700);background:var(--white)}.btn-outline:hover{background:var(--gray-100)}
+    50→    50→.btn-ghost{color:var(--gray-600);padding:6px 8px}.btn-ghost:hover{background:var(--gray-100)}
+    51→    51→.btn-danger{background:var(--red-600);color:#fff}.btn-danger:hover{background:var(--red-800)}
+    52→    52→.btn-sm{padding:4px 10px;font-size:12px}
+    53→    53→.btn-icon{padding:6px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;color:var(--gray-500)}
+    54→    54→.btn-icon:hover{background:var(--gray-100);color:var(--gray-700)}
+    55→    55→.btn-icon.danger:hover{background:var(--red-50);color:var(--red-600)}
+    56→    56→
+    57→    57→main{flex:1;max-width:1200px;margin:0 auto;width:100%;padding:16px}
+    58→    58→
+    59→    59→.date-nav{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;transition:background .3s}
+    60→    60→.date-nav-left{display:flex;align-items:center;gap:8px}
+    61→    61→.date-btn{width:36px;height:36px;border-radius:var(--radius);border:1px solid var(--gray-300);display:flex;align-items:center;justify-content:center;background:var(--white);color:var(--gray-600);transition:all .15s}
+    62→    62→.date-btn:hover{background:var(--gray-100);border-color:var(--gray-400)}
+    63→    63→.date-display{padding:8px 14px;border:1px solid var(--gray-300);border-radius:var(--radius);font-weight:600;font-size:14px;min-width:200px;text-align:center;cursor:pointer;background:var(--white);transition:all .15s}
+    64→    64→.date-display:hover{border-color:var(--gray-400);background:var(--gray-100)}
+    65→    65→.date-nav-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    66→    66→.day-label{font-size:13px;color:var(--gray-500);text-transform:capitalize}
+    67→    67→.type-select{padding:6px 10px;font-size:13px;border-radius:var(--radius);min-width:160px}
+    68→    68→.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid transparent}
+    69→    69→.badge-emerald{background:var(--emerald-100);color:var(--emerald-800);border-color:var(--emerald-100)}
+    70→    70→.badge-amber{background:var(--amber-100);color:var(--amber-800);border-color:var(--amber-100)}
+    71→    71→.badge-rose{background:var(--red-100);color:var(--red-800);border-color:var(--red-100)}
+    72→    72→.badge-sky{background:var(--sky-100);color:var(--sky-800);border-color:var(--sky-100)}
+    73→    73→.badge-violet{background:var(--violet-100);color:var(--violet-800);border-color:var(--violet-100)}
+    74→    74→.badge-red{background:var(--red-100);color:var(--red-800);border-color:var(--red-100)}
+    75→    75→.badge-gray{background:var(--gray-100);color:var(--gray-600);border-color:var(--gray-200)}
+    76→    76→.badge-mono{font-family:'SF Mono',Monaco,Consolas,monospace}
+    77→    77→
+    78→    78→/* Quick Actions Bar */
+    79→    79→.quick-bar{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;transition:background .3s}
+    80→    80→.quick-bar .sep{width:1px;height:20px;background:var(--gray-200);margin:0 4px}
+    81→    81→.search-box{position:relative;flex:1;min-width:150px;max-width:250px}
+    82→    82→.search-box input{width:100%;padding-left:30px;font-size:13px}
+    83→    83→.search-box svg{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--gray-400);width:14px;height:14px}
+    84→    84→
+    85→    85→/* Notes */
+    86→    86→.notes-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;transition:background .3s}
+    87→    87→.notes-card h3{font-size:13px;font-weight:600;color:var(--gray-600);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+    88→    88→.notes-card textarea{width:100%;font-size:13px;min-height:50px;max-height:100px;border:1px solid var(--gray-200);border-radius:6px;padding:8px}
+    89→    89→
+    90→    90→.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+    91→    91→.stat-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px;text-align:center;transition:background .3s}
+    92→    92→.stat-value{font-size:22px;font-weight:700;color:var(--gray-900)}
+    93→    93→.stat-label{font-size:11px;color:var(--gray-500);margin-top:2px}
+    94→    94→.stat-emerald{color:var(--emerald-600)}
+    95→    95→.stat-sky{color:var(--sky-600)}
+    96→    96→.stat-violet{color:var(--violet-600)}
+    97→    97→
+    98→    98→.tabs-bar{display:flex;border-bottom:2px solid var(--gray-200);margin-bottom:12px}
+    99→    99→.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;color:var(--gray-500);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;display:flex;align-items:center;gap:6px}
+   100→   100→.tab-btn:hover{color:var(--gray-700)}
+   101→   101→.tab-btn.active{color:var(--emerald-600);border-bottom-color:var(--emerald-600)}
+   102→   102→
+   103→   103→.card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);overflow:hidden;transition:background .3s}
+   104→   104→.card-header{padding:12px 16px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+   105→   105→.card-header h2{font-size:15px;font-weight:600}
+   106→   106→.card-body{padding:0;max-height:58vh;overflow-y:auto}
+   107→   107→.card-body::-webkit-scrollbar{width:6px}
+   108→   108→.card-body::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:3px}
+   109→   109→
+   110→   110→.empty-state{padding:50px 20px;text-align:center;color:var(--gray-400)}
+   111→   111→.empty-state svg{width:44px;height:44px;margin:0 auto 10px;opacity:.3}
+   112→   112→.empty-state p{font-size:14px;margin-bottom:10px}
+   113→   113→
+   114→   114→.region-group{padding:12px 16px;border-bottom:1px solid var(--gray-100)}
+   115→   115→.region-group:last-child{border-bottom:none}
+   116→   116→.hidden{display:none !important}
+   117→   117→
+   118→   118→.server-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--gray-200);margin-bottom:5px;transition:background .1s;flex-wrap:wrap;gap:6px}
+   119→   119→.server-row:hover{background:var(--gray-50)}
+   120→   120→.server-row.error{border-color:var(--red-200);background:var(--red-50)}
+   121→   121→.server-name{font-size:13px;font-weight:500;flex:1;min-width:100px}
+   122→   122→.server-meta{display:flex;align-items:center;gap:12px;font-size:11px;color:var(--gray-500);flex-wrap:wrap}
+   123→   123→.server-meta .label{color:var(--gray-400)}
+   124→   124→.server-meta .time-val{font-family:'SF Mono',Monaco,Consolas,monospace;color:var(--gray-700)}
+   125→   125→.server-meta .dur{color:var(--emerald-600);font-family:'SF Mono',Monaco,Consolas,monospace}
+   126→   126→.server-actions{display:flex;gap:1px}
+   127→   127→
+   128→   128→.bkp-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--gray-200);margin-bottom:5px;transition:background .1s;flex-wrap:wrap;gap:6px}
+   129→   129→.bkp-row:hover{background:var(--gray-50)}
+   130→   130→.bkp-row.fail{border-color:var(--red-200);background:var(--red-50)}
+   131→   131→.bkp-name{font-size:13px;font-weight:500;flex:1;min-width:80px;display:flex;align-items:center;gap:8px}
+   132→   132→
+   133→   133→.proc-row{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-radius:var(--radius);border:1px solid var(--gray-200);margin-bottom:5px;transition:background .1s}
+   134→   134→.proc-row:hover{background:var(--gray-50)}
+   135→   135→.proc-name{font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px}
+   136→   136→
+   137→   137→.status-icon{width:15px;height:15px;flex-shrink:0}
+   138→   138→.status-icon.ok{color:var(--emerald-600)}
+   139→   139→.status-icon.fail{color:var(--red-500)}
+   140→   140→.status-icon.none{color:var(--gray-400)}
+   141→   141→
+   142→   142→.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
+   143→   143→.modal-overlay.show{opacity:1;pointer-events:auto}
+   144→   144→.modal{background:var(--white);border-radius:12px;width:100%;max-width:480px;box-shadow:var(--shadow-md);transform:translateY(10px);transition:transform .2s}
+   145→   145→.modal-overlay.show .modal{transform:translateY(0)}
+   146→   146→.modal-header{padding:16px 20px 0;display:flex;align-items:center;justify-content:space-between}
+   147→   147→.modal-header h3{font-size:16px;font-weight:600}
+   148→   148→.modal-body{padding:14px 20px}
+   149→   149→.modal-footer{padding:0 20px 16px;display:flex;gap:8px;justify-content:flex-end}
+   150→   150→.form-group{margin-bottom:10px}
+   151→   151→.form-group label{display:block;font-size:12px;font-weight:500;color:var(--gray-600);margin-bottom:3px}
+   152→   152→.form-group input,.form-group select,.form-group textarea{width:100%;padding:7px 10px}
+   153→   153→.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+   154→   154→
+   155→   155→.cal-popup{position:absolute;top:100%;left:0;margin-top:4px;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);box-shadow:var(--shadow-md);z-index:150;padding:10px;min-width:270px}
+   156→   156→.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+   157→   157→.cal-header span{font-size:14px;font-weight:600}
+   158→   158→.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+   159→   159→.cal-grid .day-name{font-size:10px;color:var(--gray-400);padding:3px}
+   160→   160→.cal-grid .day{font-size:12px;padding:5px;border-radius:5px;cursor:pointer;transition:background .1s}
+   161→   161→.cal-grid .day:hover{background:var(--gray-100)}
+   162→   162→.cal-grid .day.today{font-weight:700;color:var(--sky-600)}
+   163→   163→.cal-grid .day.selected{background:var(--emerald-600);color:#fff}
+   164→   164→.cal-grid .day.other{color:var(--gray-300)}
+   165→   165→.cal-grid .day.has-data{position:relative}
+   166→   166→.cal-grid .day.has-data::after{content:'';position:absolute;bottom:1px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--emerald-600)}
+   167→   167→.cal-grid .day.selected.has-data::after{background:#fff}
+   168→   168→.cal-grid .day.has-error::after{background:var(--red-500)}
+   169→   169→.cal-grid .day.selected.has-error::after{background:#fff}
+   170→   170→
+   171→   171→.toast{position:fixed;bottom:20px;right:20px;background:var(--gray-800);color:var(--gray-100);padding:10px 18px;border-radius:var(--radius);font-size:13px;z-index:300;transform:translateY(80px);opacity:0;transition:all .3s}
+   172→   172→html.dark .toast{background:var(--gray-100);color:var(--gray-900)}
+   173→   173→.toast.show{transform:translateY(0);opacity:1}
+   174→   174→
+   175→   175→.footer{margin-top:auto;border-top:1px solid var(--gray-200);background:var(--white);padding:8px;text-align:center;font-size:11px;color:var(--gray-400);transition:background .3s}
+   176→   176→
+   177→   177→/* Print */
+   178→   178→@media print{
+   179→   179→  .header,.quick-bar,.tabs-bar,.server-actions,.footer,.modal-overlay,.toast,.btn,.date-nav-right select{display:none!important}
+   180→   180→  .date-nav{border:none;padding:4px 0}
+   181→   181→  .card{border:1px solid #ccc;break-inside:avoid}
+   182→   182→  .card-body{max-height:none;overflow:visible}
+   183→   183→  body{background:#fff;color:#000}
+   184→   184→}
+   185→   185→@media(max-width:640px){
+   186→   186→  .stats{grid-template-columns:repeat(2,1fr)}
+   187→   187→  .server-meta{flex-wrap:wrap;gap:6px}
+   188→   188→  .date-nav{flex-direction:column;align-items:stretch}
+   189→   189→  .date-nav-left{justify-content:center}
+   190→   190→  .date-nav-right{justify-content:center;flex-wrap:wrap}
+   191→   191→  .stat-value{font-size:18px}
+   192→   192→  .form-row{grid-template-columns:1fr}
+   193→   193→  .tabs-bar{overflow-x:auto}
+   194→   194→  .tab-btn{white-space:nowrap;padding:10px 12px}
+   195→   195→  .quick-bar{justify-content:center}
+   196→   196→}
+   197→   197→</style>
+   198→   198→</head>
+   199→   199→<body>
+   200→   200→
+   201→   201→<header class="header">
+   202→   202→  <div class="header-inner">
+   203→   203→    <h1>
+   204→   204→      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+   205→   205→      Bitácora NOC
+   206→   206→    </h1>
+   207→   207→    <div class="header-actions">
+   208→   208→      <button class="btn btn-ghost btn-sm" onclick="window.print()" title="Imprimir">
+   209→   209→        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+   210→   210→      </button>
+   211→   211→      <button class="btn btn-ghost btn-sm" id="darkToggle" onclick="toggleDark()" title="Modo oscuro">
+   212→   212→        <svg id="darkIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+   213→   213→      </button>
+   214→   214→    </div>
+   215→   215→  </div>
+   216→   216→</header>
+   217→   217→
+   218→   218→<main>
+   219→   219→  <div class="date-nav">
+   220→   220→    <div class="date-nav-left">
+   221→   221→      <button class="date-btn" onclick="navDay(-1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+   222→   222→      <div style="position:relative">
+   223→   223→        <button class="date-display" id="dateDisplay" onclick="toggleCalendar()"></button>
+   224→   224→        <div class="cal-popup" id="calPopup" style="display:none"></div>
+   225→   225→      </div>
+   226→   226→      <button class="date-btn" onclick="navDay(1)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+   227→   227→      <button class="btn btn-ghost btn-sm" onclick="goToday()" style="color:var(--emerald-600);font-size:12px">Hoy</button>
+   228→   228→    </div>
+   229→   229→    <div class="date-nav-right">
+   230→   230→      <span class="day-label" id="dayLabel"></span>
+   231→   231→      <select class="type-select" id="typeSelect" onchange="changeType(this.value)">
+   232→   232→        <option value="DIARIA">Diaria (L-V)</option>
+   233→   233→        <option value="FIN_DE_SEMANA">Fin de Semana</option>
+   234→   234→        <option value="BKP_MENSUAL">BKP Mensual</option>
+   235→   235→      </select>
+   236→   236→      <span class="badge" id="typeBadge"></span>
+   237→   237→    </div>
+   238→   238→  </div>
+   239→   239→
+   240→   240→  <div class="quick-bar">
+   241→   241→    <button class="btn btn-outline btn-sm" onclick="copyFromPrev()">
+   242→   242→      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+   243→   243→      Copiar día anterior
+   244→   244→    </button>
+   245→   245→    <button class="btn btn-outline btn-sm" onclick="exportCSV()">
+   246→   246→      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+   247→   247→      Exportar CSV
+   248→   248→    </button>
+   249→   249→    <div class="sep"></div>
+   250→   250→    <div class="search-box">
+   251→   251→      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+   252→   252→      <input type="text" id="searchInput" placeholder="Buscar servidor, proceso..." oninput="render()">
+   253→   253→    </div>
+   254→   254→  </div>
+   255→   255→
+   256→   256→  <div class="notes-card">
+   257→   257→    <h3>
+   258→   258→      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+   259→   259→      Notas del día
+   260→   260→    </h3>
+   261→   261→    <textarea id="dayNotes" placeholder="Observaciones, incidencias, novedades del turno..." oninput="saveNotes()"></textarea>
+   262→   262→  </div>
+   263→   263→
+   264→   264→  <div class="stats">
+   265→   265→    <div class="stat-card"><div class="stat-value" id="statServers">0</div><div class="stat-label">Servidores</div></div>
+   266→   266→    <div class="stat-card"><div class="stat-value stat-emerald" id="statPollings">0/0</div><div class="stat-label">Pollings OK</div></div>
+   267→   267→    <div class="stat-card"><div class="stat-value stat-sky" id="statBackups">0</div><div class="stat-label">Backups</div></div>
+   268→   268→    <div class="stat-card"><div class="stat-value stat-violet" id="statProcesses">—</div><div class="stat-label">Procesos OK</div></div>
+   269→   269→  </div>
+   270→   270→
+   271→   271→  <div class="tabs-bar">
+   272→   272→    <button class="tab-btn active" data-tab="pollings" onclick="switchTab('pollings')">
+   273→   273→      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+   274→   274→      Pollings
+   275→   275→    </button>
+   276→   276→    <button class="tab-btn" data-tab="backups" onclick="switchTab('backups')">
+   277→   277→      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+   278→   278→      Backups
+   279→   279→    </button>
+   280→   280→    <button class="tab-btn" data-tab="processes" onclick="switchTab('processes')">
+   281→   281→      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4"/></svg>
+   282→   282→      Procesos
+   283→   283→    </button>
+   284→   284→  </div>
+   285→   285→  <div id="tabContent"></div>
+   286→   286→</main>
+   287→   287→
+   288→   288→<footer class="footer">Bitácora NOC — bitacoranoc.com</footer>
+   289→   289→<div class="toast" id="toast"></div>
+   290→   290→<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+   291→   291→  <div class="modal">
+   292→   292→    <div class="modal-header"><h3 id="modalTitle"></h3><button class="btn-icon" onclick="closeModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+   293→   293→    <div class="modal-body" id="modalBody"></div>
+   294→   294→    <div class="modal-footer" id="modalFooter"></div>
+   295→   295→  </div>
+   296→   296→</div>
+   297→   297→
+   298→   298→<script>
+   299→   299→const INITIAL_DATA = {"2026-07-03":{"date":"2026-07-03","dayType":"DIARIA","pollings":[{"server":"Argentina P$","region":"ARGENTINA","phase":"BEGINNING","time":"01:21:24"},{"server":"Argentina P$","region":"ARGENTINA","phase":"ENDING","time":"03:09:07"},{"server":"Argentina P1","region":"ARGENTINA","phase":"BEGINNING","time":"03:21:52"},{"server":"Argentina P1","region":"ARGENTINA","phase":"ENDING","time":"04:36:44"},{"server":"Argentina P2","region":"ARGENTINA","phase":"BEGINNING","time":"13:02:32"},{"server":"Argentina P2","region":"ARGENTINA","phase":"ENDING","time":"13:33:49"},{"server":"Perú D1","region":"PERU","phase":"BEGINNING","time":"02:32:12"},{"server":"Perú D1","region":"PERU","phase":"ENDING","time":"05:00:42"},{"server":"Perú D2","region":"PERU","phase":"BEGINNING","time":"21:33:06"},{"server":"Perú D2","region":"PERU","phase":"ENDING","time":"21:43:33"},{"server":"Perú D3","region":"PERU","phase":"BEGINNING","time":"00:04:54"},{"server":"Perú D3","region":"PERU","phase":"ENDING","time":"00:11:44"},{"server":"Panamá D1","region":"PANAMA","phase":"BEGINNING","time":"02:33:21"},{"server":"Panamá D1","region":"PANAMA","phase":"ENDING","time":"03:03:11"},{"server":"Panamá MT","region":"PANAMA","phase":"BEGINNING","time":"05:59:19"},{"server":"Panamá MT","region":"PANAMA","phase":"ENDING","time":"06:30:16"},{"server":"Panamá OC","region":"PANAMA","phase":"BEGINNING","time":"07:06:57"},{"server":"Panamá OC","region":"PANAMA","phase":"ENDING","time":"07:42:30"},{"server":"Panamá A. Propias","region":"PANAMA","phase":"BEGINNING","time":"07:50:59"},{"server":"Panamá A. Propias","region":"PANAMA","phase":"ENDING","time":"08:24:04"},{"server":"Panamá Mas Me Dan","region":"PANAMA","phase":"BEGINNING","time":"08:51:52"},{"server":"Panamá Mas Me Dan","region":"PANAMA","phase":"ENDING","time":"09:25:15"},{"server":"Perú Aserviban MT","region":"PERU","phase":"BEGINNING","time":"06:00:03"},{"server":"Perú Aserviban MT","region":"PERU","phase":"ENDING","time":"07:16:35"},{"server":"Perú OC","region":"PERU","phase":"BEGINNING","time":"07:29:31"},{"server":"Perú OC","region":"PERU","phase":"ENDING","time":"08:46:51"},{"server":"Perú X30","region":"PERU","phase":"BEGINNING","time":"12:12:16"},{"server":"Perú X30","region":"PERU","phase":"ENDING","time":"13:18:40"},{"server":"Chile MT","region":"CHILE","phase":"BEGINNING","time":"05:59:44"},{"server":"Chile MT","region":"CHILE","phase":"ENDING","time":"06:29:50"},{"server":"Chile OP","region":"CHILE","phase":"BEGINNING","time":"06:38:41"},{"server":"Chile OP","region":"CHILE","phase":"ENDING","time":"06:50:14"},{"server":"Chile Vigo","region":"CHILE","phase":"BEGINNING","time":"07:05:45"},{"server":"Chile Vigo","region":"CHILE","phase":"ENDING","time":"07:37:15"},{"server":"Chile OC","region":"CHILE","phase":"BEGINNING","time":"07:49:57"},{"server":"Chile OC","region":"CHILE","phase":"ENDING","time":"08:24:16"},{"server":"Chile Cencosud","region":"CHILE","phase":"BEGINNING","time":"08:53:09"},{"server":"Chile Cencosud","region":"CHILE","phase":"ENDING","time":"09:26:43"},{"server":"Chile Los Heroes","region":"CHILE","phase":"BEGINNING","time":"09:35:57"},{"server":"Chile Los Heroes","region":"CHILE","phase":"ENDING","time":"09:55:49"},{"server":"Chile CencoPay","region":"CHILE","phase":"BEGINNING","time":"11:00:11"},{"server":"Chile CencoPay","region":"CHILE","phase":"ENDING","time":"11:20:23"},{"server":"México - SIE - M1","region":"MEXICO","phase":"BEGINNING","time":"06:00:22"},{"server":"México - SIE - M1","region":"MEXICO","phase":"ENDING","time":"06:08:22"},{"server":"México - GDE - M2","region":"MEXICO","phase":"BEGINNING","time":"06:25:09"},{"server":"México - GDE - M2","region":"MEXICO","phase":"ENDING","time":"06:33:02"}],"backups":[{"name":"Regional","iniTime":"","endTime":"","job":"BKPDIARIOU","duration":"","status":"Robot Fail"},{"name":"Pinot","iniTime":"19:00","endTime":"","job":"BKPDIARIO","duration":"","status":null},{"name":"Semillon","iniTime":"17:00","endTime":"17:20","job":"BKPMIMIX","duration":"0:20","status":null}],"processes":[{"name":"Procesos","status":"Realizado"},{"name":"Tarjeta Naranja","status":"OK"},{"name":"EPE","status":"OK"},{"name":"BANCOR","status":"OK"},{"name":"Rentas de Córdoba","status":"OK"},{"name":"AFIP 72","status":"OK"},{"name":"AFIP 24","status":"OK"},{"name":"AFIP 48","status":"OK"},{"name":"Cierre AFIP","status":"OK"},{"name":"Montaje de cintas","status":"Pend Regional"},{"name":"Reset Flag","status":"N/C"}]},"2026-07-04":{"date":"2026-07-04","dayType":"FIN_DE_SEMANA","pollings":[{"server":"Argentina P$","region":"ARGENTINA","phase":"BEGINNING","time":"01:00:03"},{"server":"Argentina P$","region":"ARGENTINA","phase":"ENDING","time":"02:48:07"},{"server":"Argentina P1","region":"ARGENTINA","phase":"BEGINNING","time":"02:50:34"},{"server":"Argentina P1","region":"ARGENTINA","phase":"ENDING","time":"03:48:50"},{"server":"Perú D1","region":"PERU","phase":"BEGINNING","time":"02:14:01"},{"server":"Perú D1","region":"PERU","phase":"ENDING","time":"04:41:54"},{"server":"Perú D2","region":"PERU","phase":"BEGINNING","time":"21:31:51"},{"server":"Perú D2","region":"PERU","phase":"ENDING","time":"21:43:17"},{"server":"Perú D3","region":"PERU","phase":"BEGINNING","time":"00:01:04"},{"server":"Perú D3","region":"PERU","phase":"ENDING","time":"00:07:59"},{"server":"Panamá D1","region":"PANAMA","phase":"BEGINNING","time":"02:12:40"},{"server":"Panamá D1","region":"PANAMA","phase":"ENDING","time":"02:34:08"},{"server":"Panamá MT","region":"PANAMA","phase":"BEGINNING","time":"14:37:40"},{"server":"Panamá MT","region":"PANAMA","phase":"ENDING","time":"15:04:56"},{"server":"Panamá OC","region":"PANAMA","phase":"BEGINNING","time":"15:26:51"},{"server":"Panamá OC","region":"PANAMA","phase":"ENDING","time":"15:50:30"},{"server":"Panamá A. Propias","region":"PANAMA","phase":"BEGINNING","time":"15:56:45"},{"server":"Panamá A. Propias","region":"PANAMA","phase":"ENDING","time":"16:19:51"},{"server":"Panamá Mas Me Dan","region":"PANAMA","phase":"BEGINNING","time":"16:40:06"},{"server":"Panamá Mas Me Dan","region":"PANAMA","phase":"ENDING","time":"17:04:04"},{"server":"Perú Aserviban MT","region":"PERU","phase":"BEGINNING","time":"14:39:01"},{"server":"Perú Aserviban MT","region":"PERU","phase":"ENDING","time":"15:49:57"},{"server":"Perú OC","region":"PERU","phase":"BEGINNING","time":"15:54:15"},{"server":"Perú OC","region":"PERU","phase":"ENDING","time":"16:53:07"},{"server":"Perú X30","region":"PERU","phase":"BEGINNING","time":"17:03:29"},{"server":"Perú X30","region":"PERU","phase":"ENDING","time":"18:03:04"},{"server":"Chile MT","region":"CHILE","phase":"BEGINNING","time":"14:43:58"},{"server":"Chile MT","region":"CHILE","phase":"ENDING","time":"15:10:02"},{"server":"Chile OP","region":"CHILE","phase":"BEGINNING","time":"15:12:45"},{"server":"Chile OP","region":"CHILE","phase":"ENDING","time":"15:23:31"},{"server":"Chile Vigo","region":"CHILE","phase":"BEGINNING","time":"15:48:55"},{"server":"Chile Vigo","region":"CHILE","phase":"ENDING","time":"16:10:55"},{"server":"Chile OC","region":"CHILE","phase":"BEGINNING","time":"16:14:23"},{"server":"Chile OC","region":"CHILE","phase":"ENDING","time":"16:36:53"},{"server":"Chile Cencosud","region":"CHILE","phase":"BEGINNING","time":"16:43:16"},{"server":"Chile Cencosud","region":"CHILE","phase":"ENDING","time":"17:06:29"},{"server":"Chile Los Heroes","region":"CHILE","phase":"BEGINNING","time":"17:30:39"},{"server":"Chile Los Heroes","region":"CHILE","phase":"ENDING","time":"17:51:55"},{"server":"Chile CencoPay","region":"CHILE","phase":"BEGINNING","time":"18:20:16"},{"server":"Chile CencoPay","region":"CHILE","phase":"ENDING","time":"18:40:38"},{"server":"México - SIE - M1","region":"MEXICO","phase":"BEGINNING","time":"14:40:28"},{"server":"México - SIE - M1","region":"MEXICO","phase":"ENDING","time":"14:47:21"},{"server":"México - GDE - M2","region":"MEXICO","phase":"BEGINNING","time":"14:51:31"},{"server":"México - GDE - M2","region":"MEXICO","phase":"ENDING","time":"14:58:55"}],"backups":[{"name":"Regional","iniTime":"","endTime":"","job":"BKPDIARIOU","duration":"","status":"Robot Fail"},{"name":"Pinot","iniTime":"19:00","endTime":"","job":"BKPDIARIO","duration":"","status":null}],"processes":[{"name":"Procesos","status":"Realizado"},{"name":"Metrogas","status":""},{"name":"Tarjeta Naranja","status":""},{"name":"EPE","status":""},{"name":"BANCOR","status":""},{"name":"Rentas de Córdoba","status":""},{"name":"AFIP 72","status":""},{"name":"AFIP 48","status":""},{"name":"Cierre AFIP","status":""}]},"2026-07-05":{"date":"2026-07-05","dayType":"FIN_DE_SEMANA","pollings":[{"server":"Argentina P$","region":"ARGENTINA","phase":"BEGINNING","time":"01:22:27"},{"server":"Argentina P$","region":"ARGENTINA","phase":"ENDING","time":"01:25:23"},{"server":"Argentina P1","region":"ARGENTINA","phase":"BEGINNING","time":"01:38:45"},{"server":"Argentina P1","region":"ARGENTINA","phase":"ENDING","time":"02:13:14"},{"server":"Perú D1","region":"PERU","phase":"BEGINNING","time":"07:25:08"},{"server":"Perú D1","region":"PERU","phase":"ENDING","time":"10:13:25"},{"server":"Perú D2","region":"PERU","phase":"BEGINNING","time":"21:31:27"},{"server":"Perú D2","region":"PERU","phase":"ENDING","time":"21:42:03"},{"server":"Perú D3","region":"PERU","phase":"BEGINNING","time":"00:19:35"},{"server":"Perú D3","region":"PERU","phase":"ENDING","time":"00:27:10"},{"server":"Panamá D1","region":"PANAMA","phase":"BEGINNING","time":"07:24:55"},{"server":"Panamá D1","region":"PANAMA","phase":"ENDING","time":"16:38:42"},{"server":"Panamá MT","region":"PANAMA","phase":"BEGINNING","time":"15:44:23"},{"server":"Panamá OC","region":"PANAMA","phase":"BEGINNING","time":"16:43:11"},{"server":"Panamá OC","region":"PANAMA","phase":"ENDING","time":"17:08:51"},{"server":"Panamá A. Propias","region":"PANAMA","phase":"BEGINNING","time":"17:20"},{"server":"Panamá A. Propias","region":"PANAMA","phase":"ENDING","time":"17:44:15"},{"server":"Panamá Mas Me Dan","region":"PANAMA","phase":"BEGINNING","time":"17:47:14"},{"server":"Panamá Mas Me Dan","region":"PANAMA","phase":"ENDING","time":"18:11:25"},{"server":"Perú Aserviban MT","region":"PERU","phase":"BEGINNING","time":"15:45:56"},{"server":"Perú Aserviban MT","region":"PERU","phase":"ENDING","time":"16:40:18"},{"server":"Perú OC","region":"PERU","phase":"BEGINNING","time":"16:48:02"},{"server":"Perú OC","region":"PERU","phase":"ENDING","time":"17:54:11"},{"server":"Perú X30","region":"PERU","phase":"BEGINNING","time":"18:20:41"},{"server":"Perú X30","region":"PERU","phase":"ENDING","time":"19:15:12"},{"server":"Chile MT","region":"CHILE","phase":"BEGINNING","time":"15:50:01"},{"server":"Chile MT","region":"CHILE","phase":"ENDING","time":"16:22:31"},{"server":"Chile OP","region":"CHILE","phase":"BEGINNING","time":"16:35:40"},{"server":"Chile OP","region":"CHILE","phase":"ENDING","time":"16:46:33"},{"server":"Chile Vigo","region":"CHILE","phase":"BEGINNING","time":"16:55:29"},{"server":"Chile Vigo","region":"CHILE","phase":"ENDING","time":"17:19:53"},{"server":"Chile OC","region":"CHILE","phase":"BEGINNING","time":"17:28:11"},{"server":"Chile OC","region":"CHILE","phase":"ENDING","time":"17:54:23"},{"server":"Chile Cencosud","region":"CHILE","phase":"BEGINNING","time":"17:58:13"},{"server":"Chile Cencosud","region":"CHILE","phase":"ENDING","time":"18:19:26"},{"server":"Chile Los Heroes","region":"CHILE","phase":"BEGINNING","time":"","note":"SIN AC"},{"server":"Chile CencoPay","region":"CHILE","phase":"BEGINNING","time":"18:30:23"},{"server":"Chile CencoPay","region":"CHILE","phase":"ENDING","time":"18:51"},{"server":"México - SIE - M1","region":"MEXICO","phase":"BEGINNING","time":"15:56:20"},{"server":"México - SIE - M1","region":"MEXICO","phase":"ENDING","time":"16:05:29"},{"server":"México - GDE - M2","region":"MEXICO","phase":"BEGINNING","time":"16:32:20"},{"server":"México - GDE - M2","region":"MEXICO","phase":"ENDING","time":"16:39:04"}],"backups":[{"name":"Regional","iniTime":"","endTime":"","job":"OP.21","duration":"","status":"Robot Fail"},{"name":"Pinot","iniTime":"02:30","endTime":"12:56","job":"OP.21","duration":"10:26","status":null},{"name":"REGDRS","iniTime":"02:50","endTime":"06:36","job":"OP.21","duration":"03:46","status":null},{"name":"Merlot","iniTime":"02:41","endTime":"10:30","job":"OP.21","duration":"07:49","status":null},{"name":"Semillón","iniTime":"02:38","endTime":"05:44","job":"OP.21","duration":"03:06","status":null}],"processes":[{"name":"Procesos","status":"Realizado"},{"name":"Informes AS","status":"OK"},{"name":"Informes NT","status":"OK"},{"name":"Informes FTP","status":"OK"},{"name":"ARBA","status":"N/A"},{"name":"Banco Provincia","status":"N/A"},{"name":"Metrogas","status":"N/A"},{"name":"Tarjeta Naranja","status":"N/A"},{"name":"EPE","status":"N/A"},{"name":"Rentas de Córdoba","status":"N/A"},{"name":"AFIP 72","status":"N/A"},{"name":"AFIP 48","status":"N/A"},{"name":"Cierre AFIP","status":"N/A"}]}};
+   300→   300→
+   301→   301→let currentDate='2026-07-03',activeTab='pollings',calMonth,calYear,store={};
+   302→   302→const SEARCH=document.getElementById('searchInput');
+   303→   303→
+   304→   304→function loadStore(){const s=localStorage.getItem('bitacora_v2');if(s)try{store=JSON.parse(s)}catch(e){store={};}for(const[k,v]of Object.entries(INITIAL_DATA)){if(!store[k])store[k]=JSON.parse(JSON.stringify(v));}saveStore();}
+   305→   305→function saveStore(){localStorage.setItem('bitacora_v2',JSON.stringify(store));}
+   306→   306→function getDay(d){if(!store[d]){const dt=new Date(d+'T12:00:00');const dow=dt.getDay();store[d]={date:d,dayType:(dow===0||dow===6)?'FIN_DE_SEMANA':'DIARIA',pollings:[],backups:[],processes:[],notes:''};saveStore();}return store[d];}
+   307→   307→
+   308→   308→const RL={ARGENTINA:'🇦🇷 Argentina',REGIONAL:'🌐 Regional',PERU:'🇵🇪 Perú',PANAMA:'🇵🇦 Panamá',CHILE:'🇨🇱 Chile',MEXICO:'🇲🇽 México'};
+   309→   309→const RB={ARGENTINA:'badge-sky',REGIONAL:'badge-violet',PERU:'badge-red',PANAMA:'badge-emerald',CHILE:'badge-amber',MEXICO:'badge-rose'};
+   310→   310→const TL={DIARIA:'Diaria (L-V)',FIN_DE_SEMANA:'Fin de Semana',BKP_MENSUAL:'BKP Mensual'};
+   311→   311→const TB={DIARIA:'badge-emerald',FIN_DE_SEMANA:'badge-amber',BKP_MENSUAL:'badge-rose'};
+   312→   312→const SERVERS=['Argentina P$','Argentina P1','Argentina P2','Perú D1','Perú D2','Perú D3','Perú Aserviban MT','Perú OC','Perú X30','Panamá D1','Panamá MT','Panamá OC','Panamá A. Propias','Panamá Mas Me Dan','Chile MT','Chile OP','Chile Vigo','Chile OC','Chile Cencosud','Chile Los Heroes','Chile CencoPay','México - SIE - M1','México - GDE - M2'];
+   313→   313→const BKN=['Regional','Pinot','Semillon','Semillón','Merlot','REGDRS'];
+   314→   314→const JOBS=['BKPDIARIO','BKPDIARIOU','BKPMIMIX','OP.21'];
+   315→   315→const PROCS=['Procesos','Tarjeta Naranja','EPE','BANCOR','Rentas de Córdoba','AFIP 72','AFIP 24','AFIP 48','Cierre AFIP','Montaje de cintas','Reset Flag','Informes AS400','Informes AS','Informes NT','Informes FTP','Metrogas','Fondo de Recupero','ARBA','Banco Provincia','UTONLINE'];
+   316→   316→const STATS=['OK','Realizado','N/A','N/C','Pend Regional',''];
+   317→   317→const MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+   318→   318→const DN=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+   319→   319→const DAYN=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+   320→   320→
+   321→   321→function fmt(d){const dt=new Date(d+'T12:00:00');return dt.getDate()+' de '+MN[dt.getMonth()]+' '+dt.getFullYear();}
+   322→   322→function calcDur(s,e){if(!s||!e)return'—';const p=t=>{const x=t.split(':').map(Number);return(x[0]||0)*3600+(x[1]||0)*60+(x[2]||0)};const d=p(e)-p(s);if(d<0)return'—';const h=Math.floor(d/3600),m=Math.floor((d%3600)/60),sc=d%60;if(h>0)return h+'h '+m+'m';if(m>0)return m+'m '+sc+'s';return sc+'s';}
+   323→   323→function sIcon(s){if(!s||s==='')return'<svg class="status-icon none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';const u=s.toUpperCase();if(u==='OK'||u==='REALIZADO')return'<svg class="status-icon ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';if(u==='N/A'||u==='N/C')return'<svg class="status-icon none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';return'<svg class="status-icon fail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';}
+   324→   324→function sBadge(s){if(!s||s==='')return'<span class="badge badge-gray">—</span>';const u=s.toUpperCase();if(u==='OK'||u==='REALIZADO')return'<span class="badge badge-emerald">'+s+'</span>';if(u==='N/A'||u==='N/C')return'<span class="badge badge-gray">'+s+'</span>';if(u.includes('SUSP')||u.includes('ROBOT')||u.includes('FAIL'))return'<span class="badge badge-red">'+s+'</span>';return'<span class="badge badge-amber">'+s+'</span>';}
+   325→   325→function getRegion(s){if(s.startsWith('Argentina'))return'ARGENTINA';if(s.startsWith('Perú'))return'PERU';if(s.startsWith('Panamá'))return'PANAMA';if(s.startsWith('Chile'))return'CHILE';if(s.startsWith('México'))return'MEXICO';return'REGIONAL';}
+   326→   326→function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
+   327→   327→let toastT;function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),2500);}
+   328→   328→
+   329→   329→// Dark mode
+   330→   330→function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('bitacora_dark',document.documentElement.classList.contains('dark')?'1':'0');updateDarkIcon();}
+   331→   331→function updateDarkIcon(){const d=document.documentElement.classList.contains('dark');document.getElementById('darkIcon').innerHTML=d?'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>':'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';}
+   332→   332→if(localStorage.getItem('bitacora_dark')==='1'){document.documentElement.classList.add('dark');updateDarkIcon();}
+   333→   333→
+   334→   334→// Notes
+   335→   335→function loadNotes(){document.getElementById('dayNotes').value=getDay(currentDate).notes||'';}
+   336→   336→function saveNotes(){getDay(currentDate).notes=document.getElementById('dayNotes').value;saveStore();}
+   337→   337→
+   338→   338→// Search filter
+   339→   339→function matchesFilter(text){const q=(SEARCH.value||'').toLowerCase();return!q||text.toLowerCase().includes(q);}
+   340→   340→
+   341→   341→// Render
+   342→   342→function render(){
+   343→   343→  const day=getDay(currentDate);
+   344→   344→  document.getElementById('dateDisplay').textContent=fmt(currentDate);
+   345→   345→  const d=new Date(currentDate+'T12:00:00');
+   346→   346→  document.getElementById('dayLabel').textContent=DAYN[d.getDay()];
+   347→   347→  document.getElementById('typeSelect').value=day.dayType;
+   348→   348→  const tb=document.getElementById('typeBadge');tb.className='badge '+TB[day.dayType];tb.textContent=TL[day.dayType];
+   349→   349→  const servers=[...new Set(day.pollings.map(p=>p.server))].length;
+   350→   350→  const endings=day.pollings.filter(p=>p.phase==='ENDING').length;
+   351→   351→  const total=day.pollings.length;
+   352→   352→  document.getElementById('statServers').textContent=servers;
+   353→   353→  document.getElementById('statPollings').textContent=total>0?(endings+'/'+Math.floor(total/2)):'0/0';
+   354→   354→  document.getElementById('statBackups').textContent=day.backups.length;
+   355→   355→  const okP=day.processes.filter(p=>p.status==='OK'||p.status==='Realizado').length;
+   356→   356→  document.getElementById('statProcesses').textContent=day.processes.length>0?(okP+'/'+day.processes.length):'—';
+   357→   357→  loadNotes();
+   358→   358→  if(activeTab==='pollings')renderPollings(day);else if(activeTab==='backups')renderBackups(day);else renderProcesses(day);
+   359→   359→}
+   360→   360→
+   361→   361→const PENCIL='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+   362→   362→const TRASH='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+   363→   363→
+   364→   364→function renderPollings(day){
+   365→   365→  const el=document.getElementById('tabContent');
+   366→   366→  const byS={};day.pollings.forEach(p=>{if(!byS[p.server])byS[p.server]=[];byS[p.server].push(p);});
+   367→   367→  const byR={};Object.entries(byS).forEach(([s,e])=>{const r=e[0].region||'REGIONAL';if(!byR[r])byR[r]=[];byR[r].push({server:s,entries:e});});
+   368→   368→  const order=['ARGENTINA','PERU','PANAMA','CHILE','MEXICO','REGIONAL'];
+   369→   369→  const regions=order.filter(r=>byR[r]);
+   370→   370→  if(!regions.length){el.innerHTML='<div class="card"><div class="card-header"><h2>Pollings de Servidores</h2><button class="btn btn-primary btn-sm" onclick="openPollingModal()">+ Agregar</button></div><div class="empty-state"><p>No hay pollings para este día</p></div></div>';return;}
+   371→   371→  let h='<div class="card"><div class="card-header"><h2>Pollings de Servidores</h2><button class="btn btn-primary btn-sm" onclick="openPollingModal()">+ Agregar</button></div><div class="card-body">';
+   372→   372→  regions.forEach(r=>{h+='<div class="region-group'+(matchesFilter(RL[r])?'':' hidden')+'"><span class="badge '+RB[r]+'">'+RL[r]+'</span><div style="margin-top:6px">';
+   373→   373→    byR[r].forEach(({server:srv,entries})=>{
+   374→   374→      if(!matchesFilter(srv))return;
+   375→   375→      const beg=entries.find(e=>e.phase==='BEGINNING'),end=entries.find(e=>e.phase==='ENDING');
+   376→   376→      const sinAc=beg&&beg.note==='SIN AC'||end&&end.note==='SIN AC';
+   377→   377→      const dur=beg&&end?calcDur(beg.time,end.time):'';
+   378→   378→      h+='<div class="server-row'+(sinAc?' error':'')+'"><div style="display:flex;align-items:center;gap:6px;flex:1;min-width:100px"><span class="server-name">'+srv+'</span>'+(sinAc?'<span class="badge badge-red">Sin AC</span>':'')+'</div><div class="server-meta"><span><span class="label">Ini </span><span class="time-val">'+(beg?beg.time||'—':'—')+'</span></span><span><span class="label">Fin </span><span class="time-val">'+(end?end.time||'—':'—')+'</span></span>'+(dur&&dur!=='—'?'<span class="dur">'+dur+'</span>':'')+'<span class="server-actions"><button class="btn-icon" title="Editar" onclick="openPollingModal(\''+srv+'\')">'+PENCIL+'</button><button class="btn-icon danger" title="Eliminar" onclick="deletePolling(\''+srv+'\')">'+TRASH+'</button></span></div></div>';
+   379→   379→    });h+='</div></div>';});h+='</div></div>';el.innerHTML=h;
+   380→   380→}
+   381→   381→
+   382→   382→function renderBackups(day){
+   383→   383→  const el=document.getElementById('tabContent');
+   384→   384→  let h='<div class="card"><div class="card-header"><h2>Backups</h2><button class="btn btn-primary btn-sm" onclick="openBackupModal()">+ Agregar</button></div><div class="card-body">';
+   385→   385→  if(!day.backups.length){h+='<div class="empty-state"><p>No hay backups</p></div>';}
+   386→   386→  else{h+='<div style="padding:12px 16px">';day.backups.forEach((b,i)=>{if(!matchesFilter(b.name+(b.job||'')))return;const fail=b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'));h+='<div class="bkp-row'+(fail?' fail':'')+'"><div class="bkp-name"><span>'+b.name+'</span>'+(b.job?'<span class="badge badge-gray badge-mono" style="font-size:10px">'+b.job+'</span>':'')+sBadge(b.status)+'</div><div class="server-meta"><span><span class="label">Ini </span><span class="time-val">'+(b.iniTime||'—')+'</span></span><span><span class="label">Fin </span><span class="time-val">'+(b.endTime||'—')+'</span></span>'+(b.duration?'<span class="dur">'+b.duration+'</span>':'')+'<span class="server-actions"><button class="btn-icon" onclick="openBackupModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteBackup('+i+')">'+TRASH+'</button></span></div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
+   387→   387→}
+   388→   388→
+   389→   389→function renderProcesses(day){
+   390→   390→  const el=document.getElementById('tabContent');
+   391→   391→  let h='<div class="card"><div class="card-header"><h2>Procesos</h2><button class="btn btn-primary btn-sm" onclick="openProcessModal()">+ Agregar</button></div><div class="card-body">';
+   392→   392→  if(!day.processes.length){h+='<div class="empty-state"><p>No hay procesos</p></div>';}
+   393→   393→  else{h+='<div style="padding:12px 16px">';day.processes.forEach((p,i)=>{if(!matchesFilter(p.name+(p.status||'')))return;h+='<div class="proc-row"><div class="proc-name">'+sIcon(p.status)+'<span>'+p.name+'</span></div><div style="display:flex;align-items:center;gap:6px">'+sBadge(p.status)+'<button class="btn-icon" onclick="openProcessModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteProcess('+i+')">'+TRASH+'</button></div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
+   394→   394→}
+   395→   395→
+   396→   396→// Navigation
+   397→   397→function navDay(dir){const d=new Date(currentDate+'T12:00:00');d.setDate(d.getDate()+dir);currentDate=d.toISOString().split('T')[0];SEARCH.value='';render();}
+   398→   398→function goToday(){const t=new Date();t.setHours(12,0,0,0);currentDate=t.toISOString().split('T')[0];SEARCH.value='';render();}
+   399→   399→function changeType(v){getDay(currentDate).dayType=v;saveStore();render();}
+   400→   400→function switchTab(t){activeTab=t;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));render();}
+   401→   401→
+   402→   402→// Copy from previous day
+   403→   403→function copyFromPrev(){
+   404→   404→  const d=new Date(currentDate+'T12:00:00');d.setDate(d.getDate()-1);
+   405→   405→  const prev=d.toISOString().split('T')[0];
+   406→   406→  const src=store[prev];
+   407→   407→  if(!src||(!src.pollings.length&&!src.backups.length&&!src.processes.length)){toast('El día anterior no tiene datos');return;}
+   408→   408→  if(!confirm('Copiar datos de '+fmt(prev)+'? Esto reemplazará los datos actuales.'))return;
+   409→   409→  const dst=getDay(currentDate);
+   410→   410→  dst.pollings=JSON.parse(JSON.stringify(src.pollings)).map(p=>({...p,time:'',id:uid()}));
+   411→   411→  dst.backups=JSON.parse(JSON.stringify(src.backups)).map(b=>({...b,iniTime:'',endTime:'',duration:'',id:uid()}));
+   412→   412→  dst.processes=JSON.parse(JSON.stringify(src.processes)).map(p=>({...p,status:'',id:uid()}));
+   413→   413→  dst.dayType=src.dayType;
+   414→   414→  saveStore();render();toast('Datos copiados (horas limpias para rellenar)');
+   415→   415→}
+   416→   416→
+   417→   417→// Export CSV
+   418→   418→function exportCSV(){
+   419→   419→  const day=getDay(currentDate);
+   420→   420→  let csv='Tipo,Nombre,Región/Detalle,Fase,Hora Ini,Hora Fin,Duración,Estado,JOB\n';
+   421→   421→  day.pollings.forEach(p=>{csv+='Polling,'+p.server+','+p.region+','+p.phase+','+(p.phase==='BEGINNING'?p.time:'')+','+(p.phase==='ENDING'?p.time:'')+',,,\n';});
+   422→   422→  day.backups.forEach(b=>{csv+='Backup,'+b.name+',,,'+b.iniTime+','+b.endTime+','+(b.duration||'')+','+(b.status||'')+','+(b.job||'')+'\n';});
+   423→   423→  day.processes.forEach(p=>{csv+='Proceso,'+p.name+',,,,,,,'+(p.status||'')+'\n';});
+   424→   424→  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+   425→   425→  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bitacora_'+currentDate+'.csv';a.click();toast('CSV descargado');
+   426→   426→}
+   427→   427→
+   428→   428→// Calendar
+   429→   429→function toggleCalendar(){const el=document.getElementById('calPopup');if(el.style.display==='none'){renderCalendar();el.style.display='block';}else el.style.display='none';}
+   430→   430→function renderCalendar(){const d=new Date(currentDate+'T12:00:00');calMonth=d.getMonth();calYear=d.getFullYear();drawCalendar();}
+   431→   431→function drawCalendar(){const el=document.getElementById('calPopup');const first=new Date(calYear,calMonth,1);const last=new Date(calYear,calMonth+1,0);const startDay=(first.getDay()+6)%7;const today=new Date();today.setHours(12,0,0,0);const sel=new Date(currentDate+'T12:00:00');let h='<div class="cal-header"><button class="btn-icon" onclick="event.stopPropagation();calNav(-1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><span>'+MN[calMonth]+' '+calYear+'</span><button class="btn-icon" onclick="event.stopPropagation();calNav(1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button></div><div class="cal-grid">';DN.forEach(d=>h+='<div class="day-name">'+d+'</div>');for(let i=0;i<startDay;i++){const dd=new Date(calYear,calMonth,-(startDay-i-1));h+='<div class="day other" onclick="calClick('+calYear+','+(calMonth-1)+','+dd.getDate()+')">'+dd.getDate()+'</div>';}for(let i=1;i<=last.getDate();i++){const ds=calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(i).padStart(2,'0');const isT=today.getFullYear()===calYear&&today.getMonth()===calMonth&&today.getDate()===i;const isS=sel.getFullYear()===calYear&&sel.getMonth()===calMonth&&sel.getDate()===i;const has=!!store[ds];const hasErr=has&&store[ds].backups&&store[ds].backups.some(b=>b.status&&(b.status.includes('Fail')||b.status.includes('SUSP')));h+='<div class="day'+(isT?' today':'')+(isS?' selected':'')+(has?(hasErr?' has-data has-error':' has-data'):'')+'" onclick="calClick('+calYear+','+calMonth+','+i+')">'+i+'</div>';}const rem=42-startDay-last.getDate();for(let i=1;i<=rem;i++)h+='<div class="day other" onclick="calClick('+calYear+','+(calMonth+1)+','+i+')">'+i+'</div>';h+='</div>';el.innerHTML=h;}
+   432→   432→function calNav(d){calMonth+=d;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}drawCalendar();}
+   433→   433→function calClick(y,m,d){const dt=new Date(y,m,d);currentDate=dt.toISOString().split('T')[0];SEARCH.value='';document.getElementById('calPopup').style.display='none';render();}
+   434→   434→document.addEventListener('click',e=>{if(!e.target.closest('#dateDisplay')&&!e.target.closest('.cal-popup'))document.getElementById('calPopup').style.display='none';});
+   435→   435→
+   436→   436→// Modals
+   437→   437→function openModal(){document.getElementById('modalOverlay').classList.add('show');}
+   438→   438→function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
+   439→   439→
+   440→   440→function openPollingModal(server){
+   441→   441→  const day=getDay(currentDate);const isEdit=!!server;
+   442→   442→  let beg='',end='';
+   443→   443→  if(isEdit){const es=day.pollings.filter(p=>p.server===server);const b=es.find(e=>e.phase==='BEGINNING');const e=es.find(e=>e.phase==='ENDING');beg=b?b.time:'';end=e?e.time:'';}
+   444→   444→  document.getElementById('modalTitle').textContent=isEdit?'Editar Polling':'Nuevo Polling';
+   445→   445→  document.getElementById('modalBody').innerHTML='<div class="form-group"><label>Servidor</label><select id="mSrv">'+SERVERS.map(s=>'<option value="'+s+'"'+(s===server?' selected':'')+'>'+s+'</option>').join('')+'</select></div><div class="form-row"><div class="form-group"><label>Hora Inicio</label><input type="time" id="mBeg" value="'+beg+'"></div><div class="form-group"><label>Hora Fin</label><input type="time" id="mEnd" value="'+end+'"></div></div>';
+   446→   446→  document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="savePolling(\''+server+'\')">'+(isEdit?'Actualizar':'Guardar')+'</button>';
+   447→   447→  openModal();
+   448→   448→}
+   449→   449→function savePolling(old){
+   450→   450→  const day=getDay(currentDate);const srv=document.getElementById('mSrv').value;
+   451→   451→  const beg=document.getElementById('mBeg').value;const end=document.getElementById('mEnd').value;
+   452→   452→  if(old)day.pollings=day.pollings.filter(p=>p.server!==old);
+   453→   453→  if(beg)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'BEGINNING',date:currentDate,time:beg,note:null});
+   454→   454→  if(end)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:end,note:null});
+   455→   455→  saveStore();closeModal();render();toast('Guardado');
+   456→   456→}
+   457→   457→function deletePolling(s){if(!confirm('¿Eliminar '+s+'?'))return;getDay(currentDate).pollings=getDay(currentDate).pollings.filter(p=>p.server!==s);saveStore();render();toast('Eliminado');}
+   458→   458→
+   459→   459→function openBackupModal(idx){
+   460→   460→  const day=getDay(currentDate);const b=idx!==undefined?day.backups[idx]:null;
+   461→   461→  document.getElementById('modalTitle').textContent=b?'Editar Backup':'Nuevo Backup';
+   462→   462→  document.getElementById('modalBody').innerHTML='<div class="form-row"><div class="form-group"><label>Nombre</label><select id="mBkN">'+BKN.map(n=>'<option value="'+n+'"'+(b&&b.name===n?' selected':'')+'>'+n+'</option>').join('')+'</select></div><div class="form-group"><label>JOB</label><select id="mBkJ"><option value="">—</option>'+JOBS.map(j=>'<option value="'+j+'"'+(b&&b.job===j?' selected':'')+'>'+j+'</option>').join('')+'</select></div></div><div class="form-row"><div class="form-group"><label>Hora Inicio</label><input type="time" id="mBkI" value="'+(b?b.iniTime||'':'')+'"></div><div class="form-group"><label>Hora Fin</label><input type="time" id="mBkE" value="'+(b?b.endTime||'':'')+'"></div></div><div class="form-row"><div class="form-group"><label>Duración</label><input id="mBkD" value="'+(b?b.duration||'':'')+'" placeholder="0:20"></div><div class="form-group"><label>Estado</label><input id="mBkS" value="'+(b?b.status||'':'')+'" placeholder="Robot Fail"></div></div>';
+   463→   463→  document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveBackup('+idx+')">'+(b?'Actualizar':'Guardar')+'</button>';
+   464→   464→  openModal();
+   465→   465→}
+   466→   466→function saveBackup(idx){
+   467→   467→  const day=getDay(currentDate);
+   468→   468→  const o={name:document.getElementById('mBkN').value,iniDate:currentDate,iniTime:document.getElementById('mBkI').value||null,endDate:currentDate,endTime:document.getElementById('mBkE').value||null,job:document.getElementById('mBkJ').value||null,duration:document.getElementById('mBkD').value||null,status:document.getElementById('mBkS').value||null};
+   469→   469→  if(idx!==undefined)day.backups[idx]=o;else day.backups.push(o);saveStore();closeModal();render();toast('Guardado');
+   470→   470→}
+   471→   471→function deleteBackup(i){if(!confirm('¿Eliminar?'))return;getDay(currentDate).backups.splice(i,1);saveStore();render();toast('Eliminado');}
+   472→   472→
+   473→   473→function openProcessModal(idx){
+   474→   474→  const day=getDay(currentDate);const p=idx!==undefined?day.processes[idx]:null;
+   475→   475→  document.getElementById('modalTitle').textContent=p?'Editar Proceso':'Nuevo Proceso';
+   476→   476→  document.getElementById('modalBody').innerHTML='<div class="form-group"><label>Proceso</label><select id="mPN">'+PROCS.map(n=>'<option value="'+n+'"'+(p&&p.name===n?' selected':'')+'>'+n+'</option>').join('')+'</select></div><div class="form-group"><label>Estado</label><select id="mPS">'+STATS.map(s=>'<option value="'+s+'"'+(p&&p.status===s?' selected':'')+'>'+(s||'—')+'</option>').join('')+'</select></div>';
+   477→   477→  document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveProcess('+idx+')">'+(p?'Actualizar':'Guardar')+'</button>';
+   478→   478→  openModal();
+   479→   479→}
+   480→   480→function saveProcess(idx){
+   481→   481→  const day=getDay(currentDate);const o={name:document.getElementById('mPN').value,status:document.getElementById('mPS').value};
+   482→   482→  if(idx!==undefined)day.processes[idx]=o;else day.processes.push(o);saveStore();closeModal();render();toast('Guardado');
+   483→   483→}
+   484→   484→function deleteProcess(i){if(!confirm('¿Eliminar?'))return;getDay(currentDate).processes.splice(i,1);saveStore();render();toast('Eliminado');}
+   485→   485→
+   486→   486→loadStore();render();
+   487→   487→</script>
+   488→   488→</body>
+   489→   489→</html>
