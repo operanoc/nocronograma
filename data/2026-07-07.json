@@ -6,11 +6,11 @@
     {
       "name": "Regional",
       "iniDate": "2026-07-07",
-      "iniTime": null,
+      "iniTime": "23:03",
       "endDate": "2026-07-08",
-      "endTime": "00:03",
+      "endTime": "03:03",
       "job": null,
-      "duration": null,
+      "duration": "4:00",
       "status": null
     }
   ],
