@@ -582,8 +582,18 @@ html.dark .notif-item.unread{background:#082f49}
   <div id="tabContent"></div>
 </main>
 
-<footer class="footer">Bitácora NOC — bitacoranoc.com</footer>
+<footer class="footer">Bitacora NOC — bitacoranoc.com</footer>
 <div class="toast" id="toast"></div>
+<div class="modal-overlay" id="lockedModal" style="z-index:200" onclick="if(event.target===this)closeLockedModal()">
+  <div class="modal" style="max-width:400px;text-align:center">
+    <div style="padding:30px 20px">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--red-500)" stroke-width="2" style="margin-bottom:16px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      <h3 style="font-size:18px;font-weight:700;color:var(--red-600);margin-bottom:8px">DIA CERRADO</h3>
+      <p style="color:var(--gray-600);font-size:14px;line-height:1.6;margin-bottom:20px">Este dia ya tiene cierre de turno realizado.<br><strong>Solo un administrador puede modificar los datos.</strong></p>
+      <button class="btn btn-primary" onclick="closeLockedModal()" style="padding:10px 32px;font-size:14px">Entendido</button>
+    </div>
+  </div>
+</div>
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-header"><h3 id="modalTitle"></h3><button class="btn-icon" onclick="closeModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
@@ -841,12 +851,12 @@ function renderProcesses(day,locked){
 // Navigation
 function navDay(dir){const d=new Date(currentDate+'T12:00:00');d.setDate(d.getDate()+dir);currentDate=d.toISOString().split('T')[0];SEARCH.value='';render();}
 function goToday(){const t=new Date();t.setHours(12,0,0,0);currentDate=t.toISOString().split('T')[0];SEARCH.value='';render();}
-function changeType(v){if(isDayLocked(currentDate)&&!isAdmin()){toast('Dia cerrado: solo un admin puede modificar');return;}getDay(currentDate).dayType=v;saveStore();render();}
+function changeType(v){if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}getDay(currentDate).dayType=v;saveStore();render();}
 function switchTab(t){activeTab=t;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));render();}
 
 // Copy from previous day
 function copyFromPrev(){
-  if(isDayLocked(currentDate)&&!isAdmin()){toast('Dia cerrado: solo un admin puede modificar');return;}
+  if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}
   const d=new Date(currentDate+'T12:00:00');d.setDate(d.getDate()-1);
   const prev=d.toISOString().split('T')[0];
   const src=store[prev];
@@ -880,11 +890,13 @@ function calClick(y,m,d){const dt=new Date(y,m,d);currentDate=dt.toISOString().s
 document.addEventListener('click',e=>{if(!e.target.closest('#dateDisplay')&&!e.target.closest('.cal-popup'))document.getElementById('calPopup').style.display='none';});
 
 // Modals
+function showLockedModal(){document.getElementById('lockedModal').classList.add('show');}
+function closeLockedModal(){document.getElementById('lockedModal').classList.remove('show');}
 function openModal(){document.getElementById('modalOverlay').classList.add('show');}
 function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
 
 function openPollingModal(server){
-  if(isDayLocked(currentDate)&&!isAdmin()){toast('Dia cerrado: solo un admin puede modificar');return;}
+  if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}
   const day=getDay(currentDate);const isEdit=!!server;
   let beg='',end='';
   if(isEdit){const es=day.pollings.filter(p=>p.server===server);const b=es.find(e=>e.phase==='BEGINNING');const e=es.find(e=>e.phase==='ENDING');beg=b?b.time:'';end=e?e.time:'';}
@@ -901,10 +913,10 @@ function savePolling(old){
   if(end)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:end,note:null});
   saveStore();closeModal();render();toast('Guardado');
 }
-function deletePolling(s){if(isDayLocked(currentDate)&&!isAdmin()){toast('Dia cerrado: solo un admin puede modificar');return;}if(!confirm('¿Eliminar '+s+'?'))return;getDay(currentDate).pollings=getDay(currentDate).pollings.filter(p=>p.server!==s);saveStore();render();toast('Eliminado');}
+function deletePolling(s){if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}if(!confirm('¿Eliminar '+s+'?'))return;getDay(currentDate).pollings=getDay(currentDate).pollings.filter(p=>p.server!==s);saveStore();render();toast('Eliminado');}
 
 function openBackupModal(idx){
-  if(isDayLocked(currentDate)&&!isAdmin()){toast('Dia cerrado: solo un admin puede modificar');return;}
+  if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}
   const day=getDay(currentDate);const b=idx!==undefined?day.backups[idx]:null;
   document.getElementById('modalTitle').textContent=b?'Editar Backup':'Nuevo Backup';
   document.getElementById('modalBody').innerHTML='<div class="form-row"><div class="form-group"><label>Nombre</label><select id="mBkN">'+BKN.map(n=>'<option value="'+n+'"'+(b&&b.name===n?' selected':'')+'>'+n+'</option>').join('')+'</select></div><div class="form-group"><label>JOB</label><select id="mBkJ"><option value="">—</option>'+JOBS.map(j=>'<option value="'+j+'"'+(b&&b.job===j?' selected':'')+'>'+j+'</option>').join('')+'</select></div></div><div class="form-row"><div class="form-group"><label>Hora Inicio</label><input type="time" id="mBkI" value="'+(b?b.iniTime||'':'')+'"></div><div class="form-group"><label>Hora Fin</label><input type="time" id="mBkE" value="'+(b?b.endTime||'':'')+'"></div></div><div class="form-row"><div class="form-group"><label>Duración</label><input id="mBkD" value="'+(b?b.duration||'':'')+'" placeholder="0:20"></div><div class="form-group"><label>Estado</label><input id="mBkS" value="'+(b?b.status||'':'')+'" placeholder="Robot Fail"></div></div>';
@@ -916,10 +928,10 @@ function saveBackup(idx){
   const o={name:document.getElementById('mBkN').value,iniDate:currentDate,iniTime:document.getElementById('mBkI').value||null,endDate:currentDate,endTime:document.getElementById('mBkE').value||null,job:document.getElementById('mBkJ').value||null,duration:document.getElementById('mBkD').value||null,status:document.getElementById('mBkS').value||null};
   if(idx!==undefined)day.backups[idx]=o;else day.backups.push(o);saveStore();closeModal();render();toast('Guardado');
 }
-function deleteBackup(i){if(isDayLocked(currentDate)&&!isAdmin()){toast('Dia cerrado: solo un admin puede modificar');return;}if(!confirm('¿Eliminar?'))return;getDay(currentDate).backups.splice(i,1);saveStore();render();toast('Eliminado');}
+function deleteBackup(i){if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}if(!confirm('¿Eliminar?'))return;getDay(currentDate).backups.splice(i,1);saveStore();render();toast('Eliminado');}
 
 function openProcessModal(idx){
-  if(isDayLocked(currentDate)&&!isAdmin()){toast('Dia cerrado: solo un admin puede modificar');return;}
+  if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}
   const day=getDay(currentDate);const p=idx!==undefined?day.processes[idx]:null;
   document.getElementById('modalTitle').textContent=p?'Editar Proceso':'Nuevo Proceso';
   document.getElementById('modalBody').innerHTML='<div class="form-group"><label>Proceso</label><select id="mPN">'+PROCS.map(n=>'<option value="'+n+'"'+(p&&p.name===n?' selected':'')+'>'+n+'</option>').join('')+'</select></div><div class="form-group"><label>Estado</label><select id="mPS">'+STATS.map(s=>'<option value="'+s+'"'+(p&&p.status===s?' selected':'')+'>'+(s||'—')+'</option>').join('')+'</select></div>';
@@ -930,7 +942,7 @@ function saveProcess(idx){
   const day=getDay(currentDate);const o={name:document.getElementById('mPN').value,status:document.getElementById('mPS').value};
   if(idx!==undefined)day.processes[idx]=o;else day.processes.push(o);saveStore();closeModal();render();toast('Guardado');
 }
-function deleteProcess(i){if(isDayLocked(currentDate)&&!isAdmin()){toast('Dia cerrado: solo un admin puede modificar');return;}if(!confirm('¿Eliminar?'))return;getDay(currentDate).processes.splice(i,1);saveStore();render();toast('Eliminado');}
+function deleteProcess(i){if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}if(!confirm('¿Eliminar?'))return;getDay(currentDate).processes.splice(i,1);saveStore();render();toast('Eliminado');}
 
 
 // ===== AUTH SYSTEM =====
@@ -1341,7 +1353,6 @@ function escHtml(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'
 
 // ===== TIMELINE NOTES =====
 function addTimelineNote(){
-  if(isDayLocked(currentDate)&&!isAdmin()){toast('Dia cerrado: solo un admin puede modificar');return;}
   const opSel=document.getElementById('tlOperator');
   const txtIn=document.getElementById('tlText');
   const op=opSel.value.trim();
@@ -1366,7 +1377,7 @@ function addTimelineNote(){
   toast('Nota agregada');
 }
 function deleteTimelineNote(id){
-  if(isDayLocked(currentDate)&&!isAdmin()){toast('Dia cerrado: solo un admin puede modificar');return;}
+  if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}
   if(!confirm('Eliminar esta nota?'))return;
   const day=getDay(currentDate);
   if(day.timeline)day.timeline=day.timeline.filter(n=>n.id!==id);
@@ -1374,7 +1385,7 @@ function deleteTimelineNote(id){
 }
 function renderTimeline(day){
   const locked=isDayLocked(currentDate)&&!isAdmin();
-  document.getElementById('tlAddBar').style.display=locked?'none':'';
+  document.getElementById('tlAddBar').style.display='';
   const body=document.getElementById('timelineBody');
   const countEl=document.getElementById('tlCount');
   const notes=(day.timeline||[]);
