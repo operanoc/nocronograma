@@ -961,7 +961,7 @@ function deleteProcess(i){if(isDayLocked(currentDate)&&!isAdmin()){showLockedMod
 // ===== AUTH SYSTEM =====
 const USERS={
   OPERANOCHE:{pass:'noche1',shift:'TURNO NOCHE',cssClass:'shift-noche',role:'operator'},
-  OPERAMANANA:{pass:'mañana1',shift:'TURNO MAÑANA',cssClass:'shift-manana',role:'operator'},
+  OPERAMAÑANA:{pass:'mañana1',shift:'TURNO MAÑANA',cssClass:'shift-manana',role:'operator'},
   OPERATARDE:{pass:'tarde1',shift:'TURNO TARDE',cssClass:'shift-tarde',role:'operator'},
   OPERAADMIN:{pass:'nocadmin',shift:'ADMIN',cssClass:'shift-admin',role:'admin'},
   OPERAWU:{pass:'0p3r4ci0n35',shift:'ADMIN',cssClass:'shift-admin',role:'admin'},
@@ -1297,7 +1297,7 @@ const SCHEDULE={
     backups:['Sebastian Torrez','Anibal Rivero','Omar Baldomir']
   }
 };
-const SHIFT_MAP={OPERAMANANA:'MANANA',OPERATARDE:'TARDE',OPERANOCHE:'NOCHE',OPERAADMIN:'ADMIN'};
+const SHIFT_MAP={OPERAMAÑANA:'MANANA',OPERATARDE:'TARDE',OPERANOCHE:'NOCHE',OPERAADMIN:'ADMIN'};
 const SHIFT_LABELS={MANANA:'Ma\u00f1ana',TARDE:'Tarde',NOCHE:'Noche',ADMIN:'Admin'};
 const SHIFT_CSS={MANANA:'manana',TARDE:'tarde',NOCHE:'noche',ADMIN:'admin'};
 
