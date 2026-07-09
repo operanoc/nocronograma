@@ -12,7 +12,7 @@ Sistema web para el registro operativo del NOC (Network Operations Center). Perm
 
 | Usuario | Password | Rol | Turno |
 |---------|----------|-----|-------|
-| OPERAMANANA | mañana1 | Operador | Manana |
+| OPERAMAÑANA | mañana1 | Operador | Mañana |
 | OPERATARDE | tarde1 | Operador | Tarde |
 | OPERANOCHE | noche1 | Operador | Noche |
 | OPERAADMIN | nocadmin | Administrador | Admin |
@@ -30,7 +30,7 @@ Sistema web para el registro operativo del NOC (Network Operations Center). Perm
 - **Copia de dia anterior:** Con un boton se copia la estructura del dia previo
 
 ### Pase de turno (OBLIGATORIO)
-- El boton del header dice **"Pase de Turno Manana"**, **"Pase de Turno Tarde"** o **"Pase de Turno Noche"** segun el turno del usuario
+- El boton del header dice **"Pase de Turno Mañana"**, **"Pase de Turno Tarde"** o **"Pase de Turno Noche"** segun el turno del usuario
 - Al finalizar cada turno, el operador debe completar el formulario con novedades y checks de conformidad
 - El pase genera una notificacion automatica para los turnos entrantes
 - Al intentar salir sin hacer el pase, el sistema lo advierte
