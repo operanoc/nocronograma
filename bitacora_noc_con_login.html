@@ -1650,8 +1650,7 @@ function downloadDayReport(){
   const dateInput=document.getElementById('dashDatePicker');
   const dateStr=dateInput.value;
   if(!dateStr){toast('Selecciona una fecha');return;}
-  const day=store[dateStr];
-  if(!day){toast('No hay datos para esa fecha');return;}
+  const day=store[dateStr]||{date:dateStr,dayType:'DIARIA',pollings:[],backups:[],processes:[],notes:'',timeline:[],handovers:[]};
   const now=new Date();
   let h=reportHeader('Bitacora NOC — '+fmt(dateStr),'Generado: '+now.toLocaleString('es-AR'));
   // Day info
