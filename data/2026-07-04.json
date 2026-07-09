@@ -1,0 +1,71 @@
+{
+  "date": "2026-07-04",
+  "dayType": "FIN_DE_SEMANA",
+  "pollings": [],
+  "backups": [
+    {
+      "name": "Regional",
+      "iniTime": "",
+      "endTime": "",
+      "job": "BKPDIARIOU",
+      "duration": "",
+      "status": "Robot Fail"
+    },
+    {
+      "name": "Pinot",
+      "iniTime": "19:00",
+      "endTime": "",
+      "job": "BKPDIARIO",
+      "duration": "",
+      "status": null
+    },
+    {
+      "name": "Regional",
+      "iniDate": "2026-07-04",
+      "iniTime": "23:00",
+      "endDate": "2026-07-05",
+      "endTime": "03:00",
+      "job": "BKPDIARIOU",
+      "duration": "4:00",
+      "status": null
+    }
+  ],
+  "processes": [
+    {
+      "name": "Procesos",
+      "status": "Realizado"
+    },
+    {
+      "name": "Metrogas",
+      "status": ""
+    },
+    {
+      "name": "Tarjeta Naranja",
+      "status": ""
+    },
+    {
+      "name": "EPE",
+      "status": ""
+    },
+    {
+      "name": "BANCOR",
+      "status": ""
+    },
+    {
+      "name": "Rentas de Córdoba",
+      "status": ""
+    },
+    {
+      "name": "AFIP 72",
+      "status": ""
+    },
+    {
+      "name": "AFIP 48",
+      "status": ""
+    },
+    {
+      "name": "Cierre AFIP",
+      "status": ""
+    }
+  ]
+}
