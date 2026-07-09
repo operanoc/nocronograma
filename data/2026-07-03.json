@@ -3,12 +3,7 @@
   "dayType": "DIARIA",
   "pollings": [],
   "backups": [],
-  "processes": [
-    {
-      "name": "BANCOR",
-      "status": "OK"
-    }
-  ],
+  "processes": [],
   "handovers": [],
   "notifications": [
     {
