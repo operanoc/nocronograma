@@ -24,7 +24,7 @@ Al ingresar a la aplicacion, se muestra una pantalla de login con los campos **U
 
 | Usuario | Contrasena | Rol | Turno |
 |---------|-----------|-----|-------|
-| OPERAMANANA | manana1 | Operador | Manana |
+| OPERAMANANA | mañana1 | Operador | Manana |
 | OPERATARDE | tarde1 | Operador | Tarde |
 | OPERANOCHE | noche1 | Operador | Noche |
 | OPERAADMIN | nocadmin | Administrador | Admin |

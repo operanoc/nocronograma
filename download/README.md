@@ -12,7 +12,7 @@ Sistema web para el registro operativo del NOC (Network Operations Center). Perm
 
 | Usuario | Password | Rol | Turno |
 |---------|----------|-----|-------|
-| OPERAMANANA | manana1 | Operador | Manana |
+| OPERAMANANA | mañana1 | Operador | Manana |
 | OPERATARDE | tarde1 | Operador | Tarde |
 | OPERANOCHE | noche1 | Operador | Noche |
 | OPERAADMIN | nocadmin | Administrador | Admin |
