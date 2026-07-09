@@ -392,7 +392,7 @@ html.dark .notif-item.unread{background:#082f49}
     </div>
     <div style="background:#fef2f2;border:1px solid #ef4444;border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <div><strong style="color:#dc2626;font-size:13px">EL CIERRE DE TURNO ES OBLIGATORIO</strong><br><span style="color:#991b1b;font-size:11px">Debe completar el cierre de turno antes de finalizar su sesion.</span></div>
+      <div><strong style="color:#dc2626;font-size:13px">EL PASE DE TURNO ES OBLIGATORIO</strong><br><span style="color:#991b1b;font-size:11px">Debe completar el pase de turno antes de finalizar su sesion.</span></div>
     </div>
     <p class="sub">Ingresar usuario y contrasena para continuar</p>
     <div class="form-group">
@@ -425,7 +425,7 @@ html.dark .notif-item.unread{background:#082f49}
       </select>
       <button class="btn-dash-active" onclick="renderDashboard()">Actualizar</button>
       <button onclick="downloadDashReport()" style="background:var(--sky-600);color:#fff;border-color:var(--sky-600);font-weight:600">Descargar Reporte</button>
-      <button onclick="downloadCierresReport()" style="background:var(--amber-600);color:#fff;border-color:var(--amber-600);font-weight:600">Descargar Cierres de Turno</button>
+      <button onclick="downloadCierresReport()" style="background:var(--amber-600);color:#fff;border-color:var(--amber-600);font-weight:600">Descargar Pases de Turno</button>
       <span style="display:inline-flex;align-items:center;gap:6px;margin-left:4px">
         <input type="date" id="dashDatePicker" style="padding:5px 8px;font-size:12px;border:1px solid var(--gray-300);border-radius:var(--radius);background:var(--white);color:var(--gray-800)">
         <button onclick="downloadDayReport()" style="background:var(--emerald-600);color:#fff;border:none;padding:6px 12px;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer">Descargar Dia</button>
@@ -444,9 +444,9 @@ html.dark .notif-item.unread{background:#082f49}
     </h1>
     <div class="header-actions"><span id="syncIndicator" style="display:inline-flex;align-items:center;cursor:default;" title="Sin sincronizar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>
 
-      <button class="btn-cierre" id="cierreBtn" onclick="openCierreModal()" title="Cierre de Turno" style="display:none">
+      <button class="btn-cierre" id="cierreBtn" onclick="openCierreModal()" title="Pase de Turno" style="display:none">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Cierre de Turno
+        <span id="cierreBtnText">Pase de Turno</span>
       </button>
       <div class="notif-wrap" id="notifWrap" style="display:none">
         <button class="notif-btn" onclick="toggleNotifPanel()" title="Notificaciones">
@@ -461,10 +461,7 @@ html.dark .notif-item.unread{background:#082f49}
       <button class="btn btn-ghost btn-sm" id="dashBtn" onclick="openDashboard()" title="Dashboard" style="display:none">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       </button>
-      <button class="btn btn-sm" id="clearDataBtn" onclick="startClearData()" title="Borrar todos los datos" style="display:none;background:#dc2626;color:#fff;border:1px solid #dc2626;font-weight:600">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-        Borrar Datos
-      </button>
+
       <div class="user-bar" id="userBar" style="display:none">
         <span class="user-name" id="userNameDisplay"></span>
         <span class="shift-badge" id="userShiftBadge"></span>
@@ -520,7 +517,7 @@ html.dark .notif-item.unread{background:#082f49}
 
   <div class="lock-banner" id="lockBanner" style="display:none">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-    <span><strong>DIA CERRADO</strong> — Este dia ya tiene cierre de turno. Solo un administrador puede modificar los datos.</span>
+    <span><strong>DIA CERRADO</strong> — Este dia ya tiene pase de turno. Solo un administrador puede modificar los datos.</span>
   </div>
 
   <div class="timeline-card">
@@ -593,7 +590,7 @@ html.dark .notif-item.unread{background:#082f49}
     <div style="padding:30px 20px">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--red-500)" stroke-width="2" style="margin-bottom:16px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
       <h3 style="font-size:18px;font-weight:700;color:var(--red-600);margin-bottom:8px">DIA CERRADO</h3>
-      <p style="color:var(--gray-600);font-size:14px;line-height:1.6;margin-bottom:20px">Este dia ya tiene cierre de turno realizado.<br><strong>Solo un administrador puede modificar los datos.</strong></p>
+      <p style="color:var(--gray-600);font-size:14px;line-height:1.6;margin-bottom:20px">Este dia ya tiene pase de turno realizado.<br><strong>Solo un administrador puede modificar los datos.</strong></p>
       <button class="btn btn-primary" onclick="closeLockedModal()" style="padding:10px 32px;font-size:14px">Entendido</button>
     </div>
   </div>
@@ -996,35 +993,8 @@ function doLogin(){
   badge.className='shift-badge '+user.cssClass;
   if(user.role==='admin'){
     document.getElementById('dashBtn').style.display='';
-    document.getElementById('clearDataBtn').style.display='';
   }
   document.getElementById('loginError').textContent='';
-}
-function startClearData(){
-  if(!isAdmin())return;
-  if(!confirm('PRIMERA ADVERTENCIA:\n\nEsta a punto de BORRAR TODOS los datos del sistema.\n\nIncluye: polling, backups, procesos, novedades, cierres de turno.\n\nEsta accion no se puede deshacer.\n\nDesea continuar?'))return;
-  if(!confirm('SEGUNDA ADVERTENCIA:\n\nSe eliminaran TODOS los registros de TODOS los dias.\n\nToda la informacion ingresada se perdera permanentemente.\n\nEsta completamente seguro?'))return;
-  if(!confirm('TERCERA ADVERTENCIA:\n\nUltima oportunidad para cancelar.\n\nSi continua, se borraran TODOS los datos del sistema.\n\nContinuar?'))return;
-  const kw=prompt('Para confirmar, escriba la palabra clave:');
-  if(kw!=='atosoperacionesnoc'){toast('Palabra clave incorrecta. Operacion cancelada.');return;}
-  clearAllData();
-}
-async function clearAllData(){
-  toast('Borrando todos los datos...');
-  const dates=Object.keys(store);
-  let count=0;
-  for(const d of dates){
-    const day=store[d];
-    if(!day)continue;
-    const hasData=day.pollings&&day.pollings.length||day.backups&&day.backups.length||day.processes&&day.processes.length||day.timeline&&day.timeline.length||day.handovers&&day.handovers.length;
-    if(!hasData)continue;
-    day.pollings=[];day.backups=[];day.processes=[];day.timeline=[];day.handovers=[];day.notes='';
-    count++;
-    try{await ghPushDay(d,store[d]);}catch(e){console.warn('Error clearing '+d,e);}
-  }
-  try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}
-  render();
-  toast('Se borraron todos los datos de '+count+' dias');
 }
 function doLogout(){
   // Check if cierre de turno was done today
@@ -1032,7 +1002,7 @@ function doLogout(){
   const sk=currentUser?SHIFT_MAP[currentUser.username]||'ADMIN':'';
   const hasCierre=day&&day.handovers&&day.handovers.some(h=>h.shift===sk);
   if(!hasCierre&&currentUser){
-    if(!confirm('ATENCION: No ha realizado el Cierre de Turno. Esta accion es OBLIGATORIA.\n\nDesea salir de todas formas?')){
+    if(!confirm('ATENCION: No ha realizado el Pase de Turno. Esta accion es OBLIGATORIA.\n\nDesea salir de todas formas?')){
       return;
     }
   }
@@ -1041,7 +1011,6 @@ function doLogout(){
   document.getElementById('loginOverlay').classList.remove('hide');
   document.getElementById('userBar').style.display='none';
   document.getElementById('dashBtn').style.display='none';
-  document.getElementById('clearDataBtn').style.display='none';
   document.getElementById('loginUser').value='';
   document.getElementById('loginPass').value='';
 }
@@ -1058,7 +1027,6 @@ function checkSession(){
     badge.className='shift-badge '+USERS[u].cssClass;
     if(USERS[u].role==='admin'){
       document.getElementById('dashBtn').style.display='';
-      document.getElementById('clearDataBtn').style.display='';
     }
   }
 }
@@ -1480,7 +1448,7 @@ function openCierreModal(){
   const sk=SHIFT_MAP[currentUser.username]||'ADMIN';
   const skLabel=SHIFT_LABELS[sk]||sk;
   const auto=getCurrentOperator()||currentUser.username;
-  document.getElementById('modalTitle').textContent='CIERRE DE TURNO (OBLIGATORIO) - '+skLabel;
+  document.getElementById('modalTitle').textContent='PASE DE TURNO (OBLIGATORIO) - '+skLabel;
   document.getElementById('modalBody').innerHTML=
     '<div class="form-group"><label>Operador</label><select id="cierreOp">'+buildOpOptions(auto)+'</select></div>'+
     '<div class="form-group"><label>Novedades (obligatorio)</label><textarea id="cierreText" rows="4" placeholder="Detalle de novedades del turno, incidencias, tareas pendientes..." style="width:100%;font-size:13px;border:1px solid var(--gray-300);border-radius:6px;padding:8px;resize:vertical;min-height:80px"></textarea></div>'+
@@ -1489,7 +1457,7 @@ function openCierreModal(){
     '<label class="cierre-check"><input type="checkbox" id="cierreBkpOk" checked> Backups OK</label>'+
     '<label class="cierre-check"><input type="checkbox" id="cierreProcOk" checked> Procesos OK</label>'+
     '</div>';
-  document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveCierre()">Confirmar Cierre</button>';
+  document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveCierre()">Confirmar Pase</button>';
   openModal();
 }
 function buildOpOptions(selected){
@@ -1531,7 +1499,7 @@ function saveCierre(){
   day.notifications.push({
     id:uid(),
     type:'handover',
-    title:'Cierre de Turno - '+entry.shiftLabel,
+    title:'Pase de Turno - '+entry.shiftLabel,
     desc:op+': '+text.substring(0,80)+(text.length>80?'...':''),
     timestamp:ts,
     shift:sk,
@@ -1539,7 +1507,7 @@ function saveCierre(){
   });
   saveStore();closeModal();
   renderNovedades(day);updateNotifBadge(day);renderNotifPanel(day);
-  toast('Cierre de turno registrado');
+  toast('Pase de turno registrado');
 }
 
 // ===== NOVEDADES DE TURNO SECTION =====
@@ -1700,7 +1668,7 @@ function downloadDayReport(){
   }
   // Handovers
   if(day.handovers&&day.handovers.length){
-    h+='<h2>Cierre de Turno</h2>';
+    h+='<h2>Pase de Turno</h2>';
     day.handovers.forEach(c=>{
       const css=c.shift==='MANANA'?'manana':c.shift==='TARDE'?'tarde':c.shift==='NOCHE'?'noche':'admin';
       h+='<div class="hv-card"><div class="hv-head"><span class="hv-op">'+escHtml(c.operator)+'</span><span class="hv-shift '+css+'">'+escHtml(c.shiftLabel||c.shift)+'</span><span class="hv-time">'+escHtml(c.timestamp)+'</span></div><div class="hv-text">'+escHtml(c.text)+'</div>';
@@ -1781,10 +1749,10 @@ function downloadCierresReport(){
     if(day.handovers)day.handovers.forEach(h=>allCierres.push({...h,date:dateStr}));
   });
   allCierres.sort((a,b)=>b.timestamp.localeCompare(a.timestamp));
-  let h=reportHeader('Cierres de Turno — NOC','Todos los registros | Generado: '+now.toLocaleString('es-AR'));
-  if(!allCierres.length){h+='<p style="color:#6b7280;padding:30px;text-align:center">No hay cierres de turno registrados</p>';}
+  let h=reportHeader('Pases de Turno — NOC','Todos los registros | Generado: '+now.toLocaleString('es-AR'));
+  if(!allCierres.length){h+='<p style="color:#6b7280;padding:30px;text-align:center">No hay pases de turno registrados</p>';}
   else{
-    h+='<p style="font-size:12px;color:#6b7280;margin-bottom:16px">Total: '+allCierres.length+' cierre(s) de turno</p>';
+    h+='<p style="font-size:12px;color:#6b7280;margin-bottom:16px">Total: '+allCierres.length+' pase(s) de turno</p>';
     allCierres.forEach(c=>{
       const css=c.shift==='MANANA'?'manana':c.shift==='TARDE'?'tarde':c.shift==='NOCHE'?'noche':'admin';
       h+='<div class="hv-card">';
@@ -1797,8 +1765,8 @@ function downloadCierresReport(){
       h+='</div></div>';
     });
   }
-  h+='<div class="footer">Bitacora NOC — bitacoranoc.com | Cierres de turno al '+now.toLocaleString('es-AR')+'</div></body></html>';
-  triggerDownload(h,'cierres_turno_'+new Date().toISOString().split('T')[0]+'.html');
+  h+='<div class="footer">Bitacora NOC — bitacoranoc.com | Pases de turno al '+now.toLocaleString('es-AR')+'</div></body></html>';
+  triggerDownload(h,'pases_turno_'+new Date().toISOString().split('T')[0]+'.html');
 }
 
 // Close notif panel on outside click
@@ -1813,6 +1781,16 @@ document.addEventListener('click',e=>{
 function showTurnoButtons(){
   const show=!!currentUser;
   document.getElementById('cierreBtn').style.display=show?'':'none';
+  if(show&&currentUser){
+    const sk=SHIFT_MAP[currentUser.username]||'ADMIN';
+    const lbl=SHIFT_LABELS[sk]||sk;
+    const txt=document.getElementById('cierreBtnText');
+    if(sk==='ADMIN'){
+      txt.textContent='Pase de Turno';
+    }else{
+      txt.textContent='Pase de Turno '+lbl;
+    }
+  }
   document.getElementById('notifWrap').style.display=show?'':'none';
 }
 // Patch doLogin and checkSession to show buttons and render novedades
