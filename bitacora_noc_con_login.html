@@ -82,10 +82,6 @@ main{flex:1;max-width:1200px;margin:0 auto;width:100%;padding:16px}
 .search-box input{width:100%;padding-left:30px;font-size:13px}
 .search-box svg{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--gray-400);width:14px;height:14px}
 
-/* Notes */
-.notes-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;transition:background .3s}
-.notes-card h3{font-size:13px;font-weight:600;color:var(--gray-600);margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.notes-card textarea{width:100%;font-size:13px;min-height:50px;max-height:100px;border:1px solid var(--gray-200);border-radius:6px;padding:8px}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
 .stat-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px;text-align:center;transition:background .3s}
@@ -553,7 +549,7 @@ html.dark .notif-item.unread{background:#082f49}
         <span class="nv-badge" id="nvBadge" style="display:none">0</span>
       </h3>
       <div style="display:flex;align-items:center;gap:8px">
-        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();downloadCierresReport()" title="Descargar cierres" style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--sky-600)">
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();downloadCierresReport()" title="Descargar pases de turno" style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--sky-600)">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Descargar
         </button>
@@ -786,9 +782,6 @@ let toastT;function toast(m){const e=document.getElementById('toast');e.textCont
 function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('bitacora_dark',document.documentElement.classList.contains('dark')?'1':'0');updateDarkIcon();}
 function updateDarkIcon(){const d=document.documentElement.classList.contains('dark');document.getElementById('darkIcon').innerHTML=d?'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>':'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';}
 if(localStorage.getItem('bitacora_dark')==='1'){document.documentElement.classList.add('dark');updateDarkIcon();}
-
-// Notes
-/* loadNotes/saveNotes removed - notes-card was removed */
 
 // Search filter
 function matchesFilter(text){const q=(SEARCH.value||'').toLowerCase();return!q||text.toLowerCase().includes(q);}
@@ -1797,63 +1790,42 @@ function showTurnoButtons(){
   }
   document.getElementById('notifWrap').style.display=show?'':'none';
 }
-// Patch doLogin and checkSession to show buttons and render novedades
+// Patch doLogin, checkSession, render and doLogout
 const __origDoLogin=doLogin;
 doLogin=function(){
   __origDoLogin();
   showTurnoButtons();
+  populateOperatorSelect();
   const day=getDay(currentDate);
-  renderNovedades(day);updateNotifBadge(day);
+  renderNovedades(day);updateNotifBadge(day);renderTimeline(day);
   syncFromGitHub();
 };
 const __origCheckSession=checkSession;
 checkSession=function(){
   __origCheckSession();
   showTurnoButtons();
+  populateOperatorSelect();
   if(currentUser){
     const day=getDay(currentDate);
-    renderNovedades(day);updateNotifBadge(day);
+    renderNovedades(day);updateNotifBadge(day);renderTimeline(day);
     syncFromGitHub();
   }
 };
-// Patch render to also render novedades
 const __origRender=render;
 render=function(){
   __origRender();
   if(currentUser){
     const day=getDay(currentDate);
-    renderNovedades(day);updateNotifBadge(day);
+    renderNovedades(day);updateNotifBadge(day);renderTimeline(day);
+    populateOperatorSelect();
   }
 };
-// Patch doLogout to hide buttons
 const __origDoLogout=doLogout;
 doLogout=function(){
   __origDoLogout();
   showTurnoButtons();
   document.getElementById('novedadesSection').style.display='none';
   document.getElementById('notifPanel').classList.remove('show');
-};
-
-const _origDoLogin=doLogin;
-doLogin=function(){
-  _origDoLogin();
-  populateOperatorSelect();
-  const day=getDay(currentDate);
-  renderTimeline(day);
-};
-const _origCheckSession=checkSession;
-checkSession=function(){
-  _origCheckSession();
-  populateOperatorSelect();
-  if(currentUser){const day=getDay(currentDate);renderTimeline(day);}
-};
-// Re-populate on date change - patch render
-const _origRender=render;
-render=function(){
-  _origRender();
-  const day=getDay(currentDate);
-  renderTimeline(day);
-  populateOperatorSelect();
 };
 
 loadStoreLocal();checkSession();render();
