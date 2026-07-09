@@ -628,7 +628,7 @@ function refreshGHHeaders(){
 let GH_HEADERS={};
 refreshGHHeaders();
 
-let currentDate='2026-07-03',activeTab='pollings',calMonth,calYear,store={};
+let currentDate=new Date().toISOString().split('T')[0],activeTab='pollings',calMonth,calYear,store={};
 const SEARCH=document.getElementById('searchInput');
 
 // Cache of file SHAs for updates (avoids extra GET before PUT)
