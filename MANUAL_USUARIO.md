@@ -24,7 +24,7 @@ Al ingresar a la aplicacion, se muestra una pantalla de login con los campos **U
 
 | Usuario | Contrasena | Rol | Turno |
 |---------|-----------|-----|-------|
-| OPERAMANANA | mañana1 | Operador | Manana |
+| OPERAMAÑANA | mañana1 | Operador | Mañana |
 | OPERATARDE | tarde1 | Operador | Tarde |
 | OPERANOCHE | noche1 | Operador | Noche |
 | OPERAADMIN | nocadmin | Administrador | Admin |
@@ -45,7 +45,7 @@ Una vez iniciada la sesion, la pantalla principal contiene los siguientes elemen
 ### 3.1 Header (barra superior)
 - **Titulo:** "Bitacora NOC" con el icono de la aplicacion.
 - **Indicador de sincronizacion:** Icono de rueda dentada que gira cuando hay datos sin sincronizar y se detiene cuando todo esta guardado.
-- **Boton "Pase de Turno":** Boton amarrillo que cambia segun el turno del usuario (por ejemplo: "Pase de Turno Manana", "Pase de Turno Tarde", "Pase de Turno Noche"). Los administradores ven "Pase de Turno" sin especificar turno.
+- **Boton "Pase de Turno":** Boton amarrillo que cambia segun el turno del usuario (por ejemplo: "Pase de Turno Mañana", "Pase de Turno Tarde", "Pase de Turno Noche"). Los administradores ven "Pase de Turno" sin especificar turno.
 - **Boton de notificaciones:** Campana con un numero rojo que indica notificaciones sin leer. Al hacer clic se despliega un panel con las notificaciones.
 - **Boton de Dashboard** (solo Admin): Icono de cuadrados que abre el panel de metricas y estadisticas.
 - **Barra de usuario:** Muestra el nombre del usuario, el turno (con badge de color) y el boton **Salir**.
@@ -189,7 +189,7 @@ Las novedades son notas cronologicas que los operadores van registrando durante 
 El pase de turno es el formulario obligatorio que cada operador debe completar al finalizar su turno. Contiene un resumen de las novedades y la conformidad de que las tareas del turno fueron completadas.
 
 ### Como realizar el pase de turno:
-1. Hacer clic en el boton **"Pase de Turno [Turno]"** en el header (por ejemplo: "Pase de Turno Manana").
+1. Hacer clic en el boton **"Pase de Turno [Turno]"** en el header (por ejemplo: "Pase de Turno Mañana").
 2. Se abre un modal con los siguientes campos:
    - **Operador:** Seleccionar el nombre del operador que realiza el pase.
    - **Novedades (obligatorio):** Escribir un detalle de lo ocurrido durante el turno, incidencias, tareas pendientes, etc.
@@ -346,7 +346,7 @@ Cada dia se almacena como un objeto JSON con la siguiente estructura:
 - **Sin estado:** Badge gris.
 
 ### Colores de turno:
-- **Manana:** Azul claro.
+- **Mañana:** Azul claro.
 - **Tarde:** Amarillo.
 - **Noche:** Violeta.
 - **Admin:** Violeta oscuro.
