@@ -1001,27 +1001,29 @@ function doLogin(){
 }
 function startClearData(){
   if(!isAdmin())return;
-  if(!confirm('PRIMERA ADVERTENCIA:\n\nEsta a punto de BORRAR TODOS los datos de polling ingresados en el sistema.\n\nEsta accion no se puede deshacer.\n\nDesea continuar?'))return;
-  if(!confirm('SEGUNDA ADVERTENCIA:\n\nSe eliminaran TODOS los registros de polling de TODOS los dias.\n\nLos backups, procesos y notas NO se eliminan.\n\nEsta completamente seguro?'))return;
-  if(!confirm('TERCERA ADVERTENCIA:\n\nUltima oportunidad para cancelar.\n\nSi continua, se borraran los datos de polling de forma permanente.\n\nContinuar?'))return;
+  if(!confirm('PRIMERA ADVERTENCIA:\n\nEsta a punto de BORRAR TODOS los datos del sistema.\n\nIncluye: polling, backups, procesos, novedades, cierres de turno.\n\nEsta accion no se puede deshacer.\n\nDesea continuar?'))return;
+  if(!confirm('SEGUNDA ADVERTENCIA:\n\nSe eliminaran TODOS los registros de TODOS los dias.\n\nToda la informacion ingresada se perdera permanentemente.\n\nEsta completamente seguro?'))return;
+  if(!confirm('TERCERA ADVERTENCIA:\n\nUltima oportunidad para cancelar.\n\nSi continua, se borraran TODOS los datos del sistema.\n\nContinuar?'))return;
   const kw=prompt('Para confirmar, escriba la palabra clave:');
   if(kw!=='atosoperacionesnoc'){toast('Palabra clave incorrecta. Operacion cancelada.');return;}
-  clearAllPollingData();
+  clearAllData();
 }
-async function clearAllPollingData(){
-  toast('Borrando datos de polling...');
+async function clearAllData(){
+  toast('Borrando todos los datos...');
   const dates=Object.keys(store);
   let count=0;
   for(const d of dates){
-    if(store[d]&&store[d].pollings&&store[d].pollings.length){
-      store[d].pollings=[];
-      count++;
-      try{await ghPushDay(d,store[d]);}catch(e){console.warn('Error clearing '+d,e);}
-    }
+    const day=store[d];
+    if(!day)continue;
+    const hasData=day.pollings&&day.pollings.length||day.backups&&day.backups.length||day.processes&&day.processes.length||day.timeline&&day.timeline.length||day.handovers&&day.handovers.length;
+    if(!hasData)continue;
+    day.pollings=[];day.backups=[];day.processes=[];day.timeline=[];day.handovers=[];day.notes='';
+    count++;
+    try{await ghPushDay(d,store[d]);}catch(e){console.warn('Error clearing '+d,e);}
   }
   try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}
   render();
-  toast('Se borraron los datos de polling de '+count+' dias');
+  toast('Se borraron todos los datos de '+count+' dias');
 }
 function doLogout(){
   // Check if cierre de turno was done today
