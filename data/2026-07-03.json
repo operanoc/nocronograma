@@ -2,92 +2,9 @@
   "date": "2026-07-03",
   "dayType": "DIARIA",
   "pollings": [],
-  "backups": [
-    {
-      "name": "Regional",
-      "iniTime": "",
-      "endTime": "",
-      "job": "BKPDIARIOU",
-      "duration": "",
-      "status": "Robot Fail"
-    },
-    {
-      "name": "Pinot",
-      "iniTime": "19:00",
-      "endTime": "",
-      "job": "BKPDIARIO",
-      "duration": "",
-      "status": null
-    },
-    {
-      "name": "Semillon",
-      "iniTime": "17:00",
-      "endTime": "17:20",
-      "job": "BKPMIMIX",
-      "duration": "0:20",
-      "status": null
-    }
-  ],
-  "processes": [
-    {
-      "name": "Procesos",
-      "status": "Realizado"
-    },
-    {
-      "name": "Tarjeta Naranja",
-      "status": "OK"
-    },
-    {
-      "name": "EPE",
-      "status": "OK"
-    },
-    {
-      "name": "BANCOR",
-      "status": "OK"
-    },
-    {
-      "name": "Rentas de Córdoba",
-      "status": "OK"
-    },
-    {
-      "name": "AFIP 72",
-      "status": "OK"
-    },
-    {
-      "name": "AFIP 24",
-      "status": "OK"
-    },
-    {
-      "name": "AFIP 48",
-      "status": "OK"
-    },
-    {
-      "name": "Cierre AFIP",
-      "status": "OK"
-    },
-    {
-      "name": "Montaje de cintas",
-      "status": "Pend Regional"
-    },
-    {
-      "name": "Reset Flag",
-      "status": "N/C"
-    }
-  ],
-  "handovers": [
-    {
-      "id": "mrcihxtjk4w1p",
-      "operator": "Hugo Magariños",
-      "shift": "NOCHE",
-      "shiftLabel": "Noche",
-      "timestamp": "2026-07-08 17:09:57",
-      "text": "1",
-      "pollOk": true,
-      "bkpOk": true,
-      "procOk": true,
-      "readBy": {}
-    }
-  ],
+  "backups": [],
+  "processes": [],
+  "handovers": [],
   "notifications": [
     {
       "id": "mrcihxtjqzuab",
@@ -100,5 +17,7 @@
         "MANANA": true
       }
     }
-  ]
+  ],
+  "timeline": [],
+  "notes": ""
 }
