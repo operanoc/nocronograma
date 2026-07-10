@@ -190,6 +190,35 @@ html.dark .toast{background:var(--gray-100);color:var(--gray-900)}
   .tab-btn{white-space:nowrap;padding:10px 12px}
   .quick-bar{justify-content:center}
 }
+@media(max-width:480px){
+  body{font-size:13px}
+  .stats{grid-template-columns:repeat(2,1fr);gap:6px}
+  .stat-value{font-size:16px}
+  .stat-label{font-size:9px}
+  .quick-bar{flex-direction:column;gap:6px}
+  .quick-bar .sep{display:none}
+  .search-box{max-width:none;width:100%}
+  .card-header{flex-direction:column;align-items:flex-start;gap:6px}
+  .card-header h2{font-size:14px}
+  .region-group{padding:10px 10px}
+  .server-row,.bkp-row,.proc-row{flex-direction:column;align-items:stretch;gap:4px;padding:8px}
+  .server-name,.bkp-name,.proc-name{min-width:0;word-break:break-word;font-size:12px}
+  .server-meta{flex-direction:column;align-items:flex-start;gap:2px;font-size:11px;width:100%}
+  .server-meta span{display:inline-flex;gap:4px}
+  .bkp-name{flex-direction:column;align-items:flex-start;gap:4px}
+  .server-actions{align-self:flex-end}
+  .proc-row{flex-direction:row;flex-wrap:wrap}
+  .proc-name{flex:1;min-width:0}
+  .proc-row .btn-icon{flex-shrink:0}
+  .badge{font-size:9px;padding:1px 5px}
+  .badge-mono{font-size:9px}
+  .tabs-bar{gap:0}
+  .tab-btn{padding:8px 10px;font-size:12px}
+  .date-nav-left h1{font-size:16px}
+  .date-nav-left .subtitle{font-size:11px}
+  .modal{max-width:calc(100vw - 24px);margin:12px}
+  .modal-body{padding:12px}
+}
 
 /* ===== LOGIN SCREEN ===== */
 .login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#4A0A80 0%,#6A0DAD 50%,#5A0C9D 100%);z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .4s}
