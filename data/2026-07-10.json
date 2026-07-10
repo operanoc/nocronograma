@@ -1,0 +1,27 @@
+{
+  "date": "2026-07-10",
+  "dayType": "DIARIA",
+  "pollings": [
+    {
+      "id": "mrf3rerdpzdeu",
+      "server": "Depu Gran Base",
+      "region": "REGIONAL",
+      "phase": "BEGINNING",
+      "date": "2026-07-10",
+      "time": "12:03",
+      "note": null
+    },
+    {
+      "id": "mrf3rerd8uade",
+      "server": "Depu Gran Base",
+      "region": "REGIONAL",
+      "phase": "ENDING",
+      "date": "2026-07-10",
+      "time": "01:02",
+      "note": null
+    }
+  ],
+  "backups": [],
+  "processes": [],
+  "notes": ""
+}
