@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Exportacion XLSX con formato (SheetJS client-side)',
+    'message': 'Responsive mobile: fix tablas y layout bajo 480px',
     'content': content,
     'sha': sha,
     'branch': BRANCH
