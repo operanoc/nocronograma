@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Modal de confirmacion en Copiar dia anterior',
+    'message': 'Exportacion XLSX con formato (SheetJS client-side)',
     'content': content,
     'sha': sha,
     'branch': BRANCH

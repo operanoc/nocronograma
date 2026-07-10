@@ -298,6 +298,94 @@ function exportCSV(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bitacora_'+currentDate+'.csv';a.click();toast('CSV descargado');
 }
 
+// Export XLSX with formatting (SheetJS)
+function exportXLSX(){
+  if(typeof XLSX==='undefined'){toast('Libreria XLSX no cargada');return;}
+  var day=getDay(currentDate);
+  var wb=XLSX.utils.book_new();
+  var PURPLE='6A0DAD',PURPLE_LIGHT='F5F0FF',RED='DC2626',RED_LIGHT='FEF2F2',GREEN='059669',GREEN_LIGHT='ECFDF5',GRAY='6B7280',DARK='1F2937',BORDER='D1D5DB';
+  var headerStyle={font:{bold:true,color:{rgb:'FFFFFF'},sz:11},fill:{fgColor:{rgb:PURPLE}},alignment:{horizontal:'center',vertical:'center',wrapText:true},border:{bottom:{style:'thin',color:{rgb:PURPLE}}}};
+  var subHeaderStyle={font:{bold:true,color:{rgb:DARK},sz:10},fill:{fgColor:{rgb:PURPLE_LIGHT}},alignment:{horizontal:'center',vertical:'center'},border:{bottom:{style:'thin',color:{rgb:BORDER}}}};
+  var cellStyle={font:{sz:10,color:{rgb:DARK}},alignment:{vertical:'center'},border:{bottom:{style:'hair',color:{rgb:BORDER}}}};
+  var okStyle={font:{bold:true,sz:10,color:{rgb:GREEN}},alignment:{vertical:'center'},border:{bottom:{style:'hair',color:{rgb:BORDER}}},fill:{fgColor:{rgb:GREEN_LIGHT}}};
+  var errStyle={font:{bold:true,sz:10,color:{rgb:RED}},alignment:{vertical:'center'},border:{bottom:{style:'hair',color:{rgb:BORDER}}},fill:{fgColor:{rgb:RED_LIGHT}}};
+  var centerStyle={font:{sz:10,color:{rgb:DARK}},alignment:{horizontal:'center',vertical:'center'},border:{bottom:{style:'hair',color:{rgb:BORDER}}}};
+
+  // Helper: apply style to a range
+  function styleRange(ws,ref,style){if(!ws['!sheetStyles'])ws['!sheetStyles']=[];ws['!sheetStyles'].push({range:ref,style:style});}
+
+  // --- Sheet 1: Resumen ---
+  var resData=[['BITACORA NOC'],[fmt(currentDate)],[],['Tipo','Cantidad','Con datos','Con errores']];
+  var pWith=day.pollings.filter(function(p){return p.time;}).length;
+  var bWith=day.backups.filter(function(b){return b.iniTime||b.endTime;}).length;
+  var prOk=day.processes.filter(function(p){return p.status==='OK';}).length;
+  var bErr=day.backups.filter(function(b){return b.status&&(b.status.indexOf('Fail')>=0||b.status.indexOf('SUSP')>=0);}).length;
+  resData.push(['Pollings',day.pollings.length,pWith,'-']);
+  resData.push(['Backups',day.backups.length,bWith,bErr||'-']);
+  resData.push(['Procesos',day.processes.length,prOk,day.processes.length-prOk||'-']);
+  resData.push([],['Pases de Turno','']);
+  (day.handovers||[]).forEach(function(h){resData.push([h.shift,h.operator,h.time||'']);});
+  var wsRes=XLSX.utils.aoa_to_sheet(resData);
+  wsRes['!cols']=[{wch:18},{wch:14},{wch:14},{wch:14}];
+  // Title styling via merge + rich text placeholder
+  XLSX.utils.sheet_add_aoa(wsRes,[['BITACORA NOC']],{origin:'A1'});
+  wsRes['A1'].s=headerStyle;
+  wsRes['A2'].s={font:{bold:true,sz:13,color:{rgb:PURPLE}}};
+  wsRes['A4'].s=subHeaderStyle;wsRes['B4'].s=subHeaderStyle;wsRes['C4'].s=subHeaderStyle;wsRes['D4'].s=subHeaderStyle;
+  XLSX.utils.book_append_sheet(wb,wsRes,'Resumen');
+
+  // --- Sheet 2: Pollings ---
+  var pData=[['POLLINGS - '+fmt(currentDate)],[],['Servidor','Region','Fase','Hora']];
+  day.pollings.forEach(function(p){pData.push([p.server,p.region,p.phase,p.time||'']);});
+  var wsP=XLSX.utils.aoa_to_sheet(pData);
+  wsP['!cols']=[{wch:28},{wch:22},{wch:14},{wch:12}];
+  wsP['A1'].s=headerStyle;
+  wsP['A3'].s=subHeaderStyle;wsP['B3'].s=subHeaderStyle;wsP['C3'].s=subHeaderStyle;wsP['D3'].s=subHeaderStyle;
+  XLSX.utils.book_append_sheet(wb,wsP,'Pollings');
+
+  // --- Sheet 3: Backups ---
+  var bData=[['BACKUPS - '+fmt(currentDate)],[],['Nombre','Hora Inicio','Hora Fin','Duracion','Estado','JOB']];
+  day.backups.forEach(function(b){
+    var st=b.status||'';
+    bData.push([b.name,b.iniTime||'',b.endTime||'',b.duration||'',st,b.job||'']);
+  });
+  var wsB=XLSX.utils.aoa_to_sheet(bData);
+  wsB['!cols']=[{wch:28},{wch:14},{wch:14},{wch:14},{wch:12},{wch:16}];
+  wsB['A1'].s=headerStyle;
+  wsB['A3'].s=subHeaderStyle;wsB['B3'].s=subHeaderStyle;wsB['C3'].s=subHeaderStyle;
+  wsB['D3'].s=subHeaderStyle;wsB['E3'].s=subHeaderStyle;wsB['F3'].s=subHeaderStyle;
+  // Color status column (E)
+  for(var i=0;i<day.backups.length;i++){
+    var st=(day.backups[i].status||'');
+    var cellRef='E'+(i+4);
+    if(st.indexOf('Fail')>=0||st.indexOf('SUSP')>=0){wsB[cellRef].s=errStyle;}
+    else if(st==='OK'||st==='Completado'){wsB[cellRef].s=okStyle;}
+    else{wsB[cellRef].s=centerStyle;}
+  }
+  XLSX.utils.book_append_sheet(wb,wsB,'Backups');
+
+  // --- Sheet 4: Procesos ---
+  var prData=[['PROCESOS - '+fmt(currentDate)],[],['Nombre','Estado']];
+  day.processes.forEach(function(p){prData.push([p.name,p.status||'']);});
+  var wsPr=XLSX.utils.aoa_to_sheet(prData);
+  wsPr['!cols']=[{wch:28},{wch:14}];
+  wsPr['A1'].s=headerStyle;
+  wsPr['A3'].s=subHeaderStyle;wsPr['B3'].s=subHeaderStyle;
+  // Color status column (B)
+  for(var j=0;j<day.processes.length;j++){
+    var ps=(day.processes[j].status||'');
+    var cRef='B'+(j+4);
+    if(ps==='Error'||ps.indexOf('Fail')>=0){wsPr[cRef].s=errStyle;}
+    else if(ps==='OK'){wsPr[cRef].s=okStyle;}
+    else{wsPr[cRef].s=centerStyle;}
+  }
+  XLSX.utils.book_append_sheet(wb,wsPr,'Procesos');
+
+  // Write and download
+  XLSX.writeFile(wb,'bitacora_'+currentDate+'.xlsx');
+  toast('XLSX descargado');
+}
+
 // Calendar
 function toggleCalendar(){const el=document.getElementById('calPopup');if(el.style.display==='none'){renderCalendar();el.style.display='block';}else el.style.display='none';}
 function renderCalendar(){const d=new Date(currentDate+'T12:00:00');calMonth=d.getMonth();calYear=d.getFullYear();drawCalendar();}
