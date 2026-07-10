@@ -1,7 +1,26 @@
 {
   "date": "2026-07-10",
   "dayType": "DIARIA",
-  "pollings": [],
+  "pollings": [
+    {
+      "id": "mrf3rq2xjo92v",
+      "server": "Argentina P2",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "date": "2026-07-10",
+      "time": "21:03",
+      "note": null
+    },
+    {
+      "id": "mrf3rq2xi9o53",
+      "server": "Argentina P2",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "date": "2026-07-10",
+      "time": "12:03",
+      "note": null
+    }
+  ],
   "backups": [],
   "processes": [],
   "notes": ""
