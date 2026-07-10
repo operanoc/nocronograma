@@ -243,12 +243,14 @@ function renderProcesses(day,locked){
 // Navigation
 function navDay(dir){const d=new Date(currentDate+'T12:00:00');d.setDate(d.getDate()+dir);currentDate=d.toISOString().split('T')[0];SEARCH.value='';render();}
 function goToday(){const t=new Date();t.setHours(12,0,0,0);currentDate=t.toISOString().split('T')[0];SEARCH.value='';render();}
-function changeType(v){if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}getDay(currentDate).dayType=v;saveStore();render();}
+function changeType(v){_adminGate(function(){getDay(currentDate).dayType=v;saveStore();render();});}
 function switchTab(t){activeTab=t;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));render();}
 
 // Copy from previous day
 function copyFromPrev(){
-  if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}
+  _adminGate(function(){_execCopyFromPrev();});
+}
+function _execCopyFromPrev(){
   const d=new Date(currentDate+'T12:00:00');d.setDate(d.getDate()-1);
   const prev=d.toISOString().split('T')[0];
   const src=store[prev];
@@ -395,13 +397,56 @@ function calClick(y,m,d){const dt=new Date(y,m,d);currentDate=dt.toISOString().s
 document.addEventListener('click',e=>{if(!e.target.closest('#dateDisplay')&&!e.target.closest('.cal-popup'))document.getElementById('calPopup').style.display='none';});
 
 // Modals
-function showLockedModal(){document.getElementById('lockedModal').classList.add('show');}
+// Admin gate: if day is locked, non-admin sees info modal, admin sees reason modal
+function _adminGate(actionFn){
+  if(!isDayLocked(currentDate)){actionFn();return;}
+  if(!isAdmin()){showLockedModal();return;}
+  _pendingAdminAction=actionFn;showLockedModal();
+}
+function showLockedModal(){
+  if(isAdmin()){
+    // Admin: ask for reason to allow editing
+    document.getElementById('lockedModalBody').innerHTML=
+      '<p style="color:var(--gray-600);font-size:13px;line-height:1.5;margin-bottom:12px">Este dia esta cerrado. Como administrador podes editarlo, pero se registrara la reapertura.</p>'+
+      '<div class="form-group"><label>Motivo de reapertura (obligatorio)</label><textarea id="reopenReason" rows="3" placeholder="Ingrese el motivo por el cual necesita editar este dia cerrado..." style="width:100%;font-size:13px;border:1px solid var(--gray-300);border-radius:6px;padding:8px;resize:vertical;min-height:60px"></textarea></div>';
+    document.getElementById('lockedModalFooter').innerHTML=
+      '<button class="btn btn-outline" onclick="_cancelReopen()">Cancelar</button><button class="btn btn-primary" onclick="_confirmReopen()">Continuar</button>';
+    document.getElementById('lockedModal').classList.add('show');
+  } else {
+    // Operator: just inform
+    document.getElementById('lockedModalBody').innerHTML=
+      '<div style="text-align:center;padding:10px 0">'+
+      '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--red-500)" stroke-width="2" style="margin-bottom:12px"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>'+
+      '<h3 style="font-size:16px;font-weight:700;color:var(--red-600);margin-bottom:6px">DIA CERRADO</h3>'+
+      '<p style="color:var(--gray-600);font-size:13px">Solo un administrador puede modificar este dia.</p></div>';
+    document.getElementById('lockedModalFooter').innerHTML=
+      '<button class="btn btn-primary" onclick="closeLockedModal()">Entendido</button>';
+    document.getElementById('lockedModal').classList.add('show');
+  }
+}
+function _cancelReopen(){_pendingAdminAction=null;closeLockedModal();}
+function _confirmReopen(){
+  var reason=document.getElementById('reopenReason').value.trim();
+  if(!reason){toast('El motivo es obligatorio');document.getElementById('reopenReason').focus();return;}
+  // Log audit
+  var day=getDay(currentDate);
+  if(!day.audit)day.audit=[];
+  var now=new Date();
+  var ts=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+  day.audit.push({type:'reapertura',user:currentUser.username,timestamp:ts,reason:reason});
+  saveStore();
+  closeLockedModal();
+  // Execute the pending action
+  if(_pendingAdminAction){var fn=_pendingAdminAction;_pendingAdminAction=null;fn();}
+}
 function closeLockedModal(){document.getElementById('lockedModal').classList.remove('show');}
 function openModal(){document.getElementById('modalOverlay').classList.add('show');}
 function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
 
 function openPollingModal(server){
-  if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}
+  _adminGate(function(){_openPollingModalInner(server);});
+}
+function _openPollingModalInner(server){
   const day=getDay(currentDate);const isEdit=!!server;
   let beg='',end='';
   if(isEdit){const es=day.pollings.filter(p=>p.server===server);const b=es.find(e=>e.phase==='BEGINNING');const e=es.find(e=>e.phase==='ENDING');beg=b?b.time:'';end=e?e.time:'';}
@@ -418,12 +463,11 @@ function savePolling(old){
   if(end)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:end,note:null});
   saveStore();closeModal();render();toast('Guardado');
 }
-function deletePolling(s){if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}if(!confirm('¿Eliminar '+s+'?'))return;getDay(currentDate).pollings=getDay(currentDate).pollings.filter(p=>p.server!==s);saveStore();render();toast('Eliminado');}
+function deletePolling(s){_adminGate(function(){if(!confirm('Eliminar '+s+'?'))return;getDay(currentDate).pollings=getDay(currentDate).pollings.filter(function(p){return p.server!==s;});saveStore();render();toast('Eliminado');});}
 
-function openBackupModal(idx){
-  if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}
+function openBackupModal(idx){_adminGate(function(){_openBackupModalInner(idx);});}
+function _openBackupModalInner(idx){
   const day=getDay(currentDate);const b=idx!==undefined?day.backups[idx]:null;
-  const iniDate=b&&b.iniDate?b.iniDate:currentDate;
   const endDate=b&&b.endDate?b.endDate:currentDate;
   document.getElementById('modalTitle').textContent=b?'Editar Backup':'Nuevo Backup';
   document.getElementById('modalBody').innerHTML='<div class="form-row"><div class="form-group"><label>Nombre</label><select id="mBkN">'+BKN.map(n=>'<option value="'+n+'"'+(b&&b.name===n?' selected':'')+'>'+n+'</option>').join('')+'</select></div><div class="form-group"><label>JOB</label><select id="mBkJ"><option value="">—</option>'+JOBS.map(j=>'<option value="'+j+'"'+(b&&b.job===j?' selected':'')+'>'+j+'</option>').join('')+'</select></div></div><div class="form-row"><div class="form-group"><label>Fecha Inicio</label><input type="date" id="mBkID" value="'+iniDate+'" onchange="autoCalcBkpDur()"></div><div class="form-group"><label>Hora Inicio</label><input type="time" id="mBkI" value="'+(b?b.iniTime||'':'')+'" onchange="autoCalcBkpDur()"></div></div><div class="form-row"><div class="form-group"><label>Fecha Fin</label><input type="date" id="mBkED" value="'+endDate+'" onchange="autoCalcBkpDur()"></div><div class="form-group"><label>Hora Fin</label><input type="time" id="mBkE" value="'+(b?b.endTime||'':'')+'" onchange="autoCalcBkpDur()"></div></div><div class="form-row"><div class="form-group"><label>Duracion (auto)</label><input id="mBkD" value="'+(b?b.duration||'':'')+'" placeholder="Se calcula solo" readonly style="background:var(--gray-100);cursor:default"></div><div class="form-group"><label>Estado</label><input id="mBkS" value="'+(b?b.status||'':'')+'" placeholder="Robot Fail"></div></div>';
@@ -442,10 +486,12 @@ function saveBackup(idx){
   const o={name:document.getElementById('mBkN').value,iniDate:iniDate,iniTime:iniTime,endDate:endDate,endTime:endTime,job:document.getElementById('mBkJ').value||null,duration:duration,status:document.getElementById('mBkS').value||null};
   if(idx!==undefined)day.backups[idx]=o;else day.backups.push(o);saveStore();closeModal();render();toast('Guardado');
 }
-function deleteBackup(i){if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}if(!confirm('¿Eliminar?'))return;getDay(currentDate).backups.splice(i,1);saveStore();render();toast('Eliminado');}
+function deleteBackup(i){_adminGate(function(){if(!confirm('Eliminar?'))return;getDay(currentDate).backups.splice(i,1);saveStore();render();toast('Eliminado');});}
 
 function openProcessModal(idx){
-  if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}
+  _adminGate(function(){_openProcessModalInner(idx);});
+}
+function _openProcessModalInner(idx){
   const day=getDay(currentDate);const p=idx!==undefined?day.processes[idx]:null;
   document.getElementById('modalTitle').textContent=p?'Editar Proceso':'Nuevo Proceso';
   const isNew=!p||!PROCS.includes(p.name);
@@ -462,7 +508,7 @@ function saveProcess(idx){
   const o={name:name,status:document.getElementById('mPS').value};
   if(idx!==undefined)day.processes[idx]=o;else day.processes.push(o);saveStore();closeModal();render();toast('Guardado');
 }
-function deleteProcess(i){if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}if(!confirm('¿Eliminar?'))return;getDay(currentDate).processes.splice(i,1);saveStore();render();toast('Eliminado');}
+function deleteProcess(i){_adminGate(function(){if(!confirm('Eliminar?'))return;getDay(currentDate).processes.splice(i,1);saveStore();render();toast('Eliminado');});}
 
 
 // ===== AUTH SYSTEM =====
@@ -496,7 +542,7 @@ function doLogin(){
   badge.textContent=user.shift;
   badge.className='shift-badge '+user.cssClass;
   if(user.role==='admin'){
-    document.getElementById('dashBtn').style.display='';
+    document.getElementById('dashBtn').style.display='';document.getElementById('auditBtn').style.display='';
   }
   document.getElementById('loginError').textContent='';
 }
@@ -530,7 +576,7 @@ function checkSession(){
     badge.textContent=USERS[u].shift;
     badge.className='shift-badge '+USERS[u].cssClass;
     if(USERS[u].role==='admin'){
-      document.getElementById('dashBtn').style.display='';
+      document.getElementById('dashBtn').style.display='';document.getElementById('auditBtn').style.display='';
     }
   }
 }
@@ -894,9 +940,8 @@ function addTimelineNote(){
   renderTimeline(day);
   toast('Nota agregada');
 }
-function deleteTimelineNote(id){
-  if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();return;}
-  if(!confirm('Eliminar esta nota?'))return;
+function deleteTimelineNote(id){_adminGate(function(){if(!confirm('Eliminar esta nota?'))return;_doDeleteTimelineNote(id);});}
+function _doDeleteTimelineNote(id){
   const day=getDay(currentDate);
   if(day.timeline)day.timeline=day.timeline.filter(n=>n.id!==id);
   saveStore();renderTimeline(day);toast('Nota eliminada');
@@ -998,6 +1043,9 @@ function saveCierre(){
     readBy:{}
   };
   day.handovers.push(entry);
+  // Audit log: register closure
+  if(!day.audit)day.audit=[];
+  day.audit.push({type:'cierre',user:currentUser.username,timestamp:ts,detail:'Pase de turno - '+entry.shiftLabel});
   // Create notification
   if(!day.notifications)day.notifications=[];
   day.notifications.push({
@@ -1334,5 +1382,38 @@ doLogout=function(){
   document.getElementById('novedadesSection').style.display='none';
   document.getElementById('notifPanel').classList.remove('show');
 };
+
+// ===== AUDIT VIEW =====
+function openAuditView(){
+  // Collect all audit entries from all days
+  var entries=[];
+  Object.keys(store).sort().reverse().forEach(function(d){
+    var day=store[d];
+    if(day.audit){
+      day.audit.forEach(function(a){
+        entries.push(Object.assign({},a,{date:d}));
+      });
+    }
+  });
+  var overlay=document.getElementById('auditOverlay');
+  var body=document.getElementById('auditBody');
+  if(!entries.length){
+    body.innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--gray-400)"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px;opacity:.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><p style="font-size:14px">No hay registros de auditoria</p></div>';
+  } else {
+    var h='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr><th style="text-align:left;padding:8px 10px;border-bottom:2px solid var(--gray-200);font-size:11px;color:var(--gray-500);text-transform:uppercase">Fecha</th><th style="text-align:left;padding:8px 10px;border-bottom:2px solid var(--gray-200);font-size:11px;color:var(--gray-500);text-transform:uppercase">Hora</th><th style="text-align:left;padding:8px 10px;border-bottom:2px solid var(--gray-200);font-size:11px;color:var(--gray-500);text-transform:uppercase">Tipo</th><th style="text-align:left;padding:8px 10px;border-bottom:2px solid var(--gray-200);font-size:11px;color:var(--gray-500);text-transform:uppercase">Usuario</th><th style="text-align:left;padding:8px 10px;border-bottom:2px solid var(--gray-200);font-size:11px;color:var(--gray-500);text-transform:uppercase">Detalle / Motivo</th></tr></thead><tbody>';
+    entries.forEach(function(e){
+      var dt=e.timestamp.split(' ');
+      var isReopen=e.type==='reapertura';
+      var typeStyle=isReopen?'background:#fef2f2;color:#dc2626;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600':'background:#ecfdf5;color:#059669;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:600';
+      var typeLabel=isReopen?'REAPERTURA':'CIERRE';
+      var detail=isReopen?(e.reason||'Sin motivo'):(e.detail||'');
+      h+='<tr style="border-bottom:1px solid var(--gray-100)"><td style="padding:8px 10px;white-space:nowrap">'+dt[0]+'</td><td style="padding:8px 10px;white-space:nowrap;font-family:monospace;font-size:11px">'+dt[1]+'</td><td style="padding:8px 10px"><span style="'+typeStyle+'">'+typeLabel+'</span></td><td style="padding:8px 10px;font-weight:500">'+escHtml(e.user)+'</td><td style="padding:8px 10px;color:var(--gray-600);max-width:300px;word-break:break-word">'+escHtml(detail)+'</td></tr>';
+    });
+    h+='</tbody></table>';
+    body.innerHTML=h;
+  }
+  overlay.classList.add('show');
+}
+function closeAuditView(){document.getElementById('auditOverlay').classList.remove('show');}
 
 loadStoreLocal();checkSession();render();

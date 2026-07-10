@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Responsive mobile: fix tablas y layout bajo 480px',
+    'message': 'Log de auditoria para dias cerrados/reabiertos',
     'content': content,
     'sha': sha,
     'branch': BRANCH
