@@ -858,14 +858,39 @@ function copyFromPrev(){
   const d=new Date(currentDate+'T12:00:00');d.setDate(d.getDate()-1);
   const prev=d.toISOString().split('T')[0];
   const src=store[prev];
-  if(!src||(!src.pollings.length&&!src.backups.length&&!src.processes.length)){toast('El día anterior no tiene datos');return;}
-  if(!confirm('Copiar datos de '+fmt(prev)+'? Esto reemplazará los datos actuales.'))return;
-  const dst=getDay(currentDate);
-  dst.pollings=JSON.parse(JSON.stringify(src.pollings)).map(p=>({...p,time:'',id:uid()}));
-  dst.backups=JSON.parse(JSON.stringify(src.backups)).map(b=>({...b,iniDate:currentDate,iniTime:'',endDate:currentDate,endTime:'',duration:'',id:uid()}));
-  dst.processes=JSON.parse(JSON.stringify(src.processes)).map(p=>({...p,status:'',id:uid()}));
+  if(!src||(!src.pollings.length&&!src.backups.length&&!src.processes.length)){toast('El dia anterior no tiene datos');return;}
+  var pLen=src.pollings.length,bLen=src.backups.length,prLen=src.processes.length;
+  document.getElementById('modalTitle').textContent='Copiar dia anterior ('+fmt(prev)+')';
+  document.getElementById('modalBody').innerHTML=
+    '<div style="padding:8px 0">'+
+    '<p style="margin-bottom:14px;color:var(--gray-700);font-size:13px;line-height:1.5">Se copiara la <b>estructura</b> del dia <b>'+fmt(prev)+'</b> al dia actual. Los valores quedaran vacios para carga manual.</p>'+
+    '<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;padding:12px 16px;margin-bottom:14px">'+
+    '<div style="font-size:12px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Que se copia</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:13px">'+
+    '<div><b style="color:#6A0DAD">'+pLen+'</b> pollings <span style="color:var(--gray-400)">(nombre, region, fase)</span></div>'+
+    '<div><b style="color:#6A0DAD">'+bLen+'</b> backups <span style="color:var(--gray-400)">(nombre)</span></div>'+
+    '<div><b style="color:#6A0DAD">'+prLen+'</b> procesos <span style="color:var(--gray-400)">(nombre)</span></div>'+
+    '</div></div>'+
+    '<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:10px 14px">'+
+    '<div style="font-size:12px;font-weight:600;color:#dc2626;margin-bottom:4px">Importante</div>'+
+    '<ul style="font-size:12px;color:#991b1b;padding-left:16px;margin:0;line-height:1.6">'+
+    '<li>Horas, duraciones y estados <b>NO</b> se copian (quedan vacios)</li>'+
+    '<li>Los datos actuales del dia de hoy <b>se reemplazaran</b></li>'+
+    '</ul></div>'+
+    '</div>';
+  document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="_execCopy()">Confirmar copia</button>';
+  openModal();
+}
+function _execCopy(){
+  const d=new Date(currentDate+'T12:00:00');d.setDate(d.getDate()-1);
+  var prev=d.toISOString().split('T')[0];
+  var src=store[prev];
+  var dst=getDay(currentDate);
+  dst.pollings=JSON.parse(JSON.stringify(src.pollings)).map(function(p){return Object.assign({},p,{time:'',id:uid()});});
+  dst.backups=JSON.parse(JSON.stringify(src.backups)).map(function(b){return Object.assign({},b,{iniDate:currentDate,iniTime:'',endDate:currentDate,endTime:'',duration:'',id:uid()});});
+  dst.processes=JSON.parse(JSON.stringify(src.processes)).map(function(p){return Object.assign({},p,{status:'',id:uid()});});
   dst.dayType=src.dayType;
-  saveStore();render();toast('Datos copiados (horas limpias para rellenar)');
+  saveStore();closeModal();render();toast('Datos copiados (horas limpias para rellenar)');
 }
 
 // Export CSV
