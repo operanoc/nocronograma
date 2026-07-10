@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Indicador idle en stats + duracion polling ya visible',
+    'message': 'Fix: ocultar dashBtn/auditBtn en logout y login no-admin',
     'content': content,
     'sha': sha,
     'branch': BRANCH

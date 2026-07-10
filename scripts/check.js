@@ -553,6 +553,8 @@ function doLogin(){
   badge.className='shift-badge '+user.cssClass;
   if(user.role==='admin'){
     document.getElementById('dashBtn').style.display='';document.getElementById('auditBtn').style.display='';
+  }else{
+    document.getElementById('dashBtn').style.display='none';document.getElementById('auditBtn').style.display='none';
   }
   document.getElementById('loginError').textContent='';
 }
@@ -571,6 +573,7 @@ function doLogout(){
   document.getElementById('loginOverlay').classList.remove('hide');
   document.getElementById('userBar').style.display='none';
   document.getElementById('dashBtn').style.display='none';
+  document.getElementById('auditBtn').style.display='none';
   document.getElementById('loginUser').value='';
   document.getElementById('loginPass').value='';
 }
@@ -587,6 +590,8 @@ function checkSession(){
     badge.className='shift-badge '+USERS[u].cssClass;
     if(USERS[u].role==='admin'){
       document.getElementById('dashBtn').style.display='';document.getElementById('auditBtn').style.display='';
+    }else{
+      document.getElementById('dashBtn').style.display='none';document.getElementById('auditBtn').style.display='none';
     }
   }
 }
