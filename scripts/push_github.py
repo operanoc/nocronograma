@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Log de auditoria para dias cerrados/reabiertos',
+    'message': 'Indicador idle en stats + duracion polling ya visible',
     'content': content,
     'sha': sha,
     'branch': BRANCH

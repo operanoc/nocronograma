@@ -195,7 +195,17 @@ function render(){
   document.getElementById('statPollings').textContent=total>0?(endings+'/'+Math.floor(total/2)):'0/0';
   document.getElementById('statBackups').textContent=day.backups.length;
   const okP=day.processes.filter(p=>p.status==='OK').length;
-  document.getElementById('statProcesses').textContent=day.processes.length>0?(okP+'/'+day.processes.length):'—';
+  document.getElementById('statProcesses').textContent=day.processes.length>0?(okP+'/'+day.processes.length):'\u2014';
+  // Idle warning: check if day has no data after X hours into the shift
+  var _hasData=day.pollings.length>0||day.backups.length>0||day.processes.length>0;
+  var _idleHrs=2; // hours threshold
+  var _now=new Date();
+  var _hrsIntoDay=(_now.getHours()+(_now.getMinutes()/60));
+  var _showIdle=currentDate===_now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0')+'-'+String(_now.getDate()).padStart(2,'0')&&_hrsIntoDay>=_idleHrs&&!_hasData;
+  document.getElementById('statCardServers').classList.toggle('stat-idle',_showIdle);
+  document.getElementById('statCardPollings').classList.toggle('stat-idle',_showIdle);
+  document.getElementById('statCardBackups').classList.toggle('stat-idle',_showIdle);
+  document.getElementById('statCardProcesses').classList.toggle('stat-idle',_showIdle);
   const _locked=isDayLocked(currentDate)&&!isAdmin();
   if(activeTab==='pollings')renderPollings(day,_locked);else if(activeTab==='backups')renderBackups(day,_locked);else renderProcesses(day,_locked);
   checkLock();
