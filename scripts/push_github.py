@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Procesos: solo OK/Error como opciones de estado',
+    'message': 'Modal de confirmacion en Copiar dia anterior',
     'content': content,
     'sha': sha,
     'branch': BRANCH
