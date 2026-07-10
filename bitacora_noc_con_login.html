@@ -80,11 +80,18 @@ main{flex:1;max-width:1200px;margin:0 auto;width:100%;padding:16px}
 .quick-bar .sep{width:1px;height:20px;background:var(--gray-200);margin:0 4px}
 .search-box{position:relative;flex:1;min-width:150px;max-width:250px}
 .search-box input{width:100%;padding-left:30px;font-size:13px}
+
+.stat-idle{animation:pulse-amber 2s ease-in-out infinite}
+.stat-idle .stat-value{color:var(--amber-600)!important}
+.stat-idle .stat-label{color:var(--amber-800)!important;font-weight:600}
+.stat-idle::after{content:'';position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--amber-600);animation:pulse-dot 1.5s ease-in-out infinite}
+@keyframes pulse-amber{0%,100%{background:var(--white)}50%{background:var(--amber-50)}}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
 .search-box svg{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--gray-400);width:14px;height:14px}
 
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
-.stat-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px;text-align:center;transition:background .3s}
+.stat-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px;text-align:center;transition:background .3s;position:relative}
 .stat-value{font-size:22px;font-weight:700;color:var(--gray-900)}
 .stat-label{font-size:11px;color:var(--gray-500);margin-top:2px}
 .stat-emerald{color:var(--emerald-600)}
@@ -596,10 +603,10 @@ html.dark .notif-item.unread{background:#082f49}
   </div>
 
   <div class="stats">
-    <div class="stat-card"><div class="stat-value" id="statServers">0</div><div class="stat-label">Servidores</div></div>
-    <div class="stat-card"><div class="stat-value stat-emerald" id="statPollings">0/0</div><div class="stat-label">Pollings OK</div></div>
-    <div class="stat-card"><div class="stat-value stat-sky" id="statBackups">0</div><div class="stat-label">Backups</div></div>
-    <div class="stat-card"><div class="stat-value stat-violet" id="statProcesses">—</div><div class="stat-label">Procesos OK</div></div>
+    <div class="stat-card" id="statCardServers"><div class="stat-value" id="statServers">0</div><div class="stat-label">Servidores</div></div>
+    <div class="stat-card" id="statCardPollings"><div class="stat-value stat-emerald" id="statPollings">0/0</div><div class="stat-label">Pollings OK</div></div>
+    <div class="stat-card" id="statCardBackups"><div class="stat-value stat-sky" id="statBackups">0</div><div class="stat-label">Backups</div></div>
+    <div class="stat-card" id="statCardProcesses"><div class="stat-value stat-violet" id="statProcesses">—</div><div class="stat-label">Procesos OK</div></div>
   </div>
 
   <div class="tabs-bar">
@@ -846,7 +853,17 @@ function render(){
   document.getElementById('statPollings').textContent=total>0?(endings+'/'+Math.floor(total/2)):'0/0';
   document.getElementById('statBackups').textContent=day.backups.length;
   const okP=day.processes.filter(p=>p.status==='OK').length;
-  document.getElementById('statProcesses').textContent=day.processes.length>0?(okP+'/'+day.processes.length):'—';
+  document.getElementById('statProcesses').textContent=day.processes.length>0?(okP+'/'+day.processes.length):'\u2014';
+  // Idle warning: check if day has no data after X hours into the shift
+  var _hasData=day.pollings.length>0||day.backups.length>0||day.processes.length>0;
+  var _idleHrs=2; // hours threshold
+  var _now=new Date();
+  var _hrsIntoDay=(_now.getHours()+(_now.getMinutes()/60));
+  var _showIdle=currentDate===_now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0')+'-'+String(_now.getDate()).padStart(2,'0')&&_hrsIntoDay>=_idleHrs&&!_hasData;
+  document.getElementById('statCardServers').classList.toggle('stat-idle',_showIdle);
+  document.getElementById('statCardPollings').classList.toggle('stat-idle',_showIdle);
+  document.getElementById('statCardBackups').classList.toggle('stat-idle',_showIdle);
+  document.getElementById('statCardProcesses').classList.toggle('stat-idle',_showIdle);
   const _locked=isDayLocked(currentDate)&&!isAdmin();
   if(activeTab==='pollings')renderPollings(day,_locked);else if(activeTab==='backups')renderBackups(day,_locked);else renderProcesses(day,_locked);
   checkLock();
