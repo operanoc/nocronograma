@@ -1,7 +1,26 @@
 {
   "date": "2026-07-11",
   "dayType": "FIN_DE_SEMANA",
-  "pollings": [],
+  "pollings": [
+    {
+      "id": "mrfseqp482ykk",
+      "server": "Perú D3",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-11",
+      "time": "00:01",
+      "note": null
+    },
+    {
+      "id": "mrfseqp4dnfcg",
+      "server": "Perú D3",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-11",
+      "time": "00:09",
+      "note": null
+    }
+  ],
   "backups": [],
   "processes": [],
   "notes": ""
