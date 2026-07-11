@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Refactor: menu hamburguesa admin con import/export/dashboard/auditoria',
+    'message': 'Menu hamburguesa admin movido a la izquierda del header',
     'content': content,
     'sha': sha,
     'branch': BRANCH
