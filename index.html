@@ -935,7 +935,14 @@ function saveStore(){
 }
 function getDay(d){if(!store[d]){const dt=new Date(d+'T12:00:00');const dow=dt.getDay();store[d]={date:d,dayType:(dow===0||dow===6)?'FIN_DE_SEMANA':'DIARIA',pollings:[],backups:[],processes:[],notes:''};saveStore();}return store[d];}
 function isAdmin(){return currentUser&&currentUser.role==='admin';}
-function isDayLocked(d){const day=store[d];return day&&day.handovers&&day.handovers.length>0;}
+function isDayLocked(d){
+  const day=store[d];
+  if(!day||!day.handovers||!day.handovers.length) return false;
+  if(isAdmin()) return false;
+  const sk=currentUser?currentUser.shiftKey:'';
+  if(!sk) return day.handovers.length>0;
+  return day.handovers.some(function(h){return h.shift===sk;});
+}
 function checkLock(){
   const locked=isDayLocked(currentDate)&&!isAdmin();
   document.getElementById('lockBanner').style.display=locked?'flex':'none';
