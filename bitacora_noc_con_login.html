@@ -265,7 +265,30 @@ html.dark .toast{background:var(--gray-100);color:var(--gray-900)}
 .dash-controls select,.dash-controls button{font-size:12px;padding:6px 12px;border-radius:var(--radius);border:1px solid var(--gray-300);background:var(--white);color:var(--gray-700);cursor:pointer}
 .dash-controls select:focus{border-color:var(--sky-600)}
 .dash-controls .btn-dash-active{background:var(--emerald-600);color:#fff;border-color:var(--emerald-600)}
-.dash-body{flex:1;overflow-y:auto;padding:20px;max-width:1400px;margin:0 auto;width:100%}
+.dash-body{flex:1;overflow-y:auto;padding:0;max-width:1600px;margin:0 auto;width:100%;display:flex}
+.dash-sidebar{width:280px;flex-shrink:0;background:var(--white);border-right:1px solid var(--gray-200);padding:16px;overflow-y:auto}
+.dash-content{flex:1;overflow-y:auto;padding:20px;min-width:0}
+.dash-cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dash-cal-nav button{background:none;border:1px solid var(--gray-300);border-radius:6px;padding:4px 8px;cursor:pointer;color:var(--gray-600);display:flex;align-items:center}
+.dash-cal-nav button:hover{background:var(--gray-100)}
+.dash-cal-nav span{font-size:14px;font-weight:600;color:var(--gray-800)}
+.dash-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;text-align:center;font-size:12px}
+.dash-cal-grid .dc-dayname{padding:4px 0;font-weight:600;color:var(--gray-500);font-size:10px;text-transform:uppercase}
+.dash-cal-grid .dc-day{padding:6px 2px;border-radius:4px;cursor:pointer;transition:background .1s;color:var(--gray-700)}
+.dash-cal-grid .dc-day:hover{background:var(--gray-100)}
+.dash-cal-grid .dc-day.other{color:var(--gray-300)}
+.dash-cal-grid .dc-day.today{background:var(--emerald-100);color:var(--emerald-800);font-weight:700}
+.dash-cal-grid .dc-day.selected{background:var(--emerald-600);color:#fff;font-weight:700}
+.dash-cal-grid .dc-day.has-data::after{content:'';display:block;width:4px;height:4px;border-radius:50%;background:var(--emerald-600);margin:2px auto 0}
+.dash-cal-grid .dc-day.has-data.selected::after{background:#fff}
+.dash-cal-grid .dc-day.has-err::after{background:var(--red-500)}
+.dash-sidebar-legend{margin-top:14px;padding-top:12px;border-top:1px solid var(--gray-200);font-size:11px;color:var(--gray-500)}
+.dash-sidebar-legend div{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.dash-sidebar-legend .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dash-sidebar-actions{margin-top:14px;padding-top:12px;border-top:1px solid var(--gray-200);display:flex;flex-direction:column;gap:6px}
+.dash-sidebar-actions button{width:100%;padding:8px;border-radius:var(--radius);border:1px solid var(--gray-300);background:var(--white);color:var(--gray-700);font-size:12px;cursor:pointer;text-align:left;display:flex;align-items:center;gap:6px;transition:background .1s}
+.dash-sidebar-actions button:hover{background:var(--gray-100)}
+@media(max-width:900px){.dash-body{flex-direction:column}.dash-sidebar{width:100%;border-right:none;border-bottom:1px solid var(--gray-200);max-height:280px}}
 .dash-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:20px}
 .dash-stat{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:16px;text-align:center;transition:background .3s}
 .dash-stat .dash-val{font-size:28px;font-weight:700;color:var(--gray-900)}
@@ -471,13 +494,15 @@ html.dark .notif-item.unread{background:#082f49}
       <button onclick="downloadDashReport()" style="background:var(--sky-600);color:#fff;border-color:var(--sky-600);font-weight:600">Descargar Reporte</button>
       <button onclick="downloadCierresReport()" style="background:var(--amber-600);color:#fff;border-color:var(--amber-600);font-weight:600">Descargar Pases de Turno</button>
       <span style="display:inline-flex;align-items:center;gap:6px;margin-left:4px">
-        <input type="date" id="dashDatePicker" style="padding:5px 8px;font-size:12px;border:1px solid var(--gray-300);border-radius:var(--radius);background:var(--white);color:var(--gray-800)">
         <button onclick="downloadDayReport()" style="background:var(--emerald-600);color:#fff;border:none;padding:6px 12px;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer">Descargar Dia</button>
       </span>
       <button onclick="closeDashboard()" style="background:var(--gray-200);font-weight:600">Cerrar Dashboard</button>
     </div>
   </div>
-  <div class="dash-body" id="dashBody"></div>
+  <div class="dash-body" id="dashBody">
+    <div class="dash-sidebar" id="dashSidebar"></div>
+    <div class="dash-content" id="dashContent"></div>
+  </div>
 </div>
 
 <header class="header">
@@ -1457,13 +1482,73 @@ document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='
 checkSession();
 
 // ===== ADMIN DASHBOARD =====
+var _dashCalMonth,_dashCalYear,_dashCalSelected=null;
 function openDashboard(){
   if(!currentUser||currentUser.role!=='admin')return;
   document.getElementById('dashOverlay').classList.add('show');
+  var now=new Date();_dashCalMonth=now.getMonth();_dashCalYear=now.getFullYear();
+  _dashCalSelected=null;
+  renderDashSidebar();
   renderDashboard();
 }
 function closeDashboard(){
   document.getElementById('dashOverlay').classList.remove('show');
+}
+function renderDashSidebar(){
+  var sb=document.getElementById('dashSidebar');
+  var today=new Date();today.setHours(12,0,0,0);
+  var selDate=_dashCalSelected?new Date(_dashCalSelected+'T12:00:00'):null;
+  var first=new Date(_dashCalYear,_dashCalMonth,1);
+  var last=new Date(_dashCalYear,_dashCalMonth+1,0);
+  var startDay=(first.getDay()+6)%7;
+  var h='';
+  // Calendar nav
+  h+='<div class="dash-cal-nav"><button onclick="_dashCalNav(-1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><span>'+MN[_dashCalMonth]+' '+_dashCalYear+'</span><button onclick="_dashCalNav(1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button></div>';
+  // Grid
+  h+='<div class="dash-cal-grid">';
+  DN.forEach(function(d){h+='<div class="dc-dayname">'+d+'</div>';});
+  // Previous month fill
+  for(var i=0;i<startDay;i++){
+    var dd=new Date(_dashCalYear,_dashCalMonth,-(startDay-i-1));
+    h+='<div class="dc-day other" onclick="_dashCalClick('+(_dashCalMonth===0?_dashCalYear-1:_dashCalYear)+','+(_dashCalMonth===0?11:_dashCalMonth-1)+','+dd.getDate()+')">'+dd.getDate()+'</div>';
+  }
+  // Current month
+  for(var d=1;d<=last.getDate();d++){
+    var ds=_dashCalYear+'-'+String(_dashCalMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var isT=today.getFullYear()===_dashCalYear&&today.getMonth()===_dashCalMonth&&today.getDate()===d;
+    var isS=selDate&&selDate.getFullYear()===_dashCalYear&&selDate.getMonth()===_dashCalMonth&&selDate.getDate()===d;
+    var hasD=!!store[ds];
+    var hasErr=hasD&&store[ds].backups&&store[ds].backups.some(function(b){return b.status&&(b.status.indexOf('Fail')>=0||b.status.indexOf('SUSP')>=0);});
+    var cls='dc-day';
+    if(isS)cls+=' selected';
+    else if(isT)cls+=' today';
+    if(hasD)cls+=hasErr?' has-err has-data':' has-data';
+    h+='<div class="'+cls+'" onclick="_dashCalClick('+_dashCalYear+','+_dashCalMonth+','+d+')" title="'+ds+'">'+d+'</div>';
+  }
+  // Next month fill
+  var rem=42-startDay-last.getDate();
+  for(var j=1;j<=rem;j++){
+    h+='<div class="dc-day other" onclick="_dashCalClick('+(_dashCalMonth===11?_dashCalYear+1:_dashCalYear)+','+(_dashCalMonth===11?0:_dashCalMonth+1)+','+j+')">'+j+'</div>';
+  }
+  h+='</div>';
+  // Legend
+  h+='<div class="dash-sidebar-legend"><div><span class="dot" style="background:var(--emerald-600)"></span> Con datos</div><div><span class="dot" style="background:var(--red-500)"></span> Con errores</div></div>';
+  // Actions
+  h+='<div class="dash-sidebar-actions">';
+  h+='<button onclick="downloadDayReport()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Descargar dia '+( _dashCalSelected||'...')+'</button>';
+  h+='</div>';
+  sb.innerHTML=h;
+}
+function _dashCalNav(dir){
+  _dashCalMonth+=dir;
+  if(_dashCalMonth>11){_dashCalMonth=0;_dashCalYear++;}
+  if(_dashCalMonth<0){_dashCalMonth=11;_dashCalYear--;}
+  renderDashSidebar();
+}
+function _dashCalClick(y,m,d){
+  var dt=new Date(y,m,d);
+  _dashCalSelected=dt.toISOString().split('T')[0];
+  renderDashSidebar();
 }
 
 function getDateRange(){
@@ -1510,7 +1595,7 @@ function fmtSecs(s){
 }
 
 function renderDashboard(){
-  const body=document.getElementById('dashBody');
+  const body=document.getElementById('dashContent');
   const{period,from,to}=getDateRange();
   const days=getDaysInRange(from,to);
   const totalDays=days.length;
@@ -2039,10 +2124,8 @@ function reportHeader(title,subtitle){
 }
 
 function downloadDayReport(){
-  const dateInput=document.getElementById('dashDatePicker');
-  const dateStr=dateInput.value;
-  if(!dateStr){toast('Selecciona una fecha');return;}
-  const day=store[dateStr]||{date:dateStr,dayType:'DIARIA',pollings:[],backups:[],processes:[],notes:'',timeline:[],handovers:[]};
+  var dateStr=_dashCalSelected||currentDate;
+  var day=store[dateStr]||{date:dateStr,dayType:'DIARIA',pollings:[],backups:[],processes:[],notes:'',timeline:[],handovers:[]};
   const now=new Date();
   let h=reportHeader('Bitacora NOC — '+fmt(dateStr),'Generado: '+now.toLocaleString('es-AR'));
   // Day info
