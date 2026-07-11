@@ -174,8 +174,8 @@ function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(
 let toastT;function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),2500);}
 
 // Admin menu
-function toggleAdminMenu(){document.getElementById('adminMenu').classList.toggle('show');}
-function closeAdminMenu(){document.getElementById('adminMenu').classList.remove('show');}
+function toggleAdminMenu(){document.getElementById('adminMenu').classList.toggle('show');document.getElementById('adminOverlay').classList.toggle('show');}
+function closeAdminMenu(){document.getElementById('adminMenu').classList.remove('show');document.getElementById('adminOverlay').classList.remove('show');}
 function toggleExportMenu(){document.getElementById('exportDropdown').classList.toggle('show');}
 function closeExportMenu(){document.getElementById('exportDropdown').classList.remove('show');}
 
@@ -1593,9 +1593,9 @@ document.addEventListener('click',e=>{
   if(wrap&&!e.target.closest('#notifWrap')){
     document.getElementById('notifPanel').classList.remove('show');
   }
-  // Close admin menu on outside click
-  if(!e.target.closest('#adminMenuWrap')){
-    document.getElementById('adminMenu').classList.remove('show');
+  // Close admin menu on outside click (overlay handles it, this is backup)
+  if(!e.target.closest('#adminMenuWrap')&&!e.target.closest('.admin-menu')&&!e.target.closest('.admin-overlay')){
+    closeAdminMenu();
   }
   // Close export dropdown on outside click
   var edd=document.getElementById('exportDropdown');
