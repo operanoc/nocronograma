@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,17 +20,17 @@
   --shadow-md:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -2px rgba(0,0,0,.1);
 }
 html.dark{
-  --bg:#0f172a;--white:#1e293b;--gray-50:#1e293b;--gray-100:#334155;
-  --gray-200:#475569;--gray-300:#64748b;--gray-400:#94a3b8;--gray-500:#94a3b8;
-  --gray-600:#cbd5e1;--gray-700:#e2e8f0;--gray-800:#f1f5f9;--gray-900:#f8fafc;
-  --emerald-50:#2d1050;--emerald-100:#3A0A60;--emerald-600:#B366E0;--emerald-700:#D4A0F0;--emerald-800:#E8CCFF;
-  --red-50:#450a0a;--red-100:#7f1d1d;--red-500:#f87171;--red-600:#fca5a5;--red-800:#fecaca;
-  --amber-50:#451a03;--amber-100:#78350f;--amber-600:#fbbf24;--amber-800:#fde68a;
-  --sky-50:#063d30;--sky-100:#085a44;--sky-600:#00E5B8;--sky-800:#7DF5DB;
-  --violet-50:#1a2d4d;--violet-100:#253f6b;--violet-600:#7DB8F0;--violet-800:#B0D4FF;
-  --orange-50:#431407;--orange-100:#7c2d12;--orange-800:#fdba74;
-  --shadow:0 1px 3px rgba(0,0,0,.4);
-  --shadow-md:0 4px 6px rgba(0,0,0,.5);
+  --bg:#0a0e27;--white:#141937;--gray-50:#141937;--gray-100:#1e2545;
+  --gray-200:#2a3155;--gray-300:#3d4570;--gray-400:#6b7399;--gray-500:#8b92b0;
+  --gray-600:#b0b6cc;--gray-700:#d0d4e4;--gray-800:#e8eaf2;--gray-900:#f5f6fa;
+  --emerald-50:#1f0840;--emerald-100:#2d0e5a;--emerald-600:#A855F7;--emerald-700:#C084FC;--emerald-800:#DDD6FE;
+  --red-50:#2a0808;--red-100:#451010;--red-500:#F87171;--red-600:#FCA5A5;--red-800:#FECACA;
+  --amber-50:#2a2008;--amber-100:#453510;--amber-600:#FBBF24;--amber-800:#FDE68A;
+  --sky-50:#042a24;--sky-100:#083d33;--sky-600:#00E5B8;--sky-800:#7DF5DB;
+  --violet-50:#141f3a;--violet-100:#1e2f55;--violet-600:#7DB8F0;--violet-800:#B0D4FF;
+  --orange-50:#2a1408;--orange-100:#452210;--orange-800:#FDBA74;
+  --shadow:0 1px 3px rgba(0,0,0,.5);
+  --shadow-md:0 4px 6px rgba(0,0,0,.6);
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--gray-800);line-height:1.5;min-height:100vh;display:flex;flex-direction:column;transition:background .3s,color .3s}
 a{color:inherit;text-decoration:none}
@@ -229,7 +229,7 @@ html.dark .toast{background:var(--gray-100);color:var(--gray-900)}
 
 /* ===== LOGIN SCREEN ===== */
 .login-overlay{position:fixed;inset:0;background:#0a0e27 url('login-bg.png') center/cover no-repeat;z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .4s;overflow:hidden}
-.login-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,150,199,.08) 0%,transparent 55%),rgba(10,14,39,.45);pointer-events:none}
+.login-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(168,85,247,.08) 0%,transparent 55%),rgba(10,14,39,.4);pointer-events:none}
 .login-overlay.hide{opacity:0;pointer-events:none}
 .login-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:50px 50px;pointer-events:none}
 .login-box{background:rgba(255,255,255,.97);border-radius:20px;box-shadow:0 25px 80px rgba(0,0,0,.5);width:100%;max-width:420px;padding:44px 38px;text-align:center;position:relative;z-index:1;backdrop-filter:blur(12px)}
@@ -239,7 +239,7 @@ html.dark .toast{background:var(--gray-100);color:var(--gray-900)}
 .login-subtitle{color:#64748b;font-size:14px;margin:0 0 2px;font-weight:500}
 .login-subtitle2{color:#94a3b8;font-size:12px;margin:0 0 28px;font-weight:400}
 .login-inputs-group{border:1.5px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#f8fafc;transition:border .2s,box-shadow .2s}
-.login-inputs-group:focus-within{border-color:#0284c7;box-shadow:0 0 0 3px rgba(2,132,199,.12);background:#fff}
+.login-inputs-group:focus-within{border-color:#A855F7;box-shadow:0 0 0 3px rgba(168,85,247,.12);background:#fff}
 .login-input-wrap{position:relative;display:flex;align-items:center}
 .login-input-wrap+.login-input-wrap{}
 .login-input-wrap .login-ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8;width:18px;height:18px;pointer-events:none;z-index:1}
@@ -247,15 +247,15 @@ html.dark .toast{background:var(--gray-100);color:var(--gray-900)}
 .login-input-wrap input::placeholder{color:#94a3b8}
 .login-eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;padding:4px;display:flex;align-items:center;transition:color .15s}
 .login-eye-btn:hover{color:#475569}
-.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,#0077b6,#0096c7);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.5px;margin-top:6px}
-.btn-login:hover{background:linear-gradient(135deg,#005f8a,#0077b6);transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,119,182,.35)}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,#6A0DAD,#8B5CF6);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.5px;margin-top:6px}
+.btn-login:hover{background:linear-gradient(135deg,#5A0C9D,#7C3AED);transform:translateY(-1px);box-shadow:0 6px 20px rgba(106,13,173,.35)}
 .btn-login:active{transform:translateY(0)}
 .btn-login svg{width:16px;height:16px}
 .login-bottom-row{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
 .login-remember{display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b;cursor:pointer;user-select:none}
-.login-remember input{accent-color:#0284c7;width:14px;height:14px}
-.login-forgot{font-size:12px;color:#0284c7;text-decoration:none;font-weight:500;transition:color .15s}
-.login-forgot:hover{color:#005f8a;text-decoration:underline}
+.login-remember input{accent-color:#A855F7;width:14px;height:14px}
+.login-forgot{font-size:12px;color:#A855F7;text-decoration:none;font-weight:500;transition:color .15s}
+.login-forgot:hover{color:#C084FC;text-decoration:underline}
 .login-error{color:#dc2626;font-size:12px;margin-top:12px;min-height:18px}
 .login-footer{position:absolute;bottom:24px;left:0;right:0;text-align:center;color:rgba(255,255,255,.3);font-size:11px;z-index:1;letter-spacing:.3px}
 .login-shift-badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;margin-top:4px}
@@ -478,14 +478,14 @@ html.dark .notif-item.unread{background:#082f49}
   <div class="login-box">
     <div class="login-logo-hex">
       <svg viewBox="0 0 100 100" fill="none">
-        <polygon points="50,3 93,27 93,73 50,97 7,73 7,27" fill="#0a1628" stroke="#00b4d8" stroke-width="2.5"/>
-        <polygon points="50,12 85,32 85,68 50,88 15,68 15,32" fill="none" stroke="rgba(0,180,216,0.25)" stroke-width="1"/>
+        <polygon points="50,3 93,27 93,73 50,97 7,73 7,27" fill="#0a1628" stroke="#A855F7" stroke-width="2.5"/>
+        <polygon points="50,12 85,32 85,68 50,88 15,68 15,32" fill="none" stroke="rgba(168,85,247,0.25)" stroke-width="1"/>
         <text x="50" y="56" text-anchor="middle" fill="#ffffff" font-size="26" font-weight="800" font-family="system-ui,Segoe UI,sans-serif">NOC</text>
         <circle cx="50" cy="78" r="5" stroke="#f77f00" stroke-width="1.5" fill="none"/>
         <ellipse cx="50" cy="78" rx="2.5" ry="5" stroke="#f77f00" stroke-width="1" fill="none"/>
         <line x1="44" y1="78" x2="56" y2="78" stroke="#f77f00" stroke-width="1"/>
-        <path d="M38,82 Q50,73 62,82" stroke="#00b4d8" stroke-width="1.2" fill="none" opacity=".5"/>
-        <path d="M34,86 Q50,74 66,86" stroke="#00b4d8" stroke-width="1" fill="none" opacity=".3"/>
+        <path d="M38,82 Q50,73 62,82" stroke="#00E5B8" stroke-width="1.2" fill="none" opacity=".5"/>
+        <path d="M34,86 Q50,74 66,86" stroke="#00E5B8" stroke-width="1" fill="none" opacity=".3"/>
       </svg>
     </div>
     <h2 class="login-title">BITACORA NOC</h2>
@@ -922,7 +922,7 @@ function toggleLoginPass(){var inp=document.getElementById('loginPass');var ic=d
 // Dark mode
 function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('bitacora_dark',document.documentElement.classList.contains('dark')?'1':'0');updateDarkIcon();}
 function updateDarkIcon(){const d=document.documentElement.classList.contains('dark');document.getElementById('darkIcon').innerHTML=d?'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>':'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';}
-if(localStorage.getItem('bitacora_dark')==='1'){document.documentElement.classList.add('dark');updateDarkIcon();}
+if(localStorage.getItem('bitacora_dark')==='0'){document.documentElement.classList.remove('dark');updateDarkIcon();}else{updateDarkIcon();}
 
 // Search filter
 function matchesFilter(text){const q=(SEARCH.value||'').toLowerCase();return!q||text.toLowerCase().includes(q);}
