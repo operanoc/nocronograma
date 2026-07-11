@@ -442,6 +442,10 @@ html.dark .notif-item.unread{background:#082f49}
 .admin-menu button:hover{background:var(--gray-100);color:var(--gray-900)}
 .admin-menu button svg{flex-shrink:0;color:var(--gray-400)}
 .admin-menu button:hover svg{color:var(--emerald-600)}
+.export-dropdown{display:none;position:absolute;top:100%;right:0;margin-top:4px;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);box-shadow:var(--shadow-md);min-width:220px;z-index:600;overflow:hidden;padding:4px 0;animation:fadeIn .15s ease}
+.export-dropdown.show{display:block}
+.export-dropdown button{display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;font-size:12px;color:var(--gray-700);background:none;border:none;cursor:pointer;text-align:left;transition:background .1s}
+.export-dropdown button:hover{background:var(--gray-100);color:var(--gray-900)}
 </style>
 </head>
 <body>
@@ -491,11 +495,17 @@ html.dark .notif-item.unread{background:#082f49}
         <option value="all">Historico</option>
       </select>
       <button class="btn-dash-active" onclick="renderDashboard()">Actualizar</button>
-      <button onclick="downloadDashReport()" style="background:var(--sky-600);color:#fff;border-color:var(--sky-600);font-weight:600">Descargar Reporte</button>
-      <button onclick="downloadCierresReport()" style="background:var(--amber-600);color:#fff;border-color:var(--amber-600);font-weight:600">Descargar Pases de Turno</button>
-      <span style="display:inline-flex;align-items:center;gap:6px;margin-left:4px">
-        <button onclick="downloadDayReport()" style="background:var(--emerald-600);color:#fff;border:none;padding:6px 12px;border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer">Descargar Dia</button>
-      </span>
+      <div style="position:relative" id="exportBtnWrap">
+        <button onclick="toggleExportMenu()" style="background:var(--sky-600);color:#fff;border-color:var(--sky-600);font-weight:600;display:flex;align-items:center;gap:4px">Exportar <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
+        <div class="export-dropdown" id="exportDropdown">
+          <button onclick="downloadDashReport();closeExportMenu()">Reporte del periodo (HTML)</button>
+          <button onclick="downloadCierresReport();closeExportMenu()">Pases de Turno (HTML)</button>
+          <button onclick="downloadDayReport();closeExportMenu()">Dia seleccionado (HTML)</button>
+          <hr style="border:none;border-top:1px solid var(--gray-200);margin:4px 0">
+          <button onclick="exportCSV();closeExportMenu()">Todos los datos (CSV)</button>
+          <button onclick="exportXLSX();closeExportMenu()">Todos los datos (XLSX)</button>
+        </div>
+      </div>
       <button onclick="closeDashboard()" style="background:var(--gray-200);font-weight:600">Cerrar Dashboard</button>
     </div>
   </div>
@@ -515,8 +525,6 @@ html.dark .notif-item.unread{background:#082f49}
         <div class="admin-menu" id="adminMenu">
           <button onclick="openDashboard();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard</button>
           <button onclick="openAuditView();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Historial de auditoria</button>
-          <button onclick="exportCSV();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar CSV</button>
-          <button onclick="exportXLSX();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Descargar XLSX</button>
           <button onclick="document.getElementById('xlsxImportInput').click();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Importar XLSX</button>
         </div>
       </div>
@@ -865,6 +873,8 @@ let toastT;function toast(m){const e=document.getElementById('toast');e.textCont
 // Admin menu
 function toggleAdminMenu(){document.getElementById('adminMenu').classList.toggle('show');}
 function closeAdminMenu(){document.getElementById('adminMenu').classList.remove('show');}
+function toggleExportMenu(){document.getElementById('exportDropdown').classList.toggle('show');}
+function closeExportMenu(){document.getElementById('exportDropdown').classList.remove('show');}
 
 // Dark mode
 function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('bitacora_dark',document.documentElement.classList.contains('dark')?'1':'0');updateDarkIcon();}
@@ -1534,9 +1544,7 @@ function renderDashSidebar(){
   // Legend
   h+='<div class="dash-sidebar-legend"><div><span class="dot" style="background:var(--emerald-600)"></span> Con datos</div><div><span class="dot" style="background:var(--red-500)"></span> Con errores</div></div>';
   // Actions
-  h+='<div class="dash-sidebar-actions">';
-  h+='<button onclick="downloadDayReport()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Descargar dia '+( _dashCalSelected||'...')+'</button>';
-  h+='</div>';
+
   sb.innerHTML=h;
 }
 function _dashCalNav(dir){
@@ -2285,6 +2293,11 @@ document.addEventListener('click',e=>{
   // Close admin menu on outside click
   if(!e.target.closest('#adminMenuWrap')){
     document.getElementById('adminMenu').classList.remove('show');
+  }
+  // Close export dropdown on outside click
+  var edd=document.getElementById('exportDropdown');
+  if(edd&&!e.target.closest('#exportBtnWrap')){
+    edd.classList.remove('show');
   }
 });
 
