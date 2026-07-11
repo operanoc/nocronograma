@@ -228,22 +228,36 @@ html.dark .toast{background:var(--gray-100);color:var(--gray-900)}
 }
 
 /* ===== LOGIN SCREEN ===== */
-.login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#4A0A80 0%,#6A0DAD 50%,#5A0C9D 100%);z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .4s}
+.login-overlay{position:fixed;inset:0;background:#0a0e27;z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .4s;overflow:hidden}
+.login-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(0,150,199,.1) 0%,transparent 55%),radial-gradient(ellipse at 80% 20%,rgba(247,127,0,.06) 0%,transparent 45%),radial-gradient(ellipse at 60% 85%,rgba(0,119,182,.07) 0%,transparent 50%);pointer-events:none}
 .login-overlay.hide{opacity:0;pointer-events:none}
-.login-box{background:var(--white,#fff);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);width:100%;max-width:400px;padding:40px 32px;text-align:center}
-.login-box .login-logo{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:24px}
-.login-box .login-logo svg{color:#6A0DAD;width:28px;height:28px}
-.login-box .login-logo h2{font-size:20px;font-weight:700;color:#6A0DAD}
-.login-box p.sub{color:#6b7280;font-size:13px;margin-bottom:24px}
-.login-box .form-group{text-align:left;margin-bottom:14px}
-.login-box .form-group label{display:block;font-size:12px;font-weight:600;color:#374151;margin-bottom:4px}
-.login-box .form-group input{width:100%;padding:10px 14px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;outline:none;transition:border .15s,box-shadow .15s}
-.login-box .form-group input:focus{border-color:#6A0DAD;box-shadow:0 0 0 3px rgba(106,13,173,.15)}
-.login-box .btn-login{width:100%;padding:12px;background:#6A0DAD;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s}
-.login-box .btn-login:hover{background:#5A0C9D}
-.login-box .login-error{color:#dc2626;font-size:12px;margin-top:10px;min-height:18px}
-.login-box .login-hint{color:#9ca3af;font-size:11px;margin-top:16px}
+.login-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:50px 50px;pointer-events:none}
+.login-box{background:rgba(255,255,255,.97);border-radius:20px;box-shadow:0 25px 80px rgba(0,0,0,.5);width:100%;max-width:420px;padding:44px 38px;text-align:center;position:relative;z-index:1;backdrop-filter:blur(12px)}
+.login-logo-hex{margin:0 auto 18px;width:80px;height:80px}
+.login-logo-hex svg{width:100%;height:100%}
+.login-title{font-size:22px;font-weight:800;color:#0a0e27;margin:0 0 2px;letter-spacing:2px}
+.login-subtitle{color:#64748b;font-size:14px;margin:0 0 2px;font-weight:500}
+.login-subtitle2{color:#94a3b8;font-size:12px;margin:0 0 28px;font-weight:400}
+.login-input-wrap{position:relative;margin-bottom:16px}
+.login-input-wrap .login-ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#94a3b8;width:18px;height:18px;pointer-events:none}
+.login-input-wrap input{width:100%;padding:12px 14px 12px 44px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;color:#1e293b;background:#f8fafc;outline:none;transition:border .2s,box-shadow .2s}
+.login-input-wrap input:focus{border-color:#0284c7;box-shadow:0 0 0 3px rgba(2,132,199,.12);background:#fff}
+.login-input-wrap input::placeholder{color:#94a3b8}
+.login-eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;padding:4px;display:flex;align-items:center;transition:color .15s}
+.login-eye-btn:hover{color:#475569}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,#0077b6,#0096c7);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.5px;margin-top:6px}
+.btn-login:hover{background:linear-gradient(135deg,#005f8a,#0077b6);transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,119,182,.35)}
+.btn-login:active{transform:translateY(0)}
+.btn-login svg{width:16px;height:16px}
+.login-bottom-row{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
+.login-remember{display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b;cursor:pointer;user-select:none}
+.login-remember input{accent-color:#0284c7;width:14px;height:14px}
+.login-forgot{font-size:12px;color:#0284c7;text-decoration:none;font-weight:500;transition:color .15s}
+.login-forgot:hover{color:#005f8a;text-decoration:underline}
+.login-error{color:#dc2626;font-size:12px;margin-top:12px;min-height:18px}
+.login-footer{position:absolute;bottom:24px;left:0;right:0;text-align:center;color:rgba(255,255,255,.3);font-size:11px;z-index:1;letter-spacing:.3px}
 .login-shift-badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;margin-top:4px}
+@media(max-width:480px){.login-box{margin:16px;padding:32px 24px}.login-title{font-size:19px}}
 
 /* ===== USER BAR IN HEADER ===== */
 .user-bar{display:flex;align-items:center;gap:8px}
@@ -458,32 +472,42 @@ html.dark .notif-item.unread{background:#082f49}
 
 <!-- LOGIN SCREEN -->
 <div class="login-overlay" id="loginOverlay">
+  <div class="login-grid"></div>
   <div class="login-box">
-    <div class="login-logo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
-      <h2>Bitacora NOC</h2>
+    <div class="login-logo-hex">
+      <svg viewBox="0 0 100 100" fill="none">
+        <polygon points="50,3 93,27 93,73 50,97 7,73 7,27" fill="#0a1628" stroke="#00b4d8" stroke-width="2.5"/>
+        <polygon points="50,12 85,32 85,68 50,88 15,68 15,32" fill="none" stroke="rgba(0,180,216,0.25)" stroke-width="1"/>
+        <text x="50" y="56" text-anchor="middle" fill="#ffffff" font-size="26" font-weight="800" font-family="system-ui,Segoe UI,sans-serif">NOC</text>
+        <circle cx="50" cy="78" r="5" stroke="#f77f00" stroke-width="1.5" fill="none"/>
+        <ellipse cx="50" cy="78" rx="2.5" ry="5" stroke="#f77f00" stroke-width="1" fill="none"/>
+        <line x1="44" y1="78" x2="56" y2="78" stroke="#f77f00" stroke-width="1"/>
+        <path d="M38,82 Q50,73 62,82" stroke="#00b4d8" stroke-width="1.2" fill="none" opacity=".5"/>
+        <path d="M34,86 Q50,74 66,86" stroke="#00b4d8" stroke-width="1" fill="none" opacity=".3"/>
+      </svg>
     </div>
-    <div style="background:#fef2f2;border:1px solid #ef4444;border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" style="flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      <div><strong style="color:#dc2626;font-size:13px">EL PASE DE TURNO ES OBLIGATORIO</strong><br><span style="color:#991b1b;font-size:11px">Debe completar el pase de turno antes de finalizar su sesion.</span></div>
+    <h2 class="login-title">BITACORA NOC</h2>
+    <p class="login-subtitle">Acceso al Portal</p>
+    <p class="login-subtitle2">Centro de Operaciones de Red</p>
+    <div class="login-input-wrap">
+      <svg class="login-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <input type="text" id="loginUser" placeholder="Usuario" autocomplete="off" spellcheck="false">
     </div>
-    <p class="sub">Ingresar usuario y contrasena para continuar</p>
-    <div class="form-group">
-      <label>Usuario</label>
-      <input type="text" id="loginUser" autocomplete="off" spellcheck="false">
+    <div class="login-input-wrap">
+      <svg class="login-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <input type="password" id="loginPass" placeholder="Contrase\u00f1a" autocomplete="off">
+      <button class="login-eye-btn" onclick="toggleLoginPass()" type="button" tabindex="-1">
+        <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
     </div>
-    <div class="form-group">
-      <label>Contrasena</label>
-      <input type="password" id="loginPass" autocomplete="off">
-    </div>
-    <button class="btn-login" onclick="doLogin()">Ingresar</button>
+    <button class="btn-login" onclick="doLogin()">INICIAR SESION <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
     <div class="login-error" id="loginError"></div>
-    <div class="login-hint">NOC Operations Center</div>
-    <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--gray-200);text-align:center">
-      <span style="font-size:10px;color:var(--gray-400);letter-spacing:0.5px;text-transform:uppercase">Created by</span><br>
-      <span style="font-size:13px;color:var(--gray-500);font-weight:500;margin-top:2px;display:inline-block">Anibal Rivero</span>
+    <div class="login-bottom-row">
+      <label class="login-remember"><input type="checkbox" id="loginRemember"> Recordarme</label>
+      <a href="javascript:void(0)" class="login-forgot" onclick="document.getElementById('loginError').textContent='Contacte al administrador'">Olvidaste tu contrase\u00f1a?</a>
     </div>
   </div>
+  <div class="login-footer">&copy; 2025 Bitacora NOC | Centro de Operaciones de Red</div>
 </div>
 
 <!-- ADMIN DASHBOARD -->
@@ -885,6 +909,7 @@ function toggleAdminMenu(){document.getElementById('adminMenu').classList.toggle
 function closeAdminMenu(){document.getElementById('adminMenu').classList.remove('show');document.getElementById('adminOverlay').classList.remove('show');}
 function toggleExportMenu(){document.getElementById('exportDropdown').classList.toggle('show');}
 function closeExportMenu(){document.getElementById('exportDropdown').classList.remove('show');}
+function toggleLoginPass(){var inp=document.getElementById('loginPass');var ic=document.getElementById('eyeIcon');if(inp.type==='password'){inp.type='text';ic.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';}else{inp.type='password';ic.innerHTML='<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';}}
 
 // Dark mode
 function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('bitacora_dark',document.documentElement.classList.contains('dark')?'1':'0');updateDarkIcon();}
