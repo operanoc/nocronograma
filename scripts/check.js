@@ -1847,4 +1847,127 @@ function openAuditView(){
 }
 function closeAuditView(){document.getElementById('auditOverlay').classList.remove('show');}
 
+
+// ===== PASSWORD RESET (ADMIN) =====
+function _getPasswordOverrides(){
+  try{return JSON.parse(localStorage.getItem('bitacora_pass_overrides'))||{};}catch(e){return{};}
+}
+function _savePasswordOverrides(overrides){
+  try{localStorage.setItem('bitacora_pass_overrides',JSON.stringify(overrides));}catch(e){}
+}
+function _getEffectivePass(username){
+  var overrides=_getPasswordOverrides();
+  if(overrides[username])return overrides[username];
+  var u=USERS[username];
+  return u?u.pass:null;
+}
+
+function openResetPassModal(){
+  _adminGate(function(){
+    var h='<div class=\"resetpass-list\">';
+    var keys=Object.keys(USERS).sort();
+    for(var i=0;i<keys.length;i++){
+      var k=keys[i];
+      var u=USERS[k];
+      var isOp=u.role==='operator';
+      var roleClass=isOp?'op':'adm';
+      var roleLabel=isOp?'Operador':'Admin';
+      var name=u.name||k;
+      var currentPass=_getEffectivePass(k);
+      var masked=currentPass?('\u2022'.repeat(Math.min(currentPass.length,8))):'---';
+      h+='<div class=\"resetpass-row\" id=\"rprow_'+k+'\">'
+        +'<div class=\"resetpass-info\">'
+        +'<span class=\"resetpass-user\">'+k+'</span>'
+        +'<span class=\"resetpass-name\">'+escHtml(name)+'</span>'
+        +'<span class=\"resetpass-role '+roleClass+'\">'+roleLabel+'</span>'
+        +'</div>'
+        +'<div class=\"resetpass-actions\">'
+        +'<span style=\"font-size:11px;color:var(--gray-400);margin-right:4px\">Actual: '+masked+'</span>'
+        +'<input class=\"resetpass-input\" type=\"password\" id=\"rpinput_'+k+'\" placeholder=\"Nueva contrase\u00f1a\" onkeydown=\"if(event.key===\'Enter\')resetPass(\''+k+'\')\">'
+        +'<button class=\"resetpass-apply\" onclick=\"resetPass(\''+k+'\')\">Guardar</button>'
+        +(currentPass&&!isOp?'':'<button class=\"resetpass-reset\" onclick=\"resetToDefault(\''+k+'\')\">Blanquear</button>')
+        +'</div></div>';
+    }
+    h+='</div><div class=\"resetpass-hint\">Las contrase\u00f1as se guardan localmente en este navegador.</div>';
+
+    document.getElementById('modalTitle').textContent='Blanquear / Cambiar Contrase\u00f1as';
+    document.getElementById('modalBody').innerHTML=h;
+    document.getElementById('modalFooter').innerHTML='<button class=\"btn btn-outline\" onclick=\"closeModal()\">Cerrar</button>';
+    openModal();
+  });
+}
+
+function resetPass(username){
+  var input=document.getElementById('rpinput_'+username);
+  if(!input)return;
+  var newPass=input.value.trim();
+  if(!newPass){
+    toast('Ingrese una contrase\u00f1a','warn');
+    return;
+  }
+  if(newPass.length<4){
+    toast('Mínimo 4 caracteres','warn');
+    return;
+  }
+  var overrides=_getPasswordOverrides();
+  overrides[username]=newPass;
+  _savePasswordOverrides(overrides);
+  USERS[username].pass=newPass;
+  toast('Contrase\u00f1a de '+username+' actualizada');
+  // Refresh modal to show updated masked password
+  openResetPassModal();
+}
+
+function resetToDefault(username){
+  var u=USERS[username];
+  if(!u)return;
+  // Default passwords: operators -> Atos.123$, others keep whatever they had originally
+  var defaultPass='Atos.123$';
+  var overrides=_getPasswordOverrides();
+  if(overrides[username]){
+    delete overrides[username];
+    _savePasswordOverrides(overrides);
+  }
+  // For operators we know the default. For admins we can't really "reset" to a known default
+  // so we just remove the override - the code-level default stays.
+  // But we DO set operators to the known default
+  if(u.role==='operator'){
+    u.pass=defaultPass;
+  }
+  toast('Contrase\u00f1a de '+username+' restaurada');
+  openResetPassModal();
+}
+
+// Patch doLogin to use _getEffectivePass instead of USERS[u].pass
+const __origDoLogin2=doLogin;
+doLogin=function(){
+  var u=document.getElementById('loginUser').value.trim().toUpperCase();
+  var p=document.getElementById('loginPass').value;
+  var user=USERS[u];
+  var effectivePass=_getEffectivePass(u);
+  if(!user||p!==effectivePass){
+    document.getElementById('loginError').textContent='Usuario o contrase\u00f1a incorrectos';
+    document.getElementById('loginPass').value='';
+    return;
+  }
+  // Credentials valid, proceed with original logic (shift selection etc)
+  if(user.role==='operator'){
+    var avail=getOperatorAvailableShifts(u);
+    if(avail.length>1){
+      document.getElementById('loginOverlay').classList.add('hide');
+      showShiftSelector(u);
+      return;
+    }
+  }
+  enterApp(u);
+};
+
+// Restore password overrides into USERS on load
+(function(){
+  var overrides=_getPasswordOverrides();
+  var keys=Object.keys(overrides);
+  for(var i=0;i<keys.length;i++){
+    if(USERS[keys[i]]){USERS[keys[i]].pass=overrides[keys[i]];}
+  }
+})();
 loadStoreLocal();checkSession();render();
