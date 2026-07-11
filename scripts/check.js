@@ -1,4 +1,4 @@
-;
+
 const INITIAL_DATA = {};
 
 // ===== GITHUB API STORAGE =====
