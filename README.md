@@ -6,7 +6,7 @@ Sistema web para el registro operativo del NOC (Network Operations Center) de Se
 
 La aplicacion es un archivo HTML unico sin dependencias externas, con almacenamiento en la nube via GitHub Contents API y sincronizacion automatica.
 
-**URL:** https://operanoc.github.io/nocronograma/
+**URL:** https://operanoc.github.io/nocronograma/index.html
 
 ## Usuarios y Cuentas
 
