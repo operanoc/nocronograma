@@ -29,10 +29,8 @@ Cada operador tiene su propia cuenta individual con su nombre real, lo que permi
 
 | Usuario | Password | Nombre |
 |---------|----------|--------|
-| OPERAADMIN | nocadmin | Admin |
-| OPERAWU | 0p3r4ci0n35 | Admin |
-| ADMILOSN | admilosn | Admin |
-| NOCPRUEBA | pruebanoc | Admin (pruebas) |
+| OPERAADMIN | nocadmin | Admin principal |
+| OPERAWU | 0p3r4ci0n35 | Cliente (consulta) |
 
 > **Nota:** Los administradores pueden cambiar y blanquear contraseñas de cualquier usuario desde el menu Admin (sincronizado via GitHub, funciona en todos los navegadores).
 
