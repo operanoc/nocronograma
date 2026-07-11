@@ -1512,46 +1512,69 @@ function deleteProcess(i){_adminGate(function(){if(!confirm('Eliminar?'))return;
 
 // ===== AUTH SYSTEM =====
 const USERS={
-  OPERANOCHE:{pass:'noche1',shift:'TURNO NOCHE',cssClass:'shift-noche',role:'operator',pin:'4821'},
-  OPERAMA\u00d1ANA:{pass:'ma\u00f1ana1',shift:'TURNO MA\u00d1ANA',cssClass:'shift-manana',role:'operator',pin:'1357'},
-  OPERATARDE:{pass:'tarde1',shift:'TURNO TARDE',cssClass:'shift-tarde',role:'operator',pin:'2468'},
-  OPERAADMIN:{pass:'nocadmin',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'},
-  OPERAWU:{pass:'0p3r4ci0n35',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'},
-  NOCPRUEBA:{pass:'pruebanoc',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'},
-  ADMILOSN:{pass:'admilosn',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'}
+  STORREZ:{pass:'Atos.123$',role:'operator',pin:'1357',name:'Sebastian Torrez'},
+  DDIPINO:{pass:'Atos.123$',role:'operator',pin:'2468',name:'Daniel Di Pino'},
+  FGODOY:{pass:'Atos.123$',role:'operator',pin:'3579',name:'Fulgencio Godoy'},
+  HNUNEZ:{pass:'Atos.123$',role:'operator',pin:'4680',name:'Humberto Nu\u00f1ez'},
+  HMAGARINOS:{pass:'Atos.123$',role:'operator',pin:'5791',name:'Hugo Magari\u00f1os'},
+  GCASTELLANI:{pass:'Atos.123$',role:'operator',pin:'6802',name:'Gustavo Castellani'},
+  ARIVERO:{pass:'Atos.123$',role:'operator',pin:'7913',name:'Anibal Rivero'},
+  OBALDOMIR:{pass:'Atos.123$',role:'operator',pin:'8024',name:'Omar Baldomir'},
+  OPERAADMIN:{pass:'nocadmin',role:'admin',pin:'0000'},
+  OPERAWU:{pass:'0p3r4ci0n35',role:'admin',pin:'0000'},
+  NOCPRUEBA:{pass:'pruebanoc',role:'admin',pin:'0000'},
+  ADMILOSN:{pass:'admilosn',role:'admin',pin:'0000'}
 };
 let currentUser=null;
 let confirmedOperator=null;
 let pendingPinUser=null;
 
+// Each operator and which shifts they can work
+const OPERATOR_SHIFTS={
+  STORREZ:{primary:[{shift:'MANANA',day:'weekday'},{shift:'NOCHE',day:'friday'}],backup:['TARDE','NOCHE']},
+  DDIPINO:{primary:[{shift:'MANANA',day:'weekend'}],backup:[]},
+  FGODOY:{primary:[{shift:'TARDE',day:'weekday'}],backup:[]},
+  HNUNEZ:{primary:[{shift:'TARDE',day:'weekend'}],backup:[]},
+  HMAGARINOS:{primary:[{shift:'NOCHE',day:'weekday'}],backup:[]},
+  GCASTELLANI:{primary:[{shift:'NOCHE',day:'weekend'}],backup:[]},
+  ARIVERO:{primary:[{shift:'NOCHE',day:'friday'}],backup:['TARDE','NOCHE','MANANA']},
+  OBALDOMIR:{primary:[],backup:['MANANA','TARDE','NOCHE']}
+};
+
+function getDayType(){
+  var dow=new Date().getDay();
+  if(dow===0||dow===6)return 'weekend';
+  if(dow===5)return 'friday';
+  return 'weekday';
+}
 function detectShiftKey(){
-  const h=new Date().getHours();
+  var h=new Date().getHours();
   if(h>=6&&h<14)return 'MANANA';
   if(h>=14&&h<22)return 'TARDE';
   return 'NOCHE';
 }
+function getOperatorCurrentShift(username){
+  var shift=detectShiftKey();
+  var dayType=getDayType();
+  var asgn=OPERATOR_SHIFTS[username];
+  if(!asgn)return {shift:shift,isBackup:false};
+  for(var i=0;i<asgn.primary.length;i++){
+    if(asgn.primary[i].shift===shift&&asgn.primary[i].day===dayType){
+      return {shift:shift,isBackup:false};
+    }
+  }
+  if(asgn.backup.indexOf(shift)>=0){
+    return {shift:shift,isBackup:true};
+  }
+  return {shift:shift,isBackup:false};
+}
 function getShiftSchedule(sk){
-  const schedules={
+  var schedules={
     MANANA:{label:'06:00 a 14:00',weekday:'Lun a Jue',weekend:'Vie Sab Dom y Feriados'},
     TARDE:{label:'14:00 a 22:00',weekday:'Lun a Jue',weekend:'Vie Sab Dom y Feriados'},
     NOCHE:{label:'22:00 a 06:00',weekday:'Lun a Jue',weekend:'Vie Sab Dom y Feriados'}
   };
   return schedules[sk]||{label:'',weekday:'',weekend:''};
-}
-function getOperatorForShift(sk){
-  if(!SCHEDULE[sk])return null;
-  const now=new Date();
-  const dow=now.getDay();
-  const isWeekend=(dow===0||dow===6);
-  const isFriday=(dow===5);
-  const sch=SCHEDULE[sk];
-  if(sk==='NOCHE'){
-    if(isFriday)return sch.friday;
-    if(isWeekend)return sch.weekend;
-    return sch.weekday;
-  }
-  if(isWeekend)return sch.weekend;
-  return sch.weekday;
 }
 function getShiftCssClass(sk){
   return sk==='MANANA'?'shift-manana':sk==='TARDE'?'shift-tarde':sk==='NOCHE'?'shift-noche':'shift-admin';
@@ -1560,33 +1583,29 @@ function getShiftCssClass(sk){
 function showPinScreen(username){
   var user=USERS[username];
   if(!user)return;
-  pendingPinUser={username:username,...user};
-  const isOp=user.role==='operator';
-  let opName='Administrador';
-  let shiftKey='ADMIN';
-  let shiftLabel='ADMIN';
-  let schedule='Acceso total al sistema';
+  var shiftInfo=getOperatorCurrentShift(username);
+  pendingPinUser={username:username,shiftKey:shiftInfo.shift,isBackup:shiftInfo.isBackup,...user};
+  var isOp=user.role==='operator';
+  var opName=user.name||username;
+  var shiftKey=shiftInfo.shift;
+  var shiftLabel=SHIFT_LABELS?SHIFT_LABELS[shiftKey]||shiftKey:shiftKey;
+  var schedule='Acceso total al sistema';
+  var backupTag='';
 
   if(isOp){
-    shiftKey=SHIFT_MAP[username]||'ADMIN';
-    shiftLabel=SHIFT_LABELS[shiftKey]||shiftKey;
-    opName=getOperatorForShift(shiftKey)||'\u2014';
-    const sc=getShiftSchedule(shiftKey);
-    const now=new Date();
-    const dow=now.getDay();
-    const isWE=(dow===0||dow===6);
-    const isFr=(dow===5);
-    let dayType='';
-    if(shiftKey==='NOCHE'&&isFr)dayType='Viernes';
-    else if(isWE)dayType='Fin de Semana / Feriados';
-    else if(shiftKey==='NOCHE'&&isFr)dayType='Viernes';
-    else dayType=sc.weekday;
-    schedule=sc.label+' — '+dayType;
+    var sc=getShiftSchedule(shiftKey);
+    var dayType=getDayType();
+    var dayLabel='';
+    if(dayType==='friday')dayLabel='Viernes';
+    else if(dayType==='weekend')dayLabel='Fin de Semana / Feriados';
+    else dayLabel=sc.weekday;
+    schedule=sc.label+' \u2014 '+dayLabel;
+    if(shiftInfo.isBackup)backupTag=' (Backup)';
   }
 
   document.getElementById('pinOperatorName').textContent=opName;
-  const badge=document.getElementById('pinOperatorShift');
-  badge.textContent='TURNO '+shiftLabel.toUpperCase();
+  var badge=document.getElementById('pinOperatorShift');
+  badge.textContent='TURNO '+shiftLabel.toUpperCase()+backupTag;
   badge.className='pin-operator-shift '+getShiftCssClass(shiftKey);
   document.getElementById('pinOperatorSchedule').textContent=schedule;
 
@@ -1631,16 +1650,14 @@ function confirmPin(){
 
 function enterApp(user){
   document.getElementById('pinOverlay').classList.remove('show');
-  currentUser={username:user.username,...user};
+  var shiftKey=user.role==='admin'?'ADMIN':(user.shiftKey||'ADMIN');
+  currentUser={username:user.username,role:user.role,pin:user.pin,shiftKey:shiftKey,name:user.name};
   sessionStorage.setItem('bitacora_user',user.username);
+  sessionStorage.setItem('bitacora_shiftKey',shiftKey);
 
-  const isOp=user.role==='operator';
-  let opName='';
-  if(isOp){
-    var sk=SHIFT_MAP[user.username];
-    opName=getOperatorForShift(sk)||'';
-    confirmedOperator=opName;
-    sessionStorage.setItem('bitacora_operator',opName);
+  if(user.role==='operator'){
+    confirmedOperator=user.name||'';
+    sessionStorage.setItem('bitacora_operator',confirmedOperator);
   }else{
     confirmedOperator=null;
     sessionStorage.removeItem('bitacora_operator');
@@ -1649,14 +1666,15 @@ function enterApp(user){
   GH_CONFIG.token=_decodeTK();refreshGHHeaders();
   document.getElementById('userBar').style.display='flex';
   document.getElementById('userNameDisplay').textContent=user.username;
-  const badge=document.getElementById('userShiftBadge');
-  badge.textContent=user.shift;
-  badge.className='shift-badge '+user.cssClass;
+  var badge=document.getElementById('userShiftBadge');
+  var lbl=SHIFT_LABELS?SHIFT_LABELS[shiftKey]||shiftKey:shiftKey;
+  badge.textContent=user.role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
+  badge.className='shift-badge '+getShiftCssClass(shiftKey);
 
   var opEl=document.getElementById('userBarOperator');
-  if(opName){
-    opEl.textContent=opName;
-    opEl.title=opName;
+  if(confirmedOperator){
+    opEl.textContent=confirmedOperator;
+    opEl.title=confirmedOperator;
     opEl.style.display='';
   }else{
     opEl.style.display='none';
@@ -1673,9 +1691,9 @@ function enterApp(user){
 }
 
 function doLogin(){
-  const u=document.getElementById('loginUser').value.trim().toUpperCase();
-  const p=document.getElementById('loginPass').value;
-  const user=USERS[u];
+  var u=document.getElementById('loginUser').value.trim().toUpperCase();
+  var p=document.getElementById('loginPass').value;
+  var user=USERS[u];
   if(!user||user.pass!==p){
     document.getElementById('loginError').textContent='Usuario o contrasena incorrectos';
     document.getElementById('loginPass').value='';
@@ -1689,7 +1707,7 @@ function doLogin(){
 function doLogout(){
   // Check if cierre de turno was done today
   const day=store[currentDate];
-  const sk=currentUser?SHIFT_MAP[currentUser.username]||'ADMIN':'';
+  const sk=currentUser?(currentUser.shiftKey||'ADMIN'):'';
   const hasCierre=day&&day.handovers&&day.handovers.some(h=>h.shift===sk);
   if(!hasCierre&&currentUser&&currentUser.role==='operator'){
     if(!confirm('ATENCION: No ha realizado el Pase de Turno. Esta accion es OBLIGATORIA.\n\nDesea salir de todas formas?')){
@@ -1711,26 +1729,23 @@ function doLogout(){
 }
 function checkSession(){
   GH_CONFIG.token=_decodeTK();refreshGHHeaders();
-  const u=sessionStorage.getItem('bitacora_user');
+  var u=sessionStorage.getItem('bitacora_user');
   if(u&&USERS[u]){
-    currentUser={username:u,...USERS[u]};
+    var savedShiftKey=sessionStorage.getItem('bitacora_shiftKey')||'ADMIN';
+    currentUser={username:u,role:USERS[u].role,pin:USERS[u].pin,shiftKey:savedShiftKey,name:USERS[u].name};
     document.getElementById('loginOverlay').classList.add('hide');
 
     var savedOp=sessionStorage.getItem('bitacora_operator');
-    if(savedOp){
-      confirmedOperator=savedOp;
-    }else if(USERS[u].role==='operator'){
-      var sk=SHIFT_MAP[u];
-      confirmedOperator=getOperatorForShift(sk)||'';
-    }else{
-      confirmedOperator=null;
-    }
+    if(savedOp){confirmedOperator=savedOp;}
+    else if(USERS[u].role==='operator'){confirmedOperator=USERS[u].name||'';}
+    else{confirmedOperator=null;}
 
     document.getElementById('userBar').style.display='flex';
     document.getElementById('userNameDisplay').textContent=u;
-    const badge=document.getElementById('userShiftBadge');
-    badge.textContent=USERS[u].shift;
-    badge.className='shift-badge '+USERS[u].cssClass;
+    var badge=document.getElementById('userShiftBadge');
+    var lbl=SHIFT_LABELS?SHIFT_LABELS[savedShiftKey]||savedShiftKey:savedShiftKey;
+    badge.textContent=USERS[u].role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
+    badge.className='shift-badge '+getShiftCssClass(savedShiftKey);
 
     var opEl=document.getElementById('userBarOperator');
     if(confirmedOperator){
@@ -2106,21 +2121,8 @@ const SHIFT_LABELS={MANANA:'Ma\u00f1ana',TARDE:'Tarde',NOCHE:'Noche',ADMIN:'Admi
 const SHIFT_CSS={MANANA:'manana',TARDE:'tarde',NOCHE:'noche',ADMIN:'admin'};
 
 function getCurrentOperator(){
-  if(!currentUser)return null;
-  const sk=SHIFT_MAP[currentUser.username];
-  if(!sk||sk==='ADMIN')return null;
-  const now=new Date();
-  const dow=now.getDay(); // 0=Dom
-  const isWeekend=(dow===0||dow===6);
-  const isFriday=(dow===5);
-  const sch=SCHEDULE[sk];
-  if(sk==='NOCHE'){
-    if(isFriday)return sch.friday;
-    if(isWeekend)return sch.weekend;
-    return sch.weekday;
-  }
-  if(isWeekend)return sch.weekend;
-  return sch.weekday;
+  if(!currentUser||currentUser.role==='admin')return null;
+  return currentUser.name||null;
 }
 
 function populateOperatorSelect(){
@@ -2128,7 +2130,7 @@ function populateOperatorSelect(){
   if(!sel)return;
   sel.innerHTML='<option value="">-- Operador --</option>';
   if(!currentUser)return;
-  const sk=SHIFT_MAP[currentUser.username]||'ADMIN';
+  const sk=currentUser.shiftKey||'ADMIN';
   const names=new Set();
   // Add current operator (auto-detected)
   const auto=getCurrentOperator();
@@ -2184,7 +2186,7 @@ function addTimelineNote(){
     text:txt,
     time:ts,
     date:currentDate,
-    shift:SHIFT_MAP[currentUser.username]||'ADMIN'
+    shift:currentUser.shiftKey||'ADMIN'
   });
   saveStore();
   txtIn.value='';
@@ -2245,7 +2247,7 @@ function refreshOperatorSelect(){populateOperatorSelect();}
 function openCierreModal(){
   if(!currentUser)return;
   const day=getDay(currentDate);
-  const sk=SHIFT_MAP[currentUser.username]||'ADMIN';
+  const sk=currentUser.shiftKey||'ADMIN';
   const skLabel=SHIFT_LABELS[sk]||sk;
   const auto=getCurrentOperator()||currentUser.username;
   document.getElementById('modalTitle').textContent='PASE DE TURNO (OBLIGATORIO) - '+skLabel;
@@ -2262,7 +2264,7 @@ function openCierreModal(){
 }
 function buildOpOptions(selected){
   let names=new Set();
-  const sk=SHIFT_MAP[currentUser.username]||'ADMIN';
+  const sk=currentUser.shiftKey||'ADMIN';
   if(sk!=='ADMIN'&&SCHEDULE[sk]){
     const sch=SCHEDULE[sk];names.add(sch.weekday);names.add(sch.weekend);
     if(sch.friday)names.add(sch.friday);
@@ -2276,7 +2278,7 @@ function saveCierre(){
   const text=document.getElementById('cierreText').value.trim();
   if(!text){toast('Escribir novedades (campo obligatorio)');document.getElementById('cierreText').focus();return;}
   const op=document.getElementById('cierreOp').value;
-  const sk=SHIFT_MAP[currentUser.username]||'ADMIN';
+  const sk=currentUser.shiftKey||'ADMIN';
   const now=new Date();
   const ts=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
   const day=getDay(currentDate);
@@ -2328,7 +2330,7 @@ function renderNovedades(day){
   if(!hovers.length){sec.style.display='none';return;}
   sec.style.display='';
   // Count unread
-  const mySk=currentUser?SHIFT_MAP[currentUser.username]:'';
+  const mySk=currentUser?currentUser.shiftKey:'';
   const unread=hovers.filter(h=>h.shift!==mySk&&!(h.readBy&&h.readBy[mySk])).length;
   if(unread>0){badge.style.display='';badge.textContent=unread;}else{badge.style.display='none';}
   let html='';
@@ -2360,7 +2362,7 @@ function updateNotifBadge(day){
   const badge=document.getElementById('notifBadge');
   if(!day)day=getDay(currentDate);
   const notifs=day.notifications||[];
-  const mySk=currentUser?SHIFT_MAP[currentUser.username]:'';
+  const mySk=currentUser?currentUser.shiftKey:'';
   const unread=notifs.filter(n=>!(n.readBy&&n.readBy[mySk])&&n.shift!==mySk).length;
   if(unread>0){badge.textContent=unread>9?'9+':unread;badge.classList.add('show');badge.classList.remove('zero');}
   else{badge.classList.add('zero');}
@@ -2369,7 +2371,7 @@ function renderNotifPanel(day){
   if(!day)day=getDay(currentDate);
   const list=document.getElementById('notifList');
   const notifs=(day.notifications||[]).reverse();
-  const mySk=currentUser?SHIFT_MAP[currentUser.username]:'';
+  const mySk=currentUser?currentUser.shiftKey:'';
   if(!notifs.length){list.innerHTML='<div class="notif-empty">Sin notificaciones</div>';updateNotifBadge(day);return;}
   let html='';
   notifs.forEach(n=>{
@@ -2390,7 +2392,7 @@ function renderNotifPanel(day){
 function readNotif(nid){
   const day=getDay(currentDate);
   const notifs=day.notifications||[];
-  const mySk=currentUser?SHIFT_MAP[currentUser.username]:'';
+  const mySk=currentUser?currentUser.shiftKey:'';
   const n=notifs.find(x=>x.id===nid);
   if(n){if(!n.readBy)n.readBy={};n.readBy[mySk]=true;saveStore();}
   renderNotifPanel(day);renderNovedades(day);
@@ -2398,7 +2400,7 @@ function readNotif(nid){
 function markAllRead(){
   const day=getDay(currentDate);
   const notifs=day.notifications||[];
-  const mySk=currentUser?SHIFT_MAP[currentUser.username]:'';
+  const mySk=currentUser?currentUser.shiftKey:'';
   notifs.forEach(n=>{if(!n.readBy)n.readBy={};n.readBy[mySk]=true;});
   // Also mark handovers
   (day.handovers||[]).forEach(h=>{if(!h.readBy)h.readBy={};h.readBy[mySk]=true;});
@@ -2592,7 +2594,7 @@ function showTurnoButtons(){
   const show=!!currentUser;
   document.getElementById('cierreBtn').style.display=show?'':'none';
   if(show&&currentUser){
-    const sk=SHIFT_MAP[currentUser.username]||'ADMIN';
+    const sk=currentUser.shiftKey||'ADMIN';
     const lbl=SHIFT_LABELS[sk]||sk;
     const txt=document.getElementById('cierreBtnText');
     if(sk==='ADMIN'){
