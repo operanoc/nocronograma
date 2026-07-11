@@ -261,6 +261,25 @@ html.dark .toast{background:var(--gray-100);color:var(--gray-900)}
 .login-shift-badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;margin-top:4px}
 @media(max-width:480px){.login-box{margin:16px;padding:32px 24px}.login-title{font-size:19px}}
 
+/* ===== SHIFT SELECTOR ===== */
+.shiftsel-overlay{position:fixed;inset:0;background:#0a0e27 url('login-bg.png') center/cover no-repeat;z-index:9998;display:none;align-items:center;justify-content:center;overflow:hidden}
+.shiftsel-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(0,229,184,.06) 0%,transparent 50%),rgba(10,14,39,.45);pointer-events:none}
+.shiftsel-overlay.show{display:flex}
+.shiftsel-box{background:rgba(20,25,55,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(168,85,247,.15);border-radius:16px;padding:32px 36px;width:100%;max-width:360px;text-align:center;position:relative;z-index:1;box-shadow:0 0 60px rgba(168,85,247,.08)}
+.shiftsel-box h3{color:#fff;font-size:17px;font-weight:700;margin:0 0 4px;letter-spacing:.5px}
+.shiftsel-sub{color:rgba(255,255,255,.45);font-size:12px;margin:0 0 20px}
+.shiftsel-name{color:#00E5B8;font-size:14px;font-weight:600;margin-bottom:18px}
+.shiftsel-btns{display:flex;flex-direction:column;gap:10px}
+.shiftsel-btn{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-radius:10px;border:1.5px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:.3px}
+.shiftsel-btn:hover{border-color:rgba(168,85,247,.5);background:rgba(168,85,247,.1);transform:translateY(-1px)}
+.shiftsel-btn .shiftsel-time{font-size:10px;font-weight:400;color:rgba(255,255,255,.4);margin-top:2px}
+.shiftsel-btn.sk-manana:hover{border-color:rgba(59,130,246,.5);background:rgba(59,130,246,.1)}
+.shiftsel-btn.sk-tarde:hover{border-color:rgba(245,158,11,.5);background:rgba(245,158,11,.1)}
+.shiftsel-btn.sk-noche:hover{border-color:rgba(139,92,246,.5);background:rgba(139,92,246,.1)}
+.shiftsel-btn .shiftsel-arrow{opacity:.4;font-size:18px}
+.shiftsel-back{background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.5);padding:8px 16px;border-radius:8px;font-size:11px;cursor:pointer;margin-top:16px;transition:all .2s}
+.shiftsel-back:hover{border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.7)}
+
 /* ===== USER BAR IN HEADER ===== */
 .user-bar{display:flex;align-items:center;gap:8px}
 .user-bar .user-name{font-size:12px;font-weight:600;color:var(--gray-700)}
@@ -516,6 +535,17 @@ html.dark .notif-item.unread{background:#082f49}
     </div>
   </div>
   <div class="login-footer">&copy; 2025 Bitacora NOC | Centro de Operaciones</div>
+</div>
+
+<!-- SHIFT SELECTOR -->
+<div class="shiftsel-overlay" id="shiftselOverlay">
+  <div class="shiftsel-box">
+    <h3>SELECCIONE TURNO</h3>
+    <p class="shiftsel-sub">Elija el turno que va a trabajar</p>
+    <div class="shiftsel-name" id="shiftselName"></div>
+    <div class="shiftsel-btns" id="shiftselBtns"></div>
+    <button class="shiftsel-back" onclick="shiftselBack()">Volver al login</button>
+  </div>
 </div>
 
 <!-- ADMIN DASHBOARD -->
@@ -1527,10 +1557,49 @@ function getShiftCssClass(sk){
   return sk==='MANANA'?'shift-manana':sk==='TARDE'?'shift-tarde':sk==='NOCHE'?'shift-noche':'shift-admin';
 }
 
-function enterApp(username){
+function getOperatorAvailableShifts(username){
+  var asgn=OPERATOR_SHIFTS[username];
+  if(!asgn)return [];
+  var shifts=new Set();
+  for(var i=0;i<asgn.primary.length;i++)shifts.add(asgn.primary[i].shift);
+  for(var j=0;j<asgn.backup.length;j++)shifts.add(asgn.backup[j]);
+  return [...shifts];
+}
+
+var _shiftselUser=null;
+function showShiftSelector(username){
   var user=USERS[username];
   if(!user)return;
-  var shiftKey=user.role==='admin'?'ADMIN':(getOperatorCurrentShift(username).shift);
+  _shiftselUser=username;
+  var shifts=getOperatorAvailableShifts(username);
+  document.getElementById('shiftselName').textContent=user.name||username;
+  var btns='';
+  var icons={MANANA:'\u2600\ufe0f',TARDE:'\ud83c\udf24\ufe0f',NOCHE:'\ud83c\udf19'};
+  var times={MANANA:'06:00 a 14:00',TARDE:'14:00 a 22:00',NOCHE:'22:00 a 06:00'};
+  var cssClass={MANANA:'sk-manana',TARDE:'sk-tarde',NOCHE:'sk-noche'};
+  for(var i=0;i<shifts.length;i++){
+    var sk=shifts[i];
+    var lbl=SHIFT_LABELS?SHIFT_LABELS[sk]||sk:sk;
+    btns+='<button class="shiftsel-btn '+cssClass[sk]+'" onclick="selectShift(\''+sk+'\')"><div><div>'+icons[sk]+' TURNO '+lbl.toUpperCase()+'</div><div class="shiftsel-time">'+times[sk]+'</div></div><span class="shiftsel-arrow">\u203a</span></button>';
+  }
+  document.getElementById('shiftselBtns').innerHTML=btns;
+  document.getElementById('shiftselOverlay').classList.add('show');
+}
+function selectShift(sk){
+  document.getElementById('shiftselOverlay').classList.remove('show');
+  enterApp(_shiftselUser,sk);
+}
+function shiftselBack(){
+  document.getElementById('shiftselOverlay').classList.remove('show');
+  _shiftselUser=null;
+  currentUser=null;
+  document.getElementById('loginOverlay').classList.remove('hide');
+}
+
+function enterApp(username,forceShift){
+  var user=USERS[username];
+  if(!user)return;
+  var shiftKey=user.role==='admin'?'ADMIN':(forceShift||getOperatorCurrentShift(username).shift);
   currentUser={username:username,role:user.role,shiftKey:shiftKey,name:user.name};
   sessionStorage.setItem('bitacora_user',username);
   sessionStorage.setItem('bitacora_shiftKey',shiftKey);
@@ -1579,6 +1648,14 @@ function doLogin(){
     document.getElementById('loginPass').value='';
     return;
   }
+  if(user.role==='operator'){
+    var avail=getOperatorAvailableShifts(u);
+    if(avail.length>1){
+      document.getElementById('loginOverlay').classList.add('hide');
+      showShiftSelector(u);
+      return;
+    }
+  }
   enterApp(u);
 }
 
@@ -1597,6 +1674,8 @@ function doLogout(){
   sessionStorage.removeItem('bitacora_operator');
   sessionStorage.removeItem('bitacora_shiftKey');
   document.getElementById('loginOverlay').classList.remove('hide');
+  document.getElementById('shiftselOverlay').classList.remove('show');
+  _shiftselUser=null;
   document.getElementById('userBar').style.display='none';
   document.getElementById('adminMenuWrap').style.display='none';
   document.getElementById('userBarOperator').style.display='none';
