@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Feature: Importar XLSX - leer archivos excel y volcar datos al dia actual',
+    'message': 'Refactor: menu hamburguesa admin con import/export/dashboard/auditoria',
     'content': content,
     'sha': sha,
     'branch': BRANCH
