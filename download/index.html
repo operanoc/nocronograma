@@ -939,7 +939,15 @@ function _canEdit(entryShift){
   if(isAdmin()) return true;
   if(!entryShift) return true; // legacy data without shift
   var sk=currentUser?currentUser.shiftKey:'';
-  return sk===entryShift;
+  if(sk!==entryShift) return false;
+  // Same shift: check if this shift was already handed over
+  var day=store[currentDate];
+  if(day&&day.handovers&&day.handovers.length){
+    if(day.handovers.some(function(h){return h.shift===entryShift;})){
+      return false; // shift already closed, nobody can edit
+    }
+  }
+  return true;
 }
 function isDayLocked(d){
   const day=store[d];
@@ -1456,7 +1464,10 @@ function openModal(){document.getElementById('modalOverlay').classList.add('show
 function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
 
 function openPollingModal(server){
-  _adminGate(function(){_openPollingModalInner(server);});
+  _adminGate(function(){
+    if(server){var day=getDay(currentDate);var es=day.pollings.filter(function(p){return p.server===server;});var srvShift=es.length?(es[0].shift||null):null;if(!_canEdit(srvShift)){toast('No podes editar entries de otro turno');return;}}
+    _openPollingModalInner(server);
+  });
 }
 function _openPollingModalInner(server){
   const day=getDay(currentDate);const isEdit=!!server;
@@ -1476,9 +1487,9 @@ function savePolling(old){
   if(end)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:end,note:null,shift:_sk});
   saveStore();closeModal();render();toast('Guardado');
 }
-function deletePolling(s){_adminGate(function(){if(!confirm('Eliminar '+s+'?'))return;getDay(currentDate).pollings=getDay(currentDate).pollings.filter(function(p){return p.server!==s;});saveStore();render();toast('Eliminado');});}
+function deletePolling(s){_adminGate(function(){var day=getDay(currentDate);var es=day.pollings.filter(function(p){return p.server===s;});var srvShift=es.length?(es[0].shift||null):null;if(!_canEdit(srvShift)){toast('No podes eliminar entries de otro turno');return;}if(!confirm('Eliminar '+s+'?'))return;day.pollings=day.pollings.filter(function(p){return p.server!==s;});saveStore();render();toast('Eliminado');});}
 
-function openBackupModal(idx){_adminGate(function(){_openBackupModalInner(idx);});}
+function openBackupModal(idx){_adminGate(function(){if(idx!==undefined){var day=getDay(currentDate);var b=day.backups[idx];if(b&&!_canEdit(b.shift)){toast('No podes editar entries de otro turno');return;}}_openBackupModalInner(idx);});}
 function _openBackupModalInner(idx){
   const day=getDay(currentDate);const b=idx!==undefined?day.backups[idx]:null;
   const endDate=b&&b.endDate?b.endDate:currentDate;
@@ -1499,10 +1510,10 @@ function saveBackup(idx){
   const o={name:document.getElementById('mBkN').value,iniDate:iniDate,iniTime:iniTime,endDate:endDate,endTime:endTime,job:document.getElementById('mBkJ').value||null,duration:duration,status:document.getElementById('mBkS').value||null,shift:currentUser?currentUser.shiftKey:''};
   if(idx!==undefined){o.shift=day.backups[idx].shift||o.shift;day.backups[idx]=o;}else day.backups.push(o);saveStore();closeModal();render();toast('Guardado');
 }
-function deleteBackup(i){_adminGate(function(){if(!confirm('Eliminar?'))return;getDay(currentDate).backups.splice(i,1);saveStore();render();toast('Eliminado');});}
+function deleteBackup(i){_adminGate(function(){var day=getDay(currentDate);var b=day.backups[i];if(b&&!_canEdit(b.shift)){toast('No podes eliminar entries de otro turno');return;}if(!confirm('Eliminar?'))return;day.backups.splice(i,1);saveStore();render();toast('Eliminado');});}
 
 function openProcessModal(idx){
-  _adminGate(function(){_openProcessModalInner(idx);});
+  _adminGate(function(){if(idx!==undefined){var day=getDay(currentDate);var p=day.processes[idx];if(p&&!_canEdit(p.shift)){toast('No podes editar entries de otro turno');return;}}_openProcessModalInner(idx);});
 }
 function _openProcessModalInner(idx){
   const day=getDay(currentDate);const p=idx!==undefined?day.processes[idx]:null;
@@ -1522,7 +1533,7 @@ function saveProcess(idx){
   const o={name:name,status:document.getElementById('mPS').value,shift:_sk};
   if(idx!==undefined){o.shift=day.processes[idx].shift||_sk;day.processes[idx]=o;}else day.processes.push(o);saveStore();closeModal();render();toast('Guardado');
 }
-function deleteProcess(i){_adminGate(function(){if(!confirm('Eliminar?'))return;getDay(currentDate).processes.splice(i,1);saveStore();render();toast('Eliminado');});}
+function deleteProcess(i){_adminGate(function(){var day=getDay(currentDate);var p=day.processes[i];if(p&&!_canEdit(p.shift)){toast('No podes eliminar entries de otro turno');return;}if(!confirm('Eliminar?'))return;day.processes.splice(i,1);saveStore();render();toast('Eliminado');});}
 
 
 // ===== AUTH SYSTEM =====
