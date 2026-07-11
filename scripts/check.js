@@ -720,15 +720,163 @@ function deleteProcess(i){_adminGate(function(){if(!confirm('Eliminar?'))return;
 
 // ===== AUTH SYSTEM =====
 const USERS={
-  OPERANOCHE:{pass:'noche1',shift:'TURNO NOCHE',cssClass:'shift-noche',role:'operator'},
-  OPERAMAÑANA:{pass:'mañana1',shift:'TURNO MAÑANA',cssClass:'shift-manana',role:'operator'},
-  OPERATARDE:{pass:'tarde1',shift:'TURNO TARDE',cssClass:'shift-tarde',role:'operator'},
-  OPERAADMIN:{pass:'nocadmin',shift:'ADMIN',cssClass:'shift-admin',role:'admin'},
-  OPERAWU:{pass:'0p3r4ci0n35',shift:'ADMIN',cssClass:'shift-admin',role:'admin'},
-  NOCPRUEBA:{pass:'pruebanoc',shift:'ADMIN',cssClass:'shift-admin',role:'admin'},
-  ADMILOSN:{pass:'admilosn',shift:'ADMIN',cssClass:'shift-admin',role:'admin'}
+  OPERANOCHE:{pass:'noche1',shift:'TURNO NOCHE',cssClass:'shift-noche',role:'operator',pin:'4821'},
+  OPERAMA\u00d1ANA:{pass:'ma\u00f1ana1',shift:'TURNO MA\u00d1ANA',cssClass:'shift-manana',role:'operator',pin:'1357'},
+  OPERATARDE:{pass:'tarde1',shift:'TURNO TARDE',cssClass:'shift-tarde',role:'operator',pin:'2468'},
+  OPERAADMIN:{pass:'nocadmin',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'},
+  OPERAWU:{pass:'0p3r4ci0n35',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'},
+  NOCPRUEBA:{pass:'pruebanoc',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'},
+  ADMILOSN:{pass:'admilosn',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'}
 };
 let currentUser=null;
+let confirmedOperator=null;
+let pendingPinUser=null;
+
+function detectShiftKey(){
+  const h=new Date().getHours();
+  if(h>=6&&h<14)return 'MANANA';
+  if(h>=14&&h<22)return 'TARDE';
+  return 'NOCHE';
+}
+function getShiftSchedule(sk){
+  const schedules={
+    MANANA:{label:'06:00 a 14:00',weekday:'Lun a Jue',weekend:'Vie Sab Dom y Feriados'},
+    TARDE:{label:'14:00 a 22:00',weekday:'Lun a Jue',weekend:'Vie Sab Dom y Feriados'},
+    NOCHE:{label:'22:00 a 06:00',weekday:'Lun a Jue',weekend:'Vie Sab Dom y Feriados'}
+  };
+  return schedules[sk]||{label:'',weekday:'',weekend:''};
+}
+function getOperatorForShift(sk){
+  if(!SCHEDULE[sk])return null;
+  const now=new Date();
+  const dow=now.getDay();
+  const isWeekend=(dow===0||dow===6);
+  const isFriday=(dow===5);
+  const sch=SCHEDULE[sk];
+  if(sk==='NOCHE'){
+    if(isFriday)return sch.friday;
+    if(isWeekend)return sch.weekend;
+    return sch.weekday;
+  }
+  if(isWeekend)return sch.weekend;
+  return sch.weekday;
+}
+function getShiftCssClass(sk){
+  return sk==='MANANA'?'shift-manana':sk==='TARDE'?'shift-tarde':sk==='NOCHE'?'shift-noche':'shift-admin';
+}
+
+function showPinScreen(user){
+  pendingPinUser=user;
+  const isOp=user.role==='operator';
+  let opName='Administrador';
+  let shiftKey='ADMIN';
+  let shiftLabel='ADMIN';
+  let schedule='Acceso total al sistema';
+
+  if(isOp){
+    shiftKey=SHIFT_MAP[user.username];
+    shiftLabel=SHIFT_LABELS[shiftKey]||shiftKey;
+    opName=getOperatorForShift(shiftKey)||'—';
+    const sc=getShiftSchedule(shiftKey);
+    const now=new Date();
+    const dow=now.getDay();
+    const isWE=(dow===0||dow===6);
+    const isFr=(dow===5);
+    let dayType='';
+    if(shiftKey==='NOCHE'&&isFr)dayType='Viernes';
+    else if(isWE)dayType='Fin de Semana / Feriados';
+    else if(shiftKey==='NOCHE'&&isFr)dayType='Viernes';
+    else dayType=sc.weekday;
+    schedule=sc.label+' — '+dayType;
+  }
+
+  document.getElementById('pinOperatorName').textContent=opName;
+  const badge=document.getElementById('pinOperatorShift');
+  badge.textContent='TURNO '+shiftLabel.toUpperCase();
+  badge.className='pin-operator-shift '+getShiftCssClass(shiftKey);
+  document.getElementById('pinOperatorSchedule').textContent=schedule;
+
+  clearPinInputs();
+  document.getElementById('pinError').textContent='';
+  document.getElementById('pinOverlay').classList.add('show');
+  setTimeout(function(){document.getElementById('pinD0').focus();},100);
+}
+function clearPinInputs(){
+  for(var i=0;i<4;i++){
+    var el=document.getElementById('pinD'+i);
+    el.value='';
+    el.classList.remove('error');
+  }
+}
+function pinGoBack(){
+  document.getElementById('pinOverlay').classList.remove('show');
+  pendingPinUser=null;
+  currentUser=null;
+}
+
+function confirmPin(){
+  if(!pendingPinUser)return;
+  var pin='';
+  for(var i=0;i<4;i++)pin+=document.getElementById('pinD'+i).value;
+  if(pin.length<4){
+    document.getElementById('pinError').textContent='Complete los 4 digitos';
+    for(var i=0;i<4;i++){
+      if(!document.getElementById('pinD'+i).value)document.getElementById('pinD'+i).classList.add('error');
+    }
+    return;
+  }
+  if(pin!==pendingPinUser.pin){
+    document.getElementById('pinError').textContent='PIN incorrecto';
+    for(var i=0;i<4;i++)document.getElementById('pinD'+i).classList.add('error');
+    clearPinInputs();
+    setTimeout(function(){document.getElementById('pinD0').focus();},300);
+    return;
+  }
+  enterApp(pendingPinUser);
+}
+
+function enterApp(user){
+  document.getElementById('pinOverlay').classList.remove('show');
+  currentUser={username:user.username,...user};
+  sessionStorage.setItem('bitacora_user',user.username);
+
+  const isOp=user.role==='operator';
+  let opName='';
+  if(isOp){
+    var sk=SHIFT_MAP[user.username];
+    opName=getOperatorForShift(sk)||'';
+    confirmedOperator=opName;
+    sessionStorage.setItem('bitacora_operator',opName);
+  }else{
+    confirmedOperator=null;
+    sessionStorage.removeItem('bitacora_operator');
+  }
+
+  GH_CONFIG.token=_decodeTK();refreshGHHeaders();
+  document.getElementById('userBar').style.display='flex';
+  document.getElementById('userNameDisplay').textContent=user.username;
+  const badge=document.getElementById('userShiftBadge');
+  badge.textContent=user.shift;
+  badge.className='shift-badge '+user.cssClass;
+
+  var opEl=document.getElementById('userBarOperator');
+  if(opName){
+    opEl.textContent=opName;
+    opEl.title=opName;
+    opEl.style.display='';
+  }else{
+    opEl.style.display='none';
+  }
+
+  if(user.role==='admin'){
+    document.getElementById('adminMenuWrap').style.display='';
+  }else{
+    document.getElementById('adminMenuWrap').style.display='none';
+  }
+  pendingPinUser=null;
+  document.getElementById('loginError').textContent='';
+  render();
+}
 
 function doLogin(){
   const u=document.getElementById('loginUser').value.trim().toUpperCase();
@@ -740,36 +888,30 @@ function doLogin(){
     return;
   }
   currentUser={username:u,...user};
-  sessionStorage.setItem('bitacora_user',u);
-  GH_CONFIG.token=_decodeTK();refreshGHHeaders();
   document.getElementById('loginOverlay').classList.add('hide');
-  document.getElementById('userBar').style.display='flex';
-  document.getElementById('userNameDisplay').textContent=u;
-  const badge=document.getElementById('userShiftBadge');
-  badge.textContent=user.shift;
-  badge.className='shift-badge '+user.cssClass;
-  if(user.role==='admin'){
-    document.getElementById('adminMenuWrap').style.display='';
-  }else{
-    document.getElementById('adminMenuWrap').style.display='none';
-  }
-  document.getElementById('loginError').textContent='';
+  showPinScreen(user);
 }
+
 function doLogout(){
   // Check if cierre de turno was done today
   const day=store[currentDate];
   const sk=currentUser?SHIFT_MAP[currentUser.username]||'ADMIN':'';
   const hasCierre=day&&day.handovers&&day.handovers.some(h=>h.shift===sk);
-  if(!hasCierre&&currentUser){
+  if(!hasCierre&&currentUser&&currentUser.role==='operator'){
     if(!confirm('ATENCION: No ha realizado el Pase de Turno. Esta accion es OBLIGATORIA.\n\nDesea salir de todas formas?')){
       return;
     }
   }
   currentUser=null;
+  confirmedOperator=null;
+  pendingPinUser=null;
   sessionStorage.removeItem('bitacora_user');
+  sessionStorage.removeItem('bitacora_operator');
   document.getElementById('loginOverlay').classList.remove('hide');
+  document.getElementById('pinOverlay').classList.remove('show');
   document.getElementById('userBar').style.display='none';
   document.getElementById('adminMenuWrap').style.display='none';
+  document.getElementById('userBarOperator').style.display='none';
   document.getElementById('loginUser').value='';
   document.getElementById('loginPass').value='';
 }
@@ -779,17 +921,63 @@ function checkSession(){
   if(u&&USERS[u]){
     currentUser={username:u,...USERS[u]};
     document.getElementById('loginOverlay').classList.add('hide');
+
+    var savedOp=sessionStorage.getItem('bitacora_operator');
+    if(savedOp){
+      confirmedOperator=savedOp;
+    }else if(USERS[u].role==='operator'){
+      var sk=SHIFT_MAP[u];
+      confirmedOperator=getOperatorForShift(sk)||'';
+    }else{
+      confirmedOperator=null;
+    }
+
     document.getElementById('userBar').style.display='flex';
     document.getElementById('userNameDisplay').textContent=u;
     const badge=document.getElementById('userShiftBadge');
     badge.textContent=USERS[u].shift;
     badge.className='shift-badge '+USERS[u].cssClass;
+
+    var opEl=document.getElementById('userBarOperator');
+    if(confirmedOperator){
+      opEl.textContent=confirmedOperator;
+      opEl.title=confirmedOperator;
+      opEl.style.display='';
+    }else{
+      opEl.style.display='none';
+    }
+
     if(USERS[u].role==='admin'){
       document.getElementById('adminMenuWrap').style.display='';
     }else{
       document.getElementById('adminMenuWrap').style.display='none';
     }
   }
+}
+// PIN digit auto-advance
+for(var _pi=0;_pi<4;_pi++){
+  (function(idx){
+    var el=document.getElementById('pinD'+idx);
+    el.addEventListener('input',function(e){
+      if(e.target.value&&idx<3)document.getElementById('pinD'+(idx+1)).focus();
+      e.target.classList.remove('error');
+    });
+    el.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&!e.target.value&&idx>0){
+        document.getElementById('pinD'+(idx-1)).focus();
+      }
+      if(e.key==='Enter')confirmPin();
+    });
+    el.addEventListener('paste',function(e){
+      e.preventDefault();
+      var txt=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');
+      for(var j=0;j<4&&j<txt.length;j++){
+        document.getElementById('pinD'+j).value=txt[j];
+        document.getElementById('pinD'+j).classList.remove('error');
+      }
+      if(txt.length>=4)document.getElementById('pinD3').focus();
+    });
+  })(_pi);
 }
 document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
