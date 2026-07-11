@@ -106,5 +106,15 @@
     }
   ],
   "processes": [],
-  "notes": ""
+  "notes": "",
+  "timeline": [
+    {
+      "id": "mrg3qyf38pg1n",
+      "operator": "ARIVERO",
+      "text": "5 Y 22 AM SE CORREO LA AUDITORIA  Y SE CONTROLA QUE ESTE EN PROCESO.",
+      "time": "05:28:08",
+      "date": "2026-07-11",
+      "shift": "NOCHE"
+    }
+  ]
 }
