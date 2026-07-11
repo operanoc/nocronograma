@@ -41,7 +41,7 @@ textarea{resize:vertical;min-height:60px}
 
 .header{background:var(--white);border-bottom:1px solid var(--gray-200);padding:10px 16px;position:sticky;top:0;z-index:100;transition:background .3s}
 .header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.header h1{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px}
+.header h1{font-size:17px;font-weight:700;display:flex;align-items:center;gap:0}
 .header h1 svg{color:var(--emerald-600)}
 .header-actions{display:flex;align-items:center;gap:6px}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;transition:all .15s;white-space:nowrap}
@@ -413,7 +413,7 @@ html.dark .notif-item.unread{background:#082f49}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.spin-icon{animation:spin 1s linear infinite;}
 
 /* Admin hamburger menu */
-.admin-menu{display:none;position:absolute;top:100%;right:0;margin-top:4px;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);box-shadow:var(--shadow-md);min-width:200px;z-index:200;overflow:hidden;padding:4px 0;animation:fadeIn .15s ease}
+.admin-menu{display:none;position:absolute;top:100%;left:0;margin-top:4px;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);box-shadow:var(--shadow-md);min-width:200px;z-index:200;overflow:hidden;padding:4px 0;animation:fadeIn .15s ease}
 .admin-menu.show{display:block}
 .admin-menu button{display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;font-size:13px;color:var(--gray-700);background:none;border:none;cursor:pointer;text-align:left;transition:background .1s}
 .admin-menu button:hover{background:var(--gray-100);color:var(--gray-900)}
@@ -483,6 +483,18 @@ html.dark .notif-item.unread{background:#082f49}
 <header class="header">
   <div class="header-inner">
     <h1>
+      <div style="position:relative;display:none" id="adminMenuWrap">
+        <button class="btn-icon" id="adminMenuBtn" onclick="toggleAdminMenu()" title="Menu administrador" style="margin-right:6px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="admin-menu" id="adminMenu">
+          <button onclick="openDashboard();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard</button>
+          <button onclick="openAuditView();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Historial de auditoria</button>
+          <button onclick="exportCSV();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar CSV</button>
+          <button onclick="exportXLSX();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Descargar XLSX</button>
+          <button onclick="document.getElementById('xlsxImportInput').click();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Importar XLSX</button>
+        </div>
+      </div>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
       Bitácora NOC
     </h1>
@@ -502,19 +514,6 @@ html.dark .notif-item.unread{background:#082f49}
           <div class="notif-list" id="notifList"></div>
         </div>
       </div>
-      <div style="position:relative;display:none" id="adminMenuWrap">
-        <button class="btn btn-ghost btn-sm" id="adminMenuBtn" onclick="toggleAdminMenu()" title="Menu administrador">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-        </button>
-        <div class="admin-menu" id="adminMenu">
-          <button onclick="openDashboard();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard</button>
-          <button onclick="openAuditView();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Historial de auditoria</button>
-          <button onclick="exportCSV();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar CSV</button>
-          <button onclick="exportXLSX();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Descargar XLSX</button>
-          <button onclick="document.getElementById('xlsxImportInput').click();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Importar XLSX</button>
-        </div>
-      </div>
-      <input type="file" id="xlsxImportInput" accept=".xlsx,.xls" style="display:none" onchange="handleXLSXImport(this)">
 
       <div class="user-bar" id="userBar" style="display:none">
         <span class="user-name" id="userNameDisplay"></span>
@@ -530,6 +529,7 @@ html.dark .notif-item.unread{background:#082f49}
     </div>
   </div>
 </header>
+<input type="file" id="xlsxImportInput" accept=".xlsx,.xls" style="display:none" onchange="handleXLSXImport(this)">
 
 <main>
   <div class="date-nav">
