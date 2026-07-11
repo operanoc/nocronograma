@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Inputs de login unificados sin linea divisoria',
+    'message': 'Tema dark default + paleta navy/purpura/teal Semantix en login y app',
     'content': content,
     'sha': sha,
     'branch': BRANCH
