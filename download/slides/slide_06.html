@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>Impacto en la Operación</title>
+  <link rel="stylesheet" href="global.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; padding: 0; background: #0a0e27; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .compare-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+    .compare-item:last-child { margin-bottom: 0; }
+    .compare-item .material-icons { font-size: 22px; margin-top: 1px; flex-shrink: 0; }
+    .compare-item p { font-size: 15px; line-height: 1.55; color: var(--text); }
+  </style>
+</head>
+<body>
+  <div class="slide" style="display: flex; flex-direction: column;">
+
+    <!-- Header -->
+    <div style="padding: 50px 64px 0; text-align: center; flex-shrink: 0;">
+      <h1 style="font-family: var(--font-heading); font-size: 30px; font-weight: 700; color: var(--white); margin: 0;">Impacto en la Operación</h1>
+    </div>
+
+    <!-- Two columns -->
+    <div style="padding: 0 64px; margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; flex: 1; align-items: start;">
+
+      <!-- ANTES column -->
+      <div style="background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.2); border-radius: 14px; padding: 32px;">
+        <span style="color: #ef4444; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">ANTES</span>
+
+        <div style="margin-top: 24px;">
+          <div class="compare-item">
+            <span class="material-icons" style="color: #ef4444;">close</span>
+            <p>Registros manuales en archivos dispersos</p>
+          </div>
+          <div class="compare-item">
+            <span class="material-icons" style="color: #ef4444;">close</span>
+            <p>Sin trazabilidad de quién cargó cada dato</p>
+          </div>
+          <div class="compare-item">
+            <span class="material-icons" style="color: #ef4444;">close</span>
+            <p>Información perdida entre cambios de turno</p>
+          </div>
+          <div class="compare-item">
+            <span class="material-icons" style="color: #ef4444;">close</span>
+            <p>Nula visibilidad para la gerencia</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DESPUÉS column -->
+      <div style="background: rgba(0,229,184,0.06); border: 1px solid rgba(0,229,184,0.2); border-radius: 14px; padding: 32px;">
+        <span style="color: var(--teal); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">DESPUÉS</span>
+
+        <div style="margin-top: 24px;">
+          <div class="compare-item">
+            <span class="material-icons" style="color: var(--teal);">check_circle</span>
+            <p>Registro digital unificado en la nube</p>
+          </div>
+          <div class="compare-item">
+            <span class="material-icons" style="color: var(--teal);">check_circle</span>
+            <p>Audit trail completo por operador y fecha</p>
+          </div>
+          <div class="compare-item">
+            <span class="material-icons" style="color: var(--teal);">check_circle</span>
+            <p>Pase de turno obligatorio con novedades</p>
+          </div>
+          <div class="compare-item">
+            <span class="material-icons" style="color: var(--teal);">check_circle</span>
+            <p>Dashboard con métricas y reportes descargables</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <aside data-notes class="hidden" style="display:none">
+      - Esta es la diapositiva más importante de la presentación.
+      - Contrastar claramente el antes y después para mostrar el valor concreto.
+      - El problema principal era la pérdida de información entre turnos.
+      - El audit trail resuelve el problema de responsabilidad y auditoría.
+      - El dashboard da visibilidad gerencial que antes no existía.
+    </aside>
+  </div>
+</body>
+</html>

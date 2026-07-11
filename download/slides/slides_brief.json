@@ -1,0 +1,65 @@
+{
+  "design": {
+    "title": "Bitácora NOC — Presentación Ejecutiva",
+    "style_name": "Dark Tech NOC",
+    "palette": {
+      "background": "#0a0e27",
+      "primary": "#e2e8f0",
+      "accent": "#A855F7"
+    },
+    "typography": {
+      "heading": "Inter",
+      "body": "Inter",
+      "numeric": "Inter"
+    },
+    "reference": "Bitácora NOC app dark theme with navy/purple/teal"
+  },
+  "global_css_path": "/home/z/my-project/download/slides/global.css",
+  "slides_dir": "/home/z/my-project/download/slides",
+  "language": "es",
+  "speaker_notes": "short",
+  "slides": [
+    {
+      "title": "Cover",
+      "layout": "cover",
+      "output_path": "/home/z/my-project/download/slides/slide_01.html",
+      "task_brief": "Slide de portada con estilo dark tech NOC.\n\nFondo oscuro navy (#0a0e27) con un gradiente sutil de púrpura a teal en la esquina inferior derecha.\n\nContenido centrado verticalmente:\n- Tag small arriba: 'SEMATIX — NETWORK OPERATIONS CENTER' en color teal (#00E5B8), font-size 12px, letter-spacing 3px, uppercase\n- Título principal: 'Bitácora NOC' en font-size 56px, font-weight 900, color blanco (#f8fafc)\n- Subtítulo: 'Sistema de Registro Operativo' en font-size 22px, color gris claro (#94a3b8), font-weight 300\n- Línea decorativa horizontal de 80px, color púrpura (#A855F7), centrada, con margen arriba y abajo\n- Texto inferior: 'Presentación Ejecutiva — Julio 2026' en color dim, font-size 14px\n- Imagen de fondo sutil: usar la imagen de server room con overlay oscuro: https://sfile.chatglm.cn/images-ppt/28f7b72c8e31.jpg con opacity 0.08 y blend-mode overlay, position bottom-right\n\nSpeaker notes: Presentar el sistema como solución propia desarrollada para el NOC de Semantix."
+    },
+    {
+      "title": "Contexto y Desafío",
+      "layout": "split text+image",
+      "output_path": "/home/z/my-project/download/slides/slide_02.html",
+      "task_brief": "Layout: lado izquierdo texto (60%), lado derecho imagen (40%).\n\nLado izquierdo (padding 64px 40px 64px 64px):\n- Título: 'El Desafío Operativo' en font-size 32px, font-weight 700, color blanco\n- Línea púrpura de 50px debajo del título, margen 12px abajo\n- Párrafo 1: 'El NOC de Semantix opera 24/7 con tres turnos rotativos (Mañana, Tarde, Noche) monitoreando servidores en cinco países de Latinoamérica. Cada turno genera información crítica que necesita ser documentada y transmitida al siguiente.' (~40 palabras)\n- Párrafo 2: 'Antes de este sistema, el registro se realizaba de forma manual, sin trazabilidad, sin auditoría y con información dispersa. No existía una fuente única de verdad operativa.' (~25 palabras)\n- Párrafo 3: 'Esto generaba riesgos: pérdida de información entre turnos, dificultad para auditar, y nula visibilidad para la gerencia sobre el estado real de la operación.' (~25 palabras)\n\nLado derecho (padding 64px 64px 64px 0):\n- Imagen del data center: https://sfile.chatglm.cn/images-ppt/f52c00a078a1.jpg con border-radius 16px, height 100%, object-fit cover, con un borde sutil 1px solid var(--border)\n\nSpeaker notes: Explicar el problema previo: registros manuales, información fragmentada, sin trazabilidad entre turnos."
+    },
+    {
+      "title": "La Solución",
+      "layout": "key message",
+      "output_path": "/home/z/my-project/download/slides/slide_03.html",
+      "task_brief": "Layout: título arriba centrado, luego 4 cards en grid 2x2.\n\nHeader (centrado, padding-top 50px):\n- Título: 'La Solución: Bitácora NOC' en font-size 30px, font-weight 700, color blanco\n- Subtítulo: 'Aplicación web de un solo archivo, sin dependencias, almacenamiento en la nube' en color dim, font-size 14px, margin-top 6px\n\nGrid 2x2 (padding horizontal 64px, gap 20px, margin-top 36px):\n\nCard 1 — Icono: cloud_upload (material icons), fondo del icono: rgba(168,85,247,0.15), icono color púrpura\n- Título: 'Almacenamiento en la Nube' font-size 18px, color blanco, font-weight 600\n- Texto: 'Datos sincronizados en tiempo real via GitHub Contents API. Accesible desde cualquier navegador sin instalación.' font-size 14px, color dim\n\nCard 2 — Icono: security (material icons), fondo icono: rgba(0,229,184,0.15), icono color teal\n- Título: 'Cuentas Individuales' font-size 18px, color blanco, font-weight 600\n- Texto: 'Cada operador tiene su usuario propio. Audit trail completo: quién cargó qué y cuándo.' font-size 14px, color dim\n\nCard 3 — Icono: sync (material icons), fondo icono: rgba(168,85,247,0.15), icono color púrpura\n- Título: 'Sincronización Automática' font-size 18px, color blanco, font-weight 600\n- Texto: 'Guardado en tiempo real con debounce. Indicador visual de estado. Datos preservados offline.' font-size 14px, color dim\n\nCard 4 — Icono: phone_android (material icons), fondo icono: rgba(0,229,184,0.15), icono color teal\n- Título: 'Cero Infraestructura' font-size 18px, color blanco, font-weight 600\n- Texto: 'Un solo archivo HTML. Sin servidor, sin base de datos, sin mantenimiento. Se sirve desde GitHub Pages.' font-size 14px, color dim\n\nSpeaker notes: Destacar la simplicidad de la arquitectura: un archivo HTML que hace todo, sin infraestructura."
+    },
+    {
+      "title": "Funcionalidades Principales",
+      "layout": "bento grid",
+      "output_path": "/home/z/my-project/download/slides/slide_04.html",
+      "task_brief": "Layout: bento grid asimétrico con 6 bloques.\n\nHeader (padding 50px 64px 0):\n- Título: 'Funcionalidades Principales' en font-size 30px, font-weight 700, color blanco\n\nGrid (padding 0 64px, gap 14px, margin-top 24px):\n\nFila 1 — 3 columnas:\nBloque 1 (padding 20px, bg surface, border, border-radius 12px): Icono poll (material icons) color púrpura + 'Pollings de Servidores' bold + 'Registro de inicio/fin por servidor, agrupados por país (AR, PE, PA, CL, MX) con duración automática.' color dim\n\nBloque 2 (padding 20px, bg surface, border, border-radius 12px): Icono backup (material icons) color teal + 'Control de Backups' bold + 'Horarios de inicio/fin, soporte de backups que cruzan medianoche, JOB y estado OK/Error.' color dim\n\nBloque 3 (padding 20px, bg surface, border, border-radius 12px): Icono checklist (material icons) color púrpura + 'Procesos Batch' bold + '9 procesos predefinidos (AFIP, BANCOR, etc.) con estados OK/Error más procesos personalizados.' color dim\n\nFila 2 — 3 columnas:\nBloque 4 (padding 20px, bg surface, border, border-radius 12px): Icono swap_horiz (material icons) color teal + 'Pase de Turno' bold + 'Formulario obligatorio con novedades, checks de conformidad. Bloquea el día para operadores.' color dim\n\nBloque 5 (padding 20px, bg surface, border, border-radius 12px): Icono timeline (material icons) color púrpura + 'Novedades' bold + 'Timeline cronológico con nombre de operador y hora. Se pueden agregar incluso en días cerrados.' color dim\n\nBloque 6 (padding 20px, bg surface, border, border-radius 12px): Icono dashboard (material icons) color teal + 'Dashboard Admin' bold + 'Métricas por período, reportes descargables, auditoría completa, gestión de contraseñas.' color dim\n\nSpeaker notes: Repasar rápidamente las 6 funcionalidades clave. El pase de turno es el más importante porque asegura la continuidad operativa."
+    },
+    {
+      "title": "Captura del Sistema",
+      "layout": "stats",
+      "output_path": "/home/z/my-project/download/slides/slide_05.html",
+      "task_brief": "Layout: captura de pantalla real del sistema como elemento principal.\n\nHeader (padding 40px 64px 0):\n- Título: 'El Sistema en Producción' en font-size 28px, font-weight 700, color blanco\n- Subtítulo: 'Interfaz operativa real — operanoc.github.io/nocronograma/' en color teal, font-size 13px\n\nContenido principal (centrado, padding 16px 64px):\n- Captura de pantalla real del dashboard: usar ruta RELATIVA 'screenshot_dashboard.png' (el archivo está en el mismo directorio slides/)\n- La imagen debe tener border-radius 12px, border 1px solid var(--border), width 100% (max 1152px), sombra sutil\n\nFooter (padding 0 64px 40px):\n- Tres badges/tags en fila horizontal centrada:\n  Tag 1: '8 operadores' bg rgba(168,85,247,0.15), color púrpura, font-size 12px, padding 6px 14px, border-radius 20px\n  Tag 2: '3 turnos rotativos' bg rgba(0,229,184,0.15), color teal, font-size 12px, padding 6px 14px, border-radius 20px\n  Tag 3: '5 países monitoreados' bg rgba(168,85,247,0.15), color púrpura, font-size 12px, padding 6px 14px, border-radius 20px\n\nSpeaker notes: Mostrar que el sistema ya está en producción y siendo utilizado por el equipo completo de operadores."
+    },
+    {
+      "title": "Beneficios",
+      "layout": "comparison",
+      "output_path": "/home/z/my-project/download/slides/slide_06.html",
+      "task_brief": "Layout: comparativa ANTES vs DESPUÉS en dos columnas.\n\nHeader (padding 50px 64px 0, centrado):\n- Título: 'Impacto en la Operación' en font-size 30px, font-weight 700, color blanco\n\nDos columnas (padding 0 64px, margin-top 32px, gap 24px):\n\nColumna IZQUIERDA (bg rgba(239,68,68,0.06), border 1px solid rgba(239,68,68,0.2), border-radius 14px, padding 32px):\n- Tag arriba: 'ANTES' en color rojo (#ef4444), font-size 12px, font-weight 700, letter-spacing 2px\n- Lista de 4 ítems con icono close (color rojo) a la izquierda:\n  1. 'Registros manuales en archivos dispersos'\n  2. 'Sin trazabilidad de quién cargó cada dato'\n  3. 'Información perdida entre cambios de turno'\n  4. 'Nula visibilidad para la gerencia'\n\nColumna DERECHA (bg rgba(0,229,184,0.06), border 1px solid rgba(0,229,184,0.2), border-radius 14px, padding 32px):\n- Tag arriba: 'DESPUÉS' en color teal, font-size 12px, font-weight 700, letter-spacing 2px\n- Lista de 4 ítems con icono check_circle (color teal) a la izquierda:\n  1. 'Registro digital unificado en la nube'\n  2. 'Audit trail completo por operador y fecha'\n  3. 'Pase de turno obligatorio con novedades'\n  4. 'Dashboard con métricas y reportes descargables'\n\nSpeaker notes: Esta es la slide más importante. Contrastar el antes y después para mostrar el valor concreto del sistema."
+    },
+    {
+      "title": "Cierre",
+      "layout": "closing",
+      "output_path": "/home/z/my-project/download/slides/slide_07.html",
+      "task_brief": "Layout: slide de cierre, estilo minimalista y profesional.\n\nContenido centrado vertical y horizontalmente:\n\nFondo: gradiente sutil de navy a un tono ligeramente más púrpura en el centro.\n\n- Texto grande: 'BITÁCORA NOC' en font-size 44px, font-weight 900, color blanco, letter-spacing 2px\n- Línea decorativa púrpura de 60px, centrada, margen 20px arriba y abajo\n- Texto: 'Sistema de Registro Operativo — Semantix' en font-size 18px, color dim, font-weight 400\n- Espacio 30px\n- Texto: 'operanoc.github.io/nocronograma/' en font-size 14px, color teal (#00E5B8)\n- Espacio 8px\n- Texto: '¿Preguntas?' en font-size 24px, color gris claro (#94a3b8), font-weight 300\n\nSpeaker notes: Abrir el piso para preguntas. Tener la URL a mano para mostrar en vivo si lo piden."
+    }
+  ]
+}

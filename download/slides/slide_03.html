@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>La Solución</title>
+  <link rel="stylesheet" href="global.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; background: #0a0e27; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .solution-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.2s;
+    }
+    .solution-card:hover {
+      border-color: #2d3560;
+    }
+  </style>
+</head>
+<body>
+  <div class="slide" style="display:flex; flex-direction:column; position:relative; overflow:hidden;">
+
+    <!-- Header -->
+    <div style="text-align:center; padding-top:50px; padding-left:64px; padding-right:64px;">
+      <h2 style="font-family:var(--font-heading); font-size:30px; font-weight:700; color:#f8fafc; margin-bottom:6px;">La Solución: Bitácora NOC</h2>
+      <p style="font-size:14px; color:#94a3b8;">Aplicación web de un solo archivo, sin dependencias, almacenamiento en la nube</p>
+    </div>
+
+    <!-- Grid 2x2 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:36px 64px 0 64px; flex:1;">
+
+      <!-- Card 1 — Almacenamiento en la Nube -->
+      <div class="solution-card">
+        <div style="width:48px; height:48px; border-radius:10px; background:rgba(168,85,247,0.15); display:flex; align-items:center; justify-content:center;">
+          <span class="material-icons" style="color:#A855F7; font-size:26px;">cloud_upload</span>
+        </div>
+        <h3 style="font-size:18px; font-weight:600; color:#f8fafc;">Almacenamiento en la Nube</h3>
+        <p style="font-size:14px; color:#94a3b8; line-height:1.6;">Datos sincronizados en tiempo real via GitHub Contents API. Accesible desde cualquier navegador sin instalación.</p>
+      </div>
+
+      <!-- Card 2 — Cuentas Individuales -->
+      <div class="solution-card">
+        <div style="width:48px; height:48px; border-radius:10px; background:rgba(0,229,184,0.15); display:flex; align-items:center; justify-content:center;">
+          <span class="material-icons" style="color:#00E5B8; font-size:26px;">security</span>
+        </div>
+        <h3 style="font-size:18px; font-weight:600; color:#f8fafc;">Cuentas Individuales</h3>
+        <p style="font-size:14px; color:#94a3b8; line-height:1.6;">Cada operador tiene su usuario propio. Audit trail completo: quién cargó qué y cuándo.</p>
+      </div>
+
+      <!-- Card 3 — Sincronización Automática -->
+      <div class="solution-card">
+        <div style="width:48px; height:48px; border-radius:10px; background:rgba(168,85,247,0.15); display:flex; align-items:center; justify-content:center;">
+          <span class="material-icons" style="color:#A855F7; font-size:26px;">sync</span>
+        </div>
+        <h3 style="font-size:18px; font-weight:600; color:#f8fafc;">Sincronización Automática</h3>
+        <p style="font-size:14px; color:#94a3b8; line-height:1.6;">Guardado en tiempo real con debounce. Indicador visual de estado. Datos preservados offline.</p>
+      </div>
+
+      <!-- Card 4 — Cero Infraestructura -->
+      <div class="solution-card">
+        <div style="width:48px; height:48px; border-radius:10px; background:rgba(0,229,184,0.15); display:flex; align-items:center; justify-content:center;">
+          <span class="material-icons" style="color:#00E5B8; font-size:26px;">phone_android</span>
+        </div>
+        <h3 style="font-size:18px; font-weight:600; color:#f8fafc;">Cero Infraestructura</h3>
+        <p style="font-size:14px; color:#94a3b8; line-height:1.6;">Un solo archivo HTML. Sin servidor, sin base de datos, sin mantenimiento. Se sirve desde GitHub Pages.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <aside data-notes class="hidden" style="display:none">
+    <ul>
+      <li>Destacar la simplicidad de la arquitectura: un archivo HTML que hace todo</li>
+      <li>Explicar que GitHub Contents API actúa como base de datos sin costo</li>
+      <li>Mencionar que el audit trail permite saber exactamente quién modificó qué</li>
+      <li>Resaltar que no se necesita ningún tipo de infraestructura o mantenimiento</li>
+    </ul>
+  </aside>
+</body>
+</html>

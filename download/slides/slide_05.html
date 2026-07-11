@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1280">
+  <title>El Sistema en Producción</title>
+  <link rel="stylesheet" href="global.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; padding: 0; background: #0a0e27; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+  </style>
+</head>
+<body>
+  <div class="slide" style="display: flex; flex-direction: column;">
+
+    <!-- Header -->
+    <div style="padding: 40px 64px 0; flex-shrink: 0;">
+      <h1 style="font-family: var(--font-heading); font-size: 28px; font-weight: 700; color: var(--white); margin: 0;">El Sistema en Producción</h1>
+      <p style="font-family: var(--font-body); font-size: 13px; color: var(--teal); margin-top: 6px;">Interfaz operativa real — operanoc.github.io/nocronograma/</p>
+    </div>
+
+    <!-- Main screenshot area -->
+    <div style="padding: 16px 64px; flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0;">
+      <img
+        src="screenshot_dashboard.png"
+        alt="Dashboard del sistema Bitácora NOC en producción"
+        style="width: 100%; max-width: 1152px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(168,85,247,0.08); object-fit: contain; max-height: 100%;"
+      >
+    </div>
+
+    <!-- Footer badges -->
+    <div style="padding: 0 64px 40px; flex-shrink: 0; display: flex; justify-content: center; gap: 12px;">
+      <span style="background: rgba(168,85,247,0.15); color: var(--accent); font-size: 12px; padding: 6px 14px; border-radius: 20px; font-weight: 500;">8 operadores</span>
+      <span style="background: rgba(0,229,184,0.15); color: var(--teal); font-size: 12px; padding: 6px 14px; border-radius: 20px; font-weight: 500;">3 turnos rotativos</span>
+      <span style="background: rgba(168,85,247,0.15); color: var(--accent); font-size: 12px; padding: 6px 14px; border-radius: 20px; font-weight: 500;">5 países monitoreados</span>
+    </div>
+
+    <aside data-notes class="hidden" style="display:none">
+      - Mostrar que el sistema ya está en producción real.
+      - Destacar que es utilizado por 8 operadores activos.
+      - La URL es accesible desde cualquier navegador sin instalación.
+      - Los 3 turnos rotativos cubren las 24 horas del día.
+      - Si lo solicitan, abrir la URL en vivo para demostrar.
+    </aside>
+  </div>
+</body>
+</html>

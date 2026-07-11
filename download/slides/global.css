@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+
+:root {
+  --bg: #0a0e27;
+  --surface: #141937;
+  --border: #1e2545;
+  --text: #e2e8f0;
+  --text-dim: #94a3b8;
+  --accent: #A855F7;
+  --teal: #00E5B8;
+  --white: #f8fafc;
+  --font-heading: 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-num: 'Inter', system-ui, sans-serif;
+  --fs-display: 48px;
+  --fs-h1: 36px;
+  --fs-h2: 28px;
+  --fs-h3: 20px;
+  --fs-body: 16px;
+  --fs-small: 13px;
+  --fs-micro: 11px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+.slide {
+  width: 1280px;
+  height: 720px;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  position: relative;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.accent-text { color: var(--accent); }
+.teal-text { color: var(--teal); }
+.dim-text { color: var(--text-dim); }
+.white-text { color: var(--white); }
+
+.tag {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
