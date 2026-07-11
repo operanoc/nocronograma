@@ -2077,31 +2077,24 @@ function populateOperatorSelect(){
   sel.innerHTML='<option value="">-- Operador --</option>';
   if(!currentUser)return;
   const sk=currentUser.shiftKey||'ADMIN';
-  const names=new Set();
-  // Add current operator (auto-detected)
-  const auto=getCurrentOperator();
-  if(auto){
-    names.add(auto);
-    // Add the schedule entry's operators
+  // For operators: only show the logged-in user
+  if(sk!=='ADMIN'){
+    const name=currentUser.displayName||currentUser.username||currentUser.name||'';
+    if(name){
+      sel.innerHTML='<option value="'+escHtml(name)+'" selected>'+escHtml(name)+'</option>';
+    }
+    return;
   }
-  // Add all operators from the user's shift
-  if(sk!=='ADMIN'&&SCHEDULE[sk]){
-    const sch=SCHEDULE[sk];
+  // For admin: show all operators from all shifts
+  const names=new Set();
+  const auto=getCurrentOperator();
+  if(auto) names.add(auto);
+  Object.values(SCHEDULE).forEach(sch=>{
     names.add(sch.weekday);
     names.add(sch.weekend);
     if(sch.friday)names.add(sch.friday);
     (sch.backups||[]).forEach(b=>names.add(b));
-  }
-  // If admin, add all operators from all shifts
-  if(sk==='ADMIN'){
-    Object.values(SCHEDULE).forEach(sch=>{
-      names.add(sch.weekday);
-      names.add(sch.weekend);
-      if(sch.friday)names.add(sch.friday);
-      (sch.backups||[]).forEach(b=>names.add(b));
-    });
-  }
-  // Build options with optgroup
+  });
   let html='';
   if(auto)html+='<option value="'+escHtml(auto)+'" selected>'+escHtml(auto)+' *</option>';
   const others=[...names].filter(n=>n!==auto).sort();
