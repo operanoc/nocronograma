@@ -606,8 +606,9 @@ html.dark .notif-item.unread{background:#082f49}
   <div class="header-inner">
     <h1>
       <div style="display:none" id="adminMenuWrap">
-        <button class="btn-icon" id="adminMenuBtn" onclick="toggleAdminMenu()" title="Menu administrador" style="margin-right:6px">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <button id="adminMenuBtn" onclick="toggleAdminMenu()" title="Menu administrador" style="display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;border:1px solid var(--emerald-600);background:rgba(168,85,247,.1);color:var(--emerald-600);cursor:pointer;font-size:12px;font-weight:600;margin-right:8px;transition:all .15s">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          ADMIN
         </button>
       </div>
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
