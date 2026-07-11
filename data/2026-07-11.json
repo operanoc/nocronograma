@@ -30,7 +30,7 @@
       "endTime": "02:27",
       "job": "BKPDIARIOU",
       "duration": "2:18",
-      "status": null
+      "status": "OK"
     }
   ],
   "processes": [],
