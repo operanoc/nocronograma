@@ -21,7 +21,18 @@
       "note": null
     }
   ],
-  "backups": [],
+  "backups": [
+    {
+      "name": "Regional",
+      "iniDate": "2026-07-11",
+      "iniTime": "00:09",
+      "endDate": "2026-07-11",
+      "endTime": "02:27",
+      "job": "BKPDIARIOU",
+      "duration": "2:18",
+      "status": null
+    }
+  ],
   "processes": [],
   "notes": ""
 }
