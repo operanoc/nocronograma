@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Fix: ocultar dashBtn/auditBtn en logout y login no-admin',
+    'message': 'Feature: Importar XLSX - leer archivos excel y volcar datos al dia actual',
     'content': content,
     'sha': sha,
     'branch': BRANCH

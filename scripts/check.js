@@ -398,6 +398,195 @@ function exportXLSX(){
   toast('XLSX descargado');
 }
 
+// ===== IMPORT XLSX =====
+var _pendingImport=null;
+function handleXLSXImport(input){
+  if(!input||!input.files||!input.files.length)return;
+  var file=input.files[0];
+  if(!file.name.match(/\.xlsx?$/i)){toast('Seleccionar un archivo .xlsx');input.value='';return;}
+  if(isDayLocked(currentDate)&&!isAdmin()){showLockedModal();input.value='';return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      var data=new Uint8Array(e.target.result);
+      var wb=XLSX.read(data,{type:'array'});
+      var parsed=parseXLSXWorkbook(wb);
+      if(!parsed.pollings.length&&!parsed.backups.length&&!parsed.processes.length){
+        toast('El archivo no contiene datos reconocibles para importar');input.value='';return;
+      }
+      _pendingImport=parsed;
+      showImportPreview(parsed,file.name);
+    }catch(err){
+      console.error('Import error',err);
+      toast('Error al leer el archivo: '+err.message);
+    }
+    input.value='';
+  };
+  reader.readAsArrayBuffer(file);
+}
+function parseXLSXWorkbook(wb){
+  var result={pollings:[],backups:[],processes:[]};
+  // Try to find sheets by name (match export format or common names)
+  var sheetNames=wb.SheetNames;
+  var pollSheet=null,bkpSheet=null,procSheet=null;
+  sheetNames.forEach(function(n){
+    var u=n.toUpperCase();
+    if(u.indexOf('POLLING')>=0)pollSheet=n;
+    else if(u.indexOf('BACKUP')>=0||u.indexOf('BKP')>=0)bkpSheet=n;
+    else if(u.indexOf('PROCESO')>=0)procSheet=n;
+  });
+  // If no named sheets found, try by column headers
+  if(!pollSheet&&!bkpSheet&&!procSheet){
+    sheetNames.forEach(function(n){
+      var ws=wb.Sheets[n];
+      var json=XLSX.utils.sheet_to_json(ws,{header:1});
+      if(json.length<2)return;
+      var hdr=json[0].map(function(h){return String(h||'').toUpperCase();});
+      if(hdr.indexOf('SERVIDOR')>=0&&hdr.indexOf('FASE')>=0)pollSheet=n;
+      else if(hdr.indexOf('NOMBRE')>=0&&(hdr.indexOf('HORA INICIO')>=0||hdr.indexOf('ESTADO')>=0)){
+        if(hdr.indexOf('JOB')>=0)bkpSheet=n;
+        else procSheet=n;
+      }
+    });
+  }
+  // Parse Pollings sheet
+  if(pollSheet){
+    var ws=wb.Sheets[pollSheet];
+    var rows=XLSX.utils.sheet_to_json(ws,{header:1});
+    for(var i=0;i<rows.length;i++){
+      var r=rows[i];
+      if(!r||!r[0])continue;
+      var srv=String(r[0]||'').trim();
+      // Skip header rows
+      if(srv.toUpperCase()==='SERVIDOR'||srv.toUpperCase()==='POLLINGS')continue;
+      var region=String(r[1]||'').trim();
+      var phase=String(r[2]||'').trim().toUpperCase();
+      var time=String(r[3]||'').trim();
+      if(!srv)continue;
+      if(phase!=='BEGINNING'&&phase!=='ENDING')continue;
+      result.pollings.push({server:srv,region:region||getRegion(srv),phase:phase,time:time||''});
+    }
+  }
+  // Parse Backups sheet
+  if(bkpSheet){
+    var ws2=wb.Sheets[bkpSheet];
+    var rows2=XLSX.utils.sheet_to_json(ws2,{header:1});
+    for(var j=0;j<rows2.length;j++){
+      var r2=rows2[j];
+      if(!r2||!r2[0])continue;
+      var bname=String(r2[0]||'').trim();
+      if(bname.toUpperCase()==='NOMBRE'||bname.toUpperCase()==='BACKUPS')continue;
+      result.backups.push({
+        name:bname,
+        iniTime:String(r2[1]||'').trim(),
+        endTime:String(r2[2]||'').trim(),
+        duration:String(r2[3]||'').trim(),
+        status:String(r2[4]||'').trim(),
+        job:String(r2[5]||'').trim()
+      });
+    }
+  }
+  // Parse Processes sheet
+  if(procSheet){
+    var ws3=wb.Sheets[procSheet];
+    var rows3=XLSX.utils.sheet_to_json(ws3,{header:1});
+    for(var k=0;k<rows3.length;k++){
+      var r3=rows3[k];
+      if(!r3||!r3[0])continue;
+      var pname=String(r3[0]||'').trim();
+      if(pname.toUpperCase()==='NOMBRE'||pname.toUpperCase()==='PROCESOS')continue;
+      result.processes.push({
+        name:pname,
+        status:String(r3[1]||'').trim()
+      });
+    }
+  }
+  return result;
+}
+function showImportPreview(parsed,fileName){
+  var pCount=parsed.pollings.length;
+  var bCount=parsed.backups.length;
+  var prCount=parsed.processes.length;
+  // Build preview HTML
+  var h='<div style="padding:8px 0">';
+  h+='<p style="margin-bottom:14px;color:var(--gray-700);font-size:13px;line-height:1.5">Se leyó el archivo <b>'+escHtml(fileName)+'</b>. Los siguientes datos se <b>agregaran</b> al dia <b>'+fmt(currentDate)+'</b>:</p>';
+  h+='<div style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;padding:12px 16px;margin-bottom:14px">';
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:13px">';
+  if(pCount)h+='<div><b style="color:#6A0DAD">'+pCount+'</b> pollings</div>';
+  if(bCount)h+='<div><b style="color:#6A0DAD">'+bCount+'</b> backups</div>';
+  if(prCount)h+='<div><b style="color:#6A0DAD">'+prCount+'</b> procesos</div>';
+  if(!pCount&&!bCount&&!prCount)h+='<div>No se encontraron datos</div>';
+  h+='</div></div>';
+  // Show mini preview tables
+  if(pCount){
+    h+='<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Pollings</div>';
+    h+='<div style="max-height:120px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:6px;font-size:11px">';
+    h+='<table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:4px 8px;background:var(--gray-100);text-align:left;font-size:10px">Servidor</th><th style="padding:4px 8px;background:var(--gray-100);text-align:left;font-size:10px">Fase</th><th style="padding:4px 8px;background:var(--gray-100);text-align:left;font-size:10px">Hora</th></tr></thead><tbody>';
+    parsed.pollings.forEach(function(p){
+      h+='<tr><td style="padding:3px 8px;border-top:1px solid var(--gray-100)">'+escHtml(p.server)+'</td><td style="padding:3px 8px;border-top:1px solid var(--gray-100)">'+escHtml(p.phase)+'</td><td style="padding:3px 8px;border-top:1px solid var(--gray-100)">'+escHtml(p.time||'—')+'</td></tr>';
+    });
+    h+='</tbody></table></div></div>';
+  }
+  if(bCount){
+    h+='<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Backups</div>';
+    h+='<div style="max-height:120px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:6px;font-size:11px">';
+    h+='<table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:4px 8px;background:var(--gray-100);text-align:left;font-size:10px">Nombre</th><th style="padding:4px 8px;background:var(--gray-100);text-align:left;font-size:10px">Ini</th><th style="padding:4px 8px;background:var(--gray-100);text-align:left;font-size:10px">Fin</th><th style="padding:4px 8px;background:var(--gray-100);text-align:left;font-size:10px">Estado</th></tr></thead><tbody>';
+    parsed.backups.forEach(function(b){
+      h+='<tr><td style="padding:3px 8px;border-top:1px solid var(--gray-100)">'+escHtml(b.name)+'</td><td style="padding:3px 8px;border-top:1px solid var(--gray-100)">'+escHtml(b.iniTime||'—')+'</td><td style="padding:3px 8px;border-top:1px solid var(--gray-100)">'+escHtml(b.endTime||'—')+'</td><td style="padding:3px 8px;border-top:1px solid var(--gray-100)">'+escHtml(b.status||'—')+'</td></tr>';
+    });
+    h+='</tbody></table></div></div>';
+  }
+  if(prCount){
+    h+='<div style="margin-bottom:10px"><div style="font-size:12px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Procesos</div>';
+    h+='<div style="max-height:120px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:6px;font-size:11px">';
+    h+='<table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:4px 8px;background:var(--gray-100);text-align:left;font-size:10px">Nombre</th><th style="padding:4px 8px;background:var(--gray-100);text-align:left;font-size:10px">Estado</th></tr></thead><tbody>';
+    parsed.processes.forEach(function(p){
+      h+='<tr><td style="padding:3px 8px;border-top:1px solid var(--gray-100)">'+escHtml(p.name)+'</td><td style="padding:3px 8px;border-top:1px solid var(--gray-100)">'+escHtml(p.status||'—')+'</td></tr>';
+    });
+    h+='</tbody></table></div></div>';
+  }
+  // Warning
+  h+='<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;margin-top:6px">';
+  h+='<div style="font-size:12px;font-weight:600;color:#92400e;margin-bottom:4px">Importante</div>';
+  h+='<ul style="font-size:12px;color:#92400e;padding-left:16px;margin:0;line-height:1.6">';
+  h+='<li>Los datos se <b>agregan</b> a los existentes (no se reemplazan)</li>';
+  h+='<li>Si un servidor de polling ya existe, se actualiza la hora</li>';
+  h+='</ul></div>';
+  h+='</div>';
+  document.getElementById('modalTitle').textContent='Importar desde XLSX';
+  document.getElementById('modalBody').innerHTML=h;
+  document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal();_pendingImport=null">Cancelar</button><button class="btn btn-primary" onclick="executeImport()">Importar datos</button>';
+  openModal();
+}
+function executeImport(){
+  if(!_pendingImport){toast('No hay datos pendientes');return;}
+  var parsed=_pendingImport;
+  _pendingImport=null;
+  var day=getDay(currentDate);
+  // Import pollings: merge by server+phase
+  parsed.pollings.forEach(function(p){
+    // Remove existing entry for same server+phase
+    day.pollings=day.pollings.filter(function(x){return!(x.server===p.server&&x.phase===p.phase);});
+    day.pollings.push({id:uid(),server:p.server,region:p.region||getRegion(p.server),phase:p.phase,date:currentDate,time:p.time||'',note:null});
+  });
+  // Import backups: append
+  parsed.backups.forEach(function(b){
+    day.backups.push({id:uid(),name:b.name,iniDate:currentDate,iniTime:b.iniTime||'',endDate:currentDate,endTime:b.endTime||'',duration:b.duration||'',status:b.status||'',job:b.job||''});
+  });
+  // Import processes: append (or update if same name exists)
+  parsed.processes.forEach(function(p){
+    var existing=day.processes.find(function(x){return x.name===p.name;});
+    if(existing){
+      if(p.status)existing.status=p.status;
+    }else{
+      day.processes.push({id:uid(),name:p.name,status:p.status||''});
+    }
+  });
+  saveStore();closeModal();render();
+  var total=parsed.pollings.length+parsed.backups.length+parsed.processes.length;
+  toast('Se importaron '+total+' registro(s)');
+}
+
 // Calendar
 function toggleCalendar(){const el=document.getElementById('calPopup');if(el.style.display==='none'){renderCalendar();el.style.display='block';}else el.style.display='none';}
 function renderCalendar(){const d=new Date(currentDate+'T12:00:00');calMonth=d.getMonth();calYear=d.getFullYear();drawCalendar();}
