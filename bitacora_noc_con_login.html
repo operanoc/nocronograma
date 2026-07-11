@@ -411,6 +411,14 @@ html.dark .notif-item.unread{background:#082f49}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.spin-icon{animation:spin 1s linear infinite;}
+
+/* Admin hamburger menu */
+.admin-menu{display:none;position:absolute;top:100%;right:0;margin-top:4px;background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);box-shadow:var(--shadow-md);min-width:200px;z-index:200;overflow:hidden;padding:4px 0;animation:fadeIn .15s ease}
+.admin-menu.show{display:block}
+.admin-menu button{display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;font-size:13px;color:var(--gray-700);background:none;border:none;cursor:pointer;text-align:left;transition:background .1s}
+.admin-menu button:hover{background:var(--gray-100);color:var(--gray-900)}
+.admin-menu button svg{flex-shrink:0;color:var(--gray-400)}
+.admin-menu button:hover svg{color:var(--emerald-600)}
 </style>
 </head>
 <body>
@@ -494,12 +502,19 @@ html.dark .notif-item.unread{background:#082f49}
           <div class="notif-list" id="notifList"></div>
         </div>
       </div>
-      <button class="btn btn-ghost btn-sm" id="dashBtn" onclick="openDashboard()" title="Dashboard" style="display:none">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      </button>
-      <button class="btn btn-ghost btn-sm" id="auditBtn" onclick="openAuditView()" title="Historial de auditoria" style="display:none">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      </button>
+      <div style="position:relative;display:none" id="adminMenuWrap">
+        <button class="btn btn-ghost btn-sm" id="adminMenuBtn" onclick="toggleAdminMenu()" title="Menu administrador">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="admin-menu" id="adminMenu">
+          <button onclick="openDashboard();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard</button>
+          <button onclick="openAuditView();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Historial de auditoria</button>
+          <button onclick="exportCSV();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Exportar CSV</button>
+          <button onclick="exportXLSX();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Descargar XLSX</button>
+          <button onclick="document.getElementById('xlsxImportInput').click();closeAdminMenu()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Importar XLSX</button>
+        </div>
+      </div>
+      <input type="file" id="xlsxImportInput" accept=".xlsx,.xls" style="display:none" onchange="handleXLSXImport(this)">
 
       <div class="user-bar" id="userBar" style="display:none">
         <span class="user-name" id="userNameDisplay"></span>
@@ -543,19 +558,6 @@ html.dark .notif-item.unread{background:#082f49}
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
       Copiar día anterior
     </button>
-    <button class="btn btn-outline btn-sm" onclick="exportCSV()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Exportar CSV
-    </button>
-    <button class="btn btn-outline btn-sm" onclick="exportXLSX()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      Descargar XLSX
-    </button>
-    <button class="btn btn-outline btn-sm" onclick="document.getElementById('xlsxImportInput').click()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      Importar XLSX
-    </button>
-    <input type="file" id="xlsxImportInput" accept=".xlsx,.xls" style="display:none" onchange="handleXLSXImport(this)">
     <div class="sep"></div>
     <div class="search-box">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -834,6 +836,10 @@ function sBadge(s){if(!s||s==='')return'<span class="badge badge-gray">—</span
 function getRegion(s){if(s.startsWith('Argentina'))return'ARGENTINA';if(s.startsWith('Perú'))return'PERU';if(s.startsWith('Panamá'))return'PANAMA';if(s.startsWith('Chile'))return'CHILE';if(s.startsWith('México'))return'MEXICO';return'REGIONAL';}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
 let toastT;function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),2500);}
+
+// Admin menu
+function toggleAdminMenu(){document.getElementById('adminMenu').classList.toggle('show');}
+function closeAdminMenu(){document.getElementById('adminMenu').classList.remove('show');}
 
 // Dark mode
 function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('bitacora_dark',document.documentElement.classList.contains('dark')?'1':'0');updateDarkIcon();}
@@ -1404,9 +1410,9 @@ function doLogin(){
   badge.textContent=user.shift;
   badge.className='shift-badge '+user.cssClass;
   if(user.role==='admin'){
-    document.getElementById('dashBtn').style.display='';document.getElementById('auditBtn').style.display='';
+    document.getElementById('adminMenuWrap').style.display='';
   }else{
-    document.getElementById('dashBtn').style.display='none';document.getElementById('auditBtn').style.display='none';
+    document.getElementById('adminMenuWrap').style.display='none';
   }
   document.getElementById('loginError').textContent='';
 }
@@ -1424,8 +1430,7 @@ function doLogout(){
   sessionStorage.removeItem('bitacora_user');
   document.getElementById('loginOverlay').classList.remove('hide');
   document.getElementById('userBar').style.display='none';
-  document.getElementById('dashBtn').style.display='none';
-  document.getElementById('auditBtn').style.display='none';
+  document.getElementById('adminMenuWrap').style.display='none';
   document.getElementById('loginUser').value='';
   document.getElementById('loginPass').value='';
 }
@@ -1441,9 +1446,9 @@ function checkSession(){
     badge.textContent=USERS[u].shift;
     badge.className='shift-badge '+USERS[u].cssClass;
     if(USERS[u].role==='admin'){
-      document.getElementById('dashBtn').style.display='';document.getElementById('auditBtn').style.display='';
+      document.getElementById('adminMenuWrap').style.display='';
     }else{
-      document.getElementById('dashBtn').style.display='none';document.getElementById('auditBtn').style.display='none';
+      document.getElementById('adminMenuWrap').style.display='none';
     }
   }
 }
@@ -2193,6 +2198,10 @@ document.addEventListener('click',e=>{
   const wrap=document.getElementById('notifWrap');
   if(wrap&&!e.target.closest('#notifWrap')){
     document.getElementById('notifPanel').classList.remove('show');
+  }
+  // Close admin menu on outside click
+  if(!e.target.closest('#adminMenuWrap')){
+    document.getElementById('adminMenu').classList.remove('show');
   }
 });
 
