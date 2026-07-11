@@ -6,7 +6,7 @@ Sistema web para el registro operativo del NOC (Network Operations Center) de Se
 
 La aplicacion es un archivo HTML unico sin dependencias externas, con almacenamiento en la nube via GitHub Contents API y sincronizacion automatica.
 
-**URL:** https://operanoc.github.io/nocronograma/bitacora_noc_con_login.html
+**URL:** https://operanoc.github.io/nocronograma/
 
 ## Usuarios y Cuentas
 
@@ -79,7 +79,7 @@ Cada operador tiene su propia cuenta individual con su nombre real, lo que permi
 
 | Archivo | Descripcion |
 |---------|-------------|
-| `bitacora_noc_con_login.html` | Aplicacion completa (archivo unico, sin dependencias) |
+| `index.html` | Aplicacion completa (archivo unico, sin dependencias) |
 | `MANUAL_USUARIO.pdf` | Manual de usuario detallado |
 | `README.md` | Este archivo |
 | `data/*.json` | Datos de cada dia (generados automaticamente) |
