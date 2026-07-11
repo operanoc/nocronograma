@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Dashboard: calendario mensual lateral como sidebar',
+    'message': 'Simplificar botones: menu admin 3 items + dropdown Exportar en dashboard',
     'content': content,
     'sha': sha,
     'branch': BRANCH

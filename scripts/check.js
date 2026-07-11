@@ -1,3 +1,4 @@
+;
 const INITIAL_DATA = {};
 
 // ===== GITHUB API STORAGE =====
@@ -175,6 +176,8 @@ let toastT;function toast(m){const e=document.getElementById('toast');e.textCont
 // Admin menu
 function toggleAdminMenu(){document.getElementById('adminMenu').classList.toggle('show');}
 function closeAdminMenu(){document.getElementById('adminMenu').classList.remove('show');}
+function toggleExportMenu(){document.getElementById('exportDropdown').classList.toggle('show');}
+function closeExportMenu(){document.getElementById('exportDropdown').classList.remove('show');}
 
 // Dark mode
 function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('bitacora_dark',document.documentElement.classList.contains('dark')?'1':'0');updateDarkIcon();}
@@ -844,9 +847,7 @@ function renderDashSidebar(){
   // Legend
   h+='<div class="dash-sidebar-legend"><div><span class="dot" style="background:var(--emerald-600)"></span> Con datos</div><div><span class="dot" style="background:var(--red-500)"></span> Con errores</div></div>';
   // Actions
-  h+='<div class="dash-sidebar-actions">';
-  h+='<button onclick="downloadDayReport()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Descargar dia '+( _dashCalSelected||'...')+'</button>';
-  h+='</div>';
+
   sb.innerHTML=h;
 }
 function _dashCalNav(dir){
@@ -1595,6 +1596,11 @@ document.addEventListener('click',e=>{
   // Close admin menu on outside click
   if(!e.target.closest('#adminMenuWrap')){
     document.getElementById('adminMenu').classList.remove('show');
+  }
+  // Close export dropdown on outside click
+  var edd=document.getElementById('exportDropdown');
+  if(edd&&!e.target.closest('#exportBtnWrap')){
+    edd.classList.remove('show');
   }
 });
 
