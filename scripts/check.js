@@ -787,10 +787,49 @@ function getShiftCssClass(sk){
   return sk==='MANANA'?'shift-manana':sk==='TARDE'?'shift-tarde':sk==='NOCHE'?'shift-noche':'shift-admin';
 }
 
-function enterApp(username){
+function getOperatorAvailableShifts(username){
+  var asgn=OPERATOR_SHIFTS[username];
+  if(!asgn)return [];
+  var shifts=new Set();
+  for(var i=0;i<asgn.primary.length;i++)shifts.add(asgn.primary[i].shift);
+  for(var j=0;j<asgn.backup.length;j++)shifts.add(asgn.backup[j]);
+  return [...shifts];
+}
+
+var _shiftselUser=null;
+function showShiftSelector(username){
   var user=USERS[username];
   if(!user)return;
-  var shiftKey=user.role==='admin'?'ADMIN':(getOperatorCurrentShift(username).shift);
+  _shiftselUser=username;
+  var shifts=getOperatorAvailableShifts(username);
+  document.getElementById('shiftselName').textContent=user.name||username;
+  var btns='';
+  var icons={MANANA:'\u2600\ufe0f',TARDE:'\ud83c\udf24\ufe0f',NOCHE:'\ud83c\udf19'};
+  var times={MANANA:'06:00 a 14:00',TARDE:'14:00 a 22:00',NOCHE:'22:00 a 06:00'};
+  var cssClass={MANANA:'sk-manana',TARDE:'sk-tarde',NOCHE:'sk-noche'};
+  for(var i=0;i<shifts.length;i++){
+    var sk=shifts[i];
+    var lbl=SHIFT_LABELS?SHIFT_LABELS[sk]||sk:sk;
+    btns+='<button class="shiftsel-btn '+cssClass[sk]+'" onclick="selectShift(\''+sk+'\')"><div><div>'+icons[sk]+' TURNO '+lbl.toUpperCase()+'</div><div class="shiftsel-time">'+times[sk]+'</div></div><span class="shiftsel-arrow">\u203a</span></button>';
+  }
+  document.getElementById('shiftselBtns').innerHTML=btns;
+  document.getElementById('shiftselOverlay').classList.add('show');
+}
+function selectShift(sk){
+  document.getElementById('shiftselOverlay').classList.remove('show');
+  enterApp(_shiftselUser,sk);
+}
+function shiftselBack(){
+  document.getElementById('shiftselOverlay').classList.remove('show');
+  _shiftselUser=null;
+  currentUser=null;
+  document.getElementById('loginOverlay').classList.remove('hide');
+}
+
+function enterApp(username,forceShift){
+  var user=USERS[username];
+  if(!user)return;
+  var shiftKey=user.role==='admin'?'ADMIN':(forceShift||getOperatorCurrentShift(username).shift);
   currentUser={username:username,role:user.role,shiftKey:shiftKey,name:user.name};
   sessionStorage.setItem('bitacora_user',username);
   sessionStorage.setItem('bitacora_shiftKey',shiftKey);
@@ -839,6 +878,14 @@ function doLogin(){
     document.getElementById('loginPass').value='';
     return;
   }
+  if(user.role==='operator'){
+    var avail=getOperatorAvailableShifts(u);
+    if(avail.length>1){
+      document.getElementById('loginOverlay').classList.add('hide');
+      showShiftSelector(u);
+      return;
+    }
+  }
   enterApp(u);
 }
 
@@ -857,6 +904,8 @@ function doLogout(){
   sessionStorage.removeItem('bitacora_operator');
   sessionStorage.removeItem('bitacora_shiftKey');
   document.getElementById('loginOverlay').classList.remove('hide');
+  document.getElementById('shiftselOverlay').classList.remove('show');
+  _shiftselUser=null;
   document.getElementById('userBar').style.display='none';
   document.getElementById('adminMenuWrap').style.display='none';
   document.getElementById('userBarOperator').style.display='none';
