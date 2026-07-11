@@ -1,4 +1,5 @@
 
+
 const INITIAL_DATA = {};
 
 // ===== GITHUB API STORAGE =====
@@ -745,7 +746,7 @@ const OPERATOR_SHIFTS={
   HMAGARINOS:{primary:[{shift:'NOCHE',day:'weekday'}],backup:[]},
   GCASTELLANI:{primary:[{shift:'NOCHE',day:'weekend'}],backup:[]},
   ARIVERO:{primary:[{shift:'NOCHE',day:'friday'}],backup:['TARDE','NOCHE','MANANA']},
-  OBALDOMIR:{primary:[],backup:['MANANA','TARDE','NOCHE']}
+  OBALDOMIR:{primary:[],backup:['MANANA','TARDE']}
 };
 
 function getDayType(){
@@ -1761,19 +1762,8 @@ function showTurnoButtons(){
   }
   document.getElementById('notifWrap').style.display=show?'':'none';
 }
-// Patch doLogin, checkSession, render and doLogout
-const __origDoLogin=doLogin;
-doLogin=function(){
-  __origDoLogin();
-  showTurnoButtons();
-  populateOperatorSelect();
-  const day=getDay(currentDate);
-  renderNovedades(day);updateNotifBadge(day);renderTimeline(day);
-  syncFromGitHub();
-};
-const __origCheckSession=checkSession;
-checkSession=function(){
-  __origCheckSession();
+// Post-login helpers (called after enterApp succeeds)
+function _postLogin(){
   showTurnoButtons();
   populateOperatorSelect();
   if(currentUser){
@@ -1781,7 +1771,32 @@ checkSession=function(){
     renderNovedades(day);updateNotifBadge(day);renderTimeline(day);
     syncFromGitHub();
   }
+}
+
+// Patch enterApp so post-login runs for ALL login paths
+const __origEnterApp=enterApp;
+enterApp=function(username,forceShift){
+  __origEnterApp(username,forceShift);
+  _postLogin();
 };
+
+// Patch doLogin (single-shift operators go straight to enterApp, already covered)
+const __origDoLogin=doLogin;
+doLogin=function(){
+  __origDoLogin();
+  // If currentUser is set here, enterApp was called inside __origDoLogin
+  // and _postLogin already ran via the enterApp patch above.
+  // Multi-shift path: __origDoLogin shows shift selector and returns,
+  // _postLogin will run after selectShift->enterApp.
+};
+
+// Patch checkSession (session restore)
+const __origCheckSession=checkSession;
+checkSession=function(){
+  __origCheckSession();
+  // enterApp is called inside __origCheckSession, so _postLogin ran already
+};
+
 const __origRender=render;
 render=function(){
   __origRender();
