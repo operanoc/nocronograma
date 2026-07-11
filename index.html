@@ -935,6 +935,12 @@ function saveStore(){
 }
 function getDay(d){if(!store[d]){const dt=new Date(d+'T12:00:00');const dow=dt.getDay();store[d]={date:d,dayType:(dow===0||dow===6)?'FIN_DE_SEMANA':'DIARIA',pollings:[],backups:[],processes:[],notes:''};saveStore();}return store[d];}
 function isAdmin(){return currentUser&&currentUser.role==='admin';}
+function _canEdit(entryShift){
+  if(isAdmin()) return true;
+  if(!entryShift) return true; // legacy data without shift
+  var sk=currentUser?currentUser.shiftKey:'';
+  return sk===entryShift;
+}
 function isDayLocked(d){
   const day=store[d];
   if(!day||!day.handovers||!day.handovers.length) return false;
@@ -1034,7 +1040,9 @@ function renderPollings(day,locked){
       const beg=entries.find(e=>e.phase==='BEGINNING'),end=entries.find(e=>e.phase==='ENDING');
       const sinAc=beg&&beg.note==='SIN AC'||end&&end.note==='SIN AC';
       const dur=beg&&end?calcDur(beg.time,end.time):'';
-      const acts=locked?'':'<span class="server-actions"><button class="btn-icon" title="Editar" onclick="openPollingModal(\''+srv+'\')">'+PENCIL+'</button><button class="btn-icon danger" title="Eliminar" onclick="deletePolling(\''+srv+'\')">'+TRASH+'</button></span>';
+      const srvShift=beg?beg.shift:(end?end.shift:null);
+      const canAct=!locked&&_canEdit(srvShift);
+      const acts=canAct?'<span class="server-actions"><button class="btn-icon" title="Editar" onclick="openPollingModal(\''+srv+'\')">'+PENCIL+'</button><button class="btn-icon danger" title="Eliminar" onclick="deletePolling(\''+srv+'\')">'+TRASH+'</button></span>':'';
       h+='<div class="server-row'+(sinAc?' error':'')+'"><div style="display:flex;align-items:center;gap:6px;flex:1;min-width:100px"><span class="server-name">'+srv+'</span>'+(sinAc?'<span class="badge badge-red">Sin AC</span>':'')+'</div><div class="server-meta"><span><span class="label">Ini </span><span class="time-val">'+(beg?beg.time||'—':'—')+'</span></span><span><span class="label">Fin </span><span class="time-val">'+(end?end.time||'—':'—')+'</span></span>'+(dur&&dur!=='—'?'<span class="dur">'+dur+'</span>':'')+acts+'</div></div>';
     });h+='</div></div>';});h+='</div></div>';el.innerHTML=h;
 }
@@ -1044,7 +1052,7 @@ function renderBackups(day,locked){
   const addBtn=locked?'':'<button class="btn btn-primary btn-sm" onclick="openBackupModal()">+ Agregar</button>';
   let h='<div class="card"><div class="card-header"><h2>Backups</h2>'+addBtn+'</div><div class="card-body">';
   if(!day.backups.length){h+='<div class="empty-state"><p>No hay backups</p></div>';}
-  else{h+='<div style="padding:12px 16px">';day.backups.forEach((b,i)=>{if(!matchesFilter(b.name+(b.job||'')))return;const fail=b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'));const acts=locked?'':'<span class="server-actions"><button class="btn-icon" onclick="openBackupModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteBackup('+i+')">'+TRASH+'</button></span>';const iniShow=(b.iniDate||currentDate)+' '+(b.iniTime||'\u2014');const endShow=(b.endDate||currentDate)+' '+(b.endTime||'\u2014');h+='<div class="bkp-row'+(fail?' fail':'')+'"><div class="bkp-name"><span>'+b.name+'</span>'+(b.job?'<span class="badge badge-gray badge-mono" style="font-size:10px">'+b.job+'</span>':'')+sBadge(b.status)+'</div><div class="server-meta"><span><span class="label">Inicio </span><span class="time-val">'+iniShow+'</span></span><span><span class="label">Fin </span><span class="time-val">'+endShow+'</span></span>'+(b.duration?'<span class="dur">'+b.duration+'</span>':'')+acts+'</div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
+  else{h+='<div style="padding:12px 16px">';day.backups.forEach((b,i)=>{if(!matchesFilter(b.name+(b.job||'')))return;const fail=b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'));const canAct=!locked&&_canEdit(b.shift);const acts=canAct?'<span class="server-actions"><button class="btn-icon" onclick="openBackupModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteBackup('+i+')">'+TRASH+'</button></span>':'';const iniShow=(b.iniDate||currentDate)+' '+(b.iniTime||'\u2014');const endShow=(b.endDate||currentDate)+' '+(b.endTime||'\u2014');h+='<div class="bkp-row'+(fail?' fail':'')+'"><div class="bkp-name"><span>'+b.name+'</span>'+(b.job?'<span class="badge badge-gray badge-mono" style="font-size:10px">'+b.job+'</span>':'')+sBadge(b.status)+'</div><div class="server-meta"><span><span class="label">Inicio </span><span class="time-val">'+iniShow+'</span></span><span><span class="label">Fin </span><span class="time-val">'+endShow+'</span></span>'+(b.duration?'<span class="dur">'+b.duration+'</span>':'')+acts+'</div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
 }
 
 function renderProcesses(day,locked){
@@ -1052,7 +1060,7 @@ function renderProcesses(day,locked){
   const addBtn=locked?'':'<button class="btn btn-primary btn-sm" onclick="openProcessModal()">+ Agregar</button>';
   let h='<div class="card"><div class="card-header"><h2>Procesos</h2>'+addBtn+'</div><div class="card-body">';
   if(!day.processes.length){h+='<div class="empty-state"><p>No hay procesos</p></div>';}
-  else{h+='<div style="padding:12px 16px">';day.processes.forEach((p,i)=>{if(!matchesFilter(p.name+(p.status||'')))return;const acts=locked? sBadge(p.status) : sBadge(p.status)+'<button class="btn-icon" onclick="openProcessModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteProcess('+i+')">'+TRASH+'</button>';h+='<div class="proc-row"><div class="proc-name">'+sIcon(p.status)+'<span>'+p.name+'</span></div><div style="display:flex;align-items:center;gap:6px">'+acts+'</div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
+  else{h+='<div style="padding:12px 16px">';day.processes.forEach((p,i)=>{if(!matchesFilter(p.name+(p.status||'')))return;const canAct=!locked&&_canEdit(p.shift);const acts=canAct? sBadge(p.status)+'<button class="btn-icon" onclick="openProcessModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteProcess('+i+')">'+TRASH+'</button>' : sBadge(p.status);h+='<div class="proc-row"><div class="proc-name">'+sIcon(p.status)+'<span>'+p.name+'</span></div><div style="display:flex;align-items:center;gap:6px">'+acts+'</div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
 }
 
 // Navigation
@@ -1463,8 +1471,9 @@ function savePolling(old){
   const day=getDay(currentDate);const srv=document.getElementById('mSrv').value;
   const beg=document.getElementById('mBeg').value;const end=document.getElementById('mEnd').value;
   if(old)day.pollings=day.pollings.filter(p=>p.server!==old);
-  if(beg)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'BEGINNING',date:currentDate,time:beg,note:null});
-  if(end)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:end,note:null});
+  var _sk=currentUser?currentUser.shiftKey:'';
+  if(beg)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'BEGINNING',date:currentDate,time:beg,note:null,shift:_sk});
+  if(end)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:end,note:null,shift:_sk});
   saveStore();closeModal();render();toast('Guardado');
 }
 function deletePolling(s){_adminGate(function(){if(!confirm('Eliminar '+s+'?'))return;getDay(currentDate).pollings=getDay(currentDate).pollings.filter(function(p){return p.server!==s;});saveStore();render();toast('Eliminado');});}
@@ -1487,8 +1496,8 @@ function saveBackup(idx){
   const endTime=document.getElementById('mBkE').value||null;
   let duration=document.getElementById('mBkD').value||null;
   if(!duration&&iniDate&&iniTime&&endDate&&endTime){const iniMs=new Date(iniDate+'T'+iniTime).getTime();const endMs=new Date(endDate+'T'+endTime).getTime();const d=Math.round((endMs-iniMs)/1000);if(d>=0){const h=Math.floor(d/3600),m=Math.floor((d%3600)/60);duration=h+':'+String(m).padStart(2,'0');}}
-  const o={name:document.getElementById('mBkN').value,iniDate:iniDate,iniTime:iniTime,endDate:endDate,endTime:endTime,job:document.getElementById('mBkJ').value||null,duration:duration,status:document.getElementById('mBkS').value||null};
-  if(idx!==undefined)day.backups[idx]=o;else day.backups.push(o);saveStore();closeModal();render();toast('Guardado');
+  const o={name:document.getElementById('mBkN').value,iniDate:iniDate,iniTime:iniTime,endDate:endDate,endTime:endTime,job:document.getElementById('mBkJ').value||null,duration:duration,status:document.getElementById('mBkS').value||null,shift:currentUser?currentUser.shiftKey:''};
+  if(idx!==undefined){o.shift=day.backups[idx].shift||o.shift;day.backups[idx]=o;}else day.backups.push(o);saveStore();closeModal();render();toast('Guardado');
 }
 function deleteBackup(i){_adminGate(function(){if(!confirm('Eliminar?'))return;getDay(currentDate).backups.splice(i,1);saveStore();render();toast('Eliminado');});}
 
@@ -1509,8 +1518,9 @@ function saveProcess(idx){
   const sel=document.getElementById('mPN').value;
   const name=sel==='__custom__'?document.getElementById('mPNCustom').value.trim():sel;
   if(!name){toast('Escribir nombre del proceso');return;}
-  const o={name:name,status:document.getElementById('mPS').value};
-  if(idx!==undefined)day.processes[idx]=o;else day.processes.push(o);saveStore();closeModal();render();toast('Guardado');
+  var _sk=currentUser?currentUser.shiftKey:'';
+  const o={name:name,status:document.getElementById('mPS').value,shift:_sk};
+  if(idx!==undefined){o.shift=day.processes[idx].shift||_sk;day.processes[idx]=o;}else day.processes.push(o);saveStore();closeModal();render();toast('Guardado');
 }
 function deleteProcess(i){_adminGate(function(){if(!confirm('Eliminar?'))return;getDay(currentDate).processes.splice(i,1);saveStore();render();toast('Eliminado');});}
 
