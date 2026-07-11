@@ -720,22 +720,21 @@ function deleteProcess(i){_adminGate(function(){if(!confirm('Eliminar?'))return;
 
 // ===== AUTH SYSTEM =====
 const USERS={
-  STORREZ:{pass:'Atos.123$',role:'operator',pin:'1357',name:'Sebastian Torrez'},
-  DDIPINO:{pass:'Atos.123$',role:'operator',pin:'2468',name:'Daniel Di Pino'},
-  FGODOY:{pass:'Atos.123$',role:'operator',pin:'3579',name:'Fulgencio Godoy'},
-  HNUNEZ:{pass:'Atos.123$',role:'operator',pin:'4680',name:'Humberto Nu\u00f1ez'},
-  HMAGARINOS:{pass:'Atos.123$',role:'operator',pin:'5791',name:'Hugo Magari\u00f1os'},
-  GCASTELLANI:{pass:'Atos.123$',role:'operator',pin:'6802',name:'Gustavo Castellani'},
-  ARIVERO:{pass:'Atos.123$',role:'operator',pin:'7913',name:'Anibal Rivero'},
-  OBALDOMIR:{pass:'Atos.123$',role:'operator',pin:'8024',name:'Omar Baldomir'},
-  OPERAADMIN:{pass:'nocadmin',role:'admin',pin:'0000'},
-  OPERAWU:{pass:'0p3r4ci0n35',role:'admin',pin:'0000'},
-  NOCPRUEBA:{pass:'pruebanoc',role:'admin',pin:'0000'},
-  ADMILOSN:{pass:'admilosn',role:'admin',pin:'0000'}
+  STORREZ:{pass:'Atos.123$',role:'operator',name:'Sebastian Torrez'},
+  DDIPINO:{pass:'Atos.123$',role:'operator',name:'Daniel Di Pino'},
+  FGODOY:{pass:'Atos.123$',role:'operator',name:'Fulgencio Godoy'},
+  HNUNEZ:{pass:'Atos.123$',role:'operator',name:'Humberto Nu\u00f1ez'},
+  HMAGARINOS:{pass:'Atos.123$',role:'operator',name:'Hugo Magari\u00f1os'},
+  GCASTELLANI:{pass:'Atos.123$',role:'operator',name:'Gustavo Castellani'},
+  ARIVERO:{pass:'Atos.123$',role:'operator',name:'Anibal Rivero'},
+  OBALDOMIR:{pass:'Atos.123$',role:'operator',name:'Omar Baldomir'},
+  OPERAADMIN:{pass:'nocadmin',role:'admin'},
+  OPERAWU:{pass:'0p3r4ci0n35',role:'admin'},
+  NOCPRUEBA:{pass:'pruebanoc',role:'admin'},
+  ADMILOSN:{pass:'admilosn',role:'admin'}
 };
 let currentUser=null;
 let confirmedOperator=null;
-let pendingPinUser=null;
 
 // Each operator and which shifts they can work
 const OPERATOR_SHIFTS={
@@ -788,79 +787,12 @@ function getShiftCssClass(sk){
   return sk==='MANANA'?'shift-manana':sk==='TARDE'?'shift-tarde':sk==='NOCHE'?'shift-noche':'shift-admin';
 }
 
-function showPinScreen(username){
+function enterApp(username){
   var user=USERS[username];
   if(!user)return;
-  var shiftInfo=getOperatorCurrentShift(username);
-  pendingPinUser={username:username,shiftKey:shiftInfo.shift,isBackup:shiftInfo.isBackup,...user};
-  var isOp=user.role==='operator';
-  var opName=user.name||username;
-  var shiftKey=shiftInfo.shift;
-  var shiftLabel=SHIFT_LABELS?SHIFT_LABELS[shiftKey]||shiftKey:shiftKey;
-  var schedule='Acceso total al sistema';
-  var backupTag='';
-
-  if(isOp){
-    var sc=getShiftSchedule(shiftKey);
-    var dayType=getDayType();
-    var dayLabel='';
-    if(dayType==='friday')dayLabel='Viernes';
-    else if(dayType==='weekend')dayLabel='Fin de Semana / Feriados';
-    else dayLabel=sc.weekday;
-    schedule=sc.label+' \u2014 '+dayLabel;
-    if(shiftInfo.isBackup)backupTag=' (Backup)';
-  }
-
-  document.getElementById('pinOperatorName').textContent=opName;
-  var badge=document.getElementById('pinOperatorShift');
-  badge.textContent='TURNO '+shiftLabel.toUpperCase()+backupTag;
-  badge.className='pin-operator-shift '+getShiftCssClass(shiftKey);
-  document.getElementById('pinOperatorSchedule').textContent=schedule;
-
-  clearPinInputs();
-  document.getElementById('pinError').textContent='';
-  document.getElementById('pinOverlay').classList.add('show');
-  setTimeout(function(){document.getElementById('pinD0').focus();},100);
-}
-function clearPinInputs(){
-  for(var i=0;i<4;i++){
-    var el=document.getElementById('pinD'+i);
-    el.value='';
-    el.classList.remove('error');
-  }
-}
-function pinGoBack(){
-  document.getElementById('pinOverlay').classList.remove('show');
-  pendingPinUser=null;
-  currentUser=null;
-}
-
-function confirmPin(){
-  if(!pendingPinUser)return;
-  var pin='';
-  for(var i=0;i<4;i++)pin+=document.getElementById('pinD'+i).value;
-  if(pin.length<4){
-    document.getElementById('pinError').textContent='Complete los 4 digitos';
-    for(var i=0;i<4;i++){
-      if(!document.getElementById('pinD'+i).value)document.getElementById('pinD'+i).classList.add('error');
-    }
-    return;
-  }
-  if(pin!==pendingPinUser.pin){
-    document.getElementById('pinError').textContent='PIN incorrecto';
-    for(var i=0;i<4;i++)document.getElementById('pinD'+i).classList.add('error');
-    clearPinInputs();
-    setTimeout(function(){document.getElementById('pinD0').focus();},300);
-    return;
-  }
-  enterApp(pendingPinUser);
-}
-
-function enterApp(user){
-  document.getElementById('pinOverlay').classList.remove('show');
-  var shiftKey=user.role==='admin'?'ADMIN':(user.shiftKey||'ADMIN');
-  currentUser={username:user.username,role:user.role,pin:user.pin,shiftKey:shiftKey,name:user.name};
-  sessionStorage.setItem('bitacora_user',user.username);
+  var shiftKey=user.role==='admin'?'ADMIN':(getOperatorCurrentShift(username).shift);
+  currentUser={username:username,role:user.role,shiftKey:shiftKey,name:user.name};
+  sessionStorage.setItem('bitacora_user',username);
   sessionStorage.setItem('bitacora_shiftKey',shiftKey);
 
   if(user.role==='operator'){
@@ -872,8 +804,9 @@ function enterApp(user){
   }
 
   GH_CONFIG.token=_decodeTK();refreshGHHeaders();
+  document.getElementById('loginOverlay').classList.add('hide');
   document.getElementById('userBar').style.display='flex';
-  document.getElementById('userNameDisplay').textContent=user.username;
+  document.getElementById('userNameDisplay').textContent=username;
   var badge=document.getElementById('userShiftBadge');
   var lbl=SHIFT_LABELS?SHIFT_LABELS[shiftKey]||shiftKey:shiftKey;
   badge.textContent=user.role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
@@ -893,7 +826,6 @@ function enterApp(user){
   }else{
     document.getElementById('adminMenuWrap').style.display='none';
   }
-  pendingPinUser=null;
   document.getElementById('loginError').textContent='';
   render();
 }
@@ -907,16 +839,13 @@ function doLogin(){
     document.getElementById('loginPass').value='';
     return;
   }
-  currentUser={username:u,...user};
-  document.getElementById('loginOverlay').classList.add('hide');
-  showPinScreen(u);
+  enterApp(u);
 }
 
 function doLogout(){
-  // Check if cierre de turno was done today
-  const day=store[currentDate];
-  const sk=currentUser?(currentUser.shiftKey||'ADMIN'):'';
-  const hasCierre=day&&day.handovers&&day.handovers.some(h=>h.shift===sk);
+  var day=store[currentDate];
+  var sk=currentUser?(currentUser.shiftKey||'ADMIN'):'';
+  var hasCierre=day&&day.handovers&&day.handovers.some(h=>h.shift===sk);
   if(!hasCierre&&currentUser&&currentUser.role==='operator'){
     if(!confirm('ATENCION: No ha realizado el Pase de Turno. Esta accion es OBLIGATORIA.\n\nDesea salir de todas formas?')){
       return;
@@ -924,11 +853,10 @@ function doLogout(){
   }
   currentUser=null;
   confirmedOperator=null;
-  pendingPinUser=null;
   sessionStorage.removeItem('bitacora_user');
   sessionStorage.removeItem('bitacora_operator');
+  sessionStorage.removeItem('bitacora_shiftKey');
   document.getElementById('loginOverlay').classList.remove('hide');
-  document.getElementById('pinOverlay').classList.remove('show');
   document.getElementById('userBar').style.display='none';
   document.getElementById('adminMenuWrap').style.display='none';
   document.getElementById('userBarOperator').style.display='none';
@@ -940,21 +868,18 @@ function checkSession(){
   var u=sessionStorage.getItem('bitacora_user');
   if(u&&USERS[u]){
     var savedShiftKey=sessionStorage.getItem('bitacora_shiftKey')||'ADMIN';
-    currentUser={username:u,role:USERS[u].role,pin:USERS[u].pin,shiftKey:savedShiftKey,name:USERS[u].name};
+    currentUser={username:u,role:USERS[u].role,shiftKey:savedShiftKey,name:USERS[u].name};
     document.getElementById('loginOverlay').classList.add('hide');
-
     var savedOp=sessionStorage.getItem('bitacora_operator');
     if(savedOp){confirmedOperator=savedOp;}
     else if(USERS[u].role==='operator'){confirmedOperator=USERS[u].name||'';}
     else{confirmedOperator=null;}
-
     document.getElementById('userBar').style.display='flex';
     document.getElementById('userNameDisplay').textContent=u;
     var badge=document.getElementById('userShiftBadge');
     var lbl=SHIFT_LABELS?SHIFT_LABELS[savedShiftKey]||savedShiftKey:savedShiftKey;
     badge.textContent=USERS[u].role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
     badge.className='shift-badge '+getShiftCssClass(savedShiftKey);
-
     var opEl=document.getElementById('userBarOperator');
     if(confirmedOperator){
       opEl.textContent=confirmedOperator;
@@ -963,7 +888,6 @@ function checkSession(){
     }else{
       opEl.style.display='none';
     }
-
     if(USERS[u].role==='admin'){
       document.getElementById('adminMenuWrap').style.display='';
     }else{
@@ -971,33 +895,8 @@ function checkSession(){
     }
   }
 }
-// PIN digit auto-advance
-for(var _pi=0;_pi<4;_pi++){
-  (function(idx){
-    var el=document.getElementById('pinD'+idx);
-    el.addEventListener('input',function(e){
-      if(e.target.value&&idx<3)document.getElementById('pinD'+(idx+1)).focus();
-      e.target.classList.remove('error');
-    });
-    el.addEventListener('keydown',function(e){
-      if(e.key==='Backspace'&&!e.target.value&&idx>0){
-        document.getElementById('pinD'+(idx-1)).focus();
-      }
-      if(e.key==='Enter')confirmPin();
-    });
-    el.addEventListener('paste',function(e){
-      e.preventDefault();
-      var txt=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');
-      for(var j=0;j<4&&j<txt.length;j++){
-        document.getElementById('pinD'+j).value=txt[j];
-        document.getElementById('pinD'+j).classList.remove('error');
-      }
-      if(txt.length>=4)document.getElementById('pinD3').focus();
-    });
-  })(_pi);
-}
-document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
+document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+document.getElementById('loginUser').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('loginPass').focus();});
 checkSession();
 
 // ===== ADMIN DASHBOARD =====
