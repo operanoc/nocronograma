@@ -2562,6 +2562,20 @@ function _postLogin(){
   }
 }
 
+// Alerta al cerrar navegador sin hacer Pase de Turno
+window.addEventListener('beforeunload', function(e){
+  if(!currentUser) return;
+  if(currentUser.role!=='operator') return;
+  var day=store[currentDate];
+  var sk=currentUser.shiftKey||'';
+  if(!sk) return;
+  var hasCierre=day&&day.handovers&&day.handovers.some(function(h){return h.shift===sk;});
+  if(!hasCierre){
+    e.preventDefault();
+    e.returnValue='';
+  }
+});
+
 // Patch enterApp so post-login runs for ALL login paths
 const __origEnterApp=enterApp;
 enterApp=function(username,forceShift){
