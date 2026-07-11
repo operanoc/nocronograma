@@ -25,7 +25,7 @@ with open(LOCAL_FILE, 'rb') as f:
 
 # Push
 data = {
-    'message': 'Login redesign: fondo navy oscuro tech, logo hexagonal NOC, inputs con iconos, btn azul',
+    'message': 'Login: fondo con imagen, inputs unidos, Created by Anibal Rivero',
     'content': content,
     'sha': sha,
     'branch': BRANCH
