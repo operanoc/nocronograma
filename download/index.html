@@ -937,14 +937,19 @@ function getDay(d){if(!store[d]){const dt=new Date(d+'T12:00:00');const dow=dt.g
 function isAdmin(){return currentUser&&currentUser.role==='admin';}
 function _canEdit(entryShift){
   if(isAdmin()) return true;
-  if(!entryShift) return true; // legacy data without shift
   var sk=currentUser?currentUser.shiftKey:'';
+  // If entry has no shift (legacy data), check if ANY handover exists on this day
+  if(!entryShift){
+    var day2=store[currentDate];
+    if(day2&&day2.handovers&&day2.handovers.length) return false; // any shift closed = legacy entries locked
+    return true;
+  }
   if(sk!==entryShift) return false;
   // Same shift: check if this shift was already handed over
   var day=store[currentDate];
   if(day&&day.handovers&&day.handovers.length){
     if(day.handovers.some(function(h){return h.shift===entryShift;})){
-      return false; // shift already closed, nobody can edit
+      return false;
     }
   }
   return true;
