@@ -2637,15 +2637,53 @@ function closeAuditView(){document.getElementById('auditOverlay').classList.remo
 
 
 // ===== PASSWORD RESET (ADMIN) =====
-function _getPasswordOverrides(){
-  try{return JSON.parse(localStorage.getItem('bitacora_pass_overrides'))||{};}catch(e){return{};}
+function _getPasswordOverrides(){return _passOverrides||{};}
+function _setPasswordOverrides(o){_passOverrides=o;}
+var _passOverrides=null;
+var _passFileSHA=null;
+
+// Fetch password overrides from GitHub (data/passwords.json)
+async function ghFetchPasswords(){
+  try{
+    const path='data/passwords.json';
+    const resp=await fetch(GH_API+'/'+path+'?ref='+GH_CONFIG.branch,{headers:GH_HEADERS});
+    if(resp.status===404){_passOverrides={};_passFileSHA=null;return;}
+    if(!resp.ok)return;
+    const data=await resp.json();
+    _passFileSHA=data.sha;
+    const parsed=JSON.parse(decodeURIComponent(escape(atob(data.content))));
+    _passOverrides=parsed;
+    // Apply to USERS in memory
+    _applyPasswordOverrides();
+  }catch(e){console.warn('Failed to fetch passwords',e);}
 }
-function _savePasswordOverrides(overrides){
-  try{localStorage.setItem('bitacora_pass_overrides',JSON.stringify(overrides));}catch(e){}
+
+// Push password overrides to GitHub (data/passwords.json)
+async function ghPushPasswords(){
+  if(!_passOverrides)return;
+  try{
+    const path='data/passwords.json';
+    const content=utf8ToBase64(JSON.stringify(_passOverrides,null,2));
+    const body={message:'passwords: actualizar',content:content,branch:GH_CONFIG.branch};
+    if(_passFileSHA)body.sha=_passFileSHA;
+    const resp=await fetch(GH_API+'/'+path,{method:'PUT',headers:GH_HEADERS,body:JSON.stringify(body)});
+    if(!resp.ok){console.warn('Failed to push passwords',await resp.text());return;}
+    const data=await resp.json();
+    _passFileSHA=data.content.sha;
+  }catch(e){console.warn('Failed to push passwords',e);}
 }
+
+function _applyPasswordOverrides(){
+  var overrides=_getPasswordOverrides();
+  var keys=Object.keys(overrides);
+  for(var i=0;i<keys.length;i++){
+    if(USERS[keys[i]]){USERS[keys[i]].pass=overrides[keys[i]];}
+  }
+}
+
 function _getEffectivePass(username){
   var overrides=_getPasswordOverrides();
-  if(overrides[username])return overrides[username];
+  if(overrides&&overrides[username])return overrides[username];
   var u=USERS[username];
   return u?u.pass:null;
 }
@@ -2671,12 +2709,12 @@ function openResetPassModal(){
         +'</div>'
         +'<div class=\"resetpass-actions\">'
         +'<span style=\"font-size:11px;color:var(--gray-400);margin-right:4px\">Actual: '+masked+'</span>'
-        +'<input class=\"resetpass-input\" type=\"password\" id=\"rpinput_'+k+'\" placeholder=\"Nueva contrase\u00f1a\" onkeydown=\"if(event.key===\'Enter\')resetPass(\''+k+'\')\">'
+        +'<input class=\"resetpass-input\" type=\"password\" id=\"rpinput_'+k+'\" placeholder=\"Nueva contraseña\" onkeydown=\"if(event.key===\'Enter\')resetPass(\''+k+'\')\">'
         +'<button class=\"resetpass-apply\" onclick=\"resetPass(\''+k+'\')\">Guardar</button>'
         +(currentPass&&!isOp?'':'<button class=\"resetpass-reset\" onclick=\"resetToDefault(\''+k+'\')\">Blanquear</button>')
         +'</div></div>';
     }
-    h+='</div><div class=\"resetpass-hint\">Las contrase\u00f1as se guardan localmente en este navegador.</div>';
+    h+='</div><div class=\"resetpass-hint\">Las contrase\u00f1as se sincronizan con GitHub (todos los navegadores).</div>';
 
     document.getElementById('modalTitle').textContent='Blanquear / Cambiar Contrase\u00f1as';
     document.getElementById('modalBody').innerHTML=h;
@@ -2685,7 +2723,7 @@ function openResetPassModal(){
   });
 }
 
-function resetPass(username){
+async function resetPass(username){
   var input=document.getElementById('rpinput_'+username);
   if(!input)return;
   var newPass=input.value.trim();
@@ -2694,35 +2732,34 @@ function resetPass(username){
     return;
   }
   if(newPass.length<4){
-    toast('Mínimo 4 caracteres','warn');
+    toast('M\u00ednimo 4 caracteres','warn');
     return;
   }
   var overrides=_getPasswordOverrides();
   overrides[username]=newPass;
-  _savePasswordOverrides(overrides);
+  _setPasswordOverrides(overrides);
   USERS[username].pass=newPass;
-  toast('Contrase\u00f1a de '+username+' actualizada');
-  // Refresh modal to show updated masked password
+  // Sync to GitHub
+  await ghPushPasswords();
+  toast('Contrase\u00f1a de '+username+' actualizada y sincronizada');
   openResetPassModal();
 }
 
-function resetToDefault(username){
+async function resetToDefault(username){
   var u=USERS[username];
   if(!u)return;
-  // Default passwords: operators -> Atos.123$, others keep whatever they had originally
   var defaultPass='Atos.123$';
   var overrides=_getPasswordOverrides();
-  if(overrides[username]){
+  if(overrides&&overrides[username]){
     delete overrides[username];
-    _savePasswordOverrides(overrides);
+    _setPasswordOverrides(overrides);
   }
-  // For operators we know the default. For admins we can't really "reset" to a known default
-  // so we just remove the override - the code-level default stays.
-  // But we DO set operators to the known default
   if(u.role==='operator'){
     u.pass=defaultPass;
   }
-  toast('Contrase\u00f1a de '+username+' restaurada');
+  // Sync to GitHub
+  await ghPushPasswords();
+  toast('Contrase\u00f1a de '+username+' restaurada y sincronizada');
   openResetPassModal();
 }
 
@@ -2738,7 +2775,6 @@ doLogin=function(){
     document.getElementById('loginPass').value='';
     return;
   }
-  // Credentials valid, proceed with original logic (shift selection etc)
   if(user.role==='operator'){
     var avail=getOperatorAvailableShifts(u);
     if(avail.length>1){
@@ -2750,15 +2786,12 @@ doLogin=function(){
   enterApp(u);
 };
 
-// Restore password overrides into USERS on load
-(function(){
-  var overrides=_getPasswordOverrides();
-  var keys=Object.keys(overrides);
-  for(var i=0;i<keys.length;i++){
-    if(USERS[keys[i]]){USERS[keys[i]].pass=overrides[keys[i]];}
-  }
+// On load, fetch password overrides from GitHub
+(async function(){
+  await ghFetchPasswords();
+  loadStoreLocal();checkSession();render();
 })();
-loadStoreLocal();checkSession();render();
+
 </script>
 </body>
 </html>
