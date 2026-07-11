@@ -261,6 +261,34 @@ html.dark .toast{background:var(--gray-100);color:var(--gray-900)}
 .login-shift-badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;margin-top:4px}
 @media(max-width:480px){.login-box{margin:16px;padding:32px 24px}.login-title{font-size:19px}}
 
+/* ===== PIN CONFIRMATION SCREEN ===== */
+.pin-overlay{position:fixed;inset:0;background:#0a0e27 url('login-bg.png') center/cover no-repeat;z-index:9998;display:none;align-items:center;justify-content:center;transition:opacity .4s;overflow:hidden}
+.pin-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(0,229,184,.06) 0%,transparent 55%),rgba(10,14,39,.5);pointer-events:none}
+.pin-overlay.show{display:flex}
+.pin-box{background:rgba(20,25,55,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(168,85,247,.15);border-radius:16px;padding:36px 40px;width:100%;max-width:380px;text-align:center;position:relative;z-index:1;box-shadow:0 0 60px rgba(168,85,247,.08)}
+.pin-box h3{color:#fff;font-size:18px;font-weight:700;margin:0 0 6px;letter-spacing:.5px}
+.pin-box .pin-subtitle{color:rgba(255,255,255,.5);font-size:12px;margin:0 0 20px;letter-spacing:.3px}
+.pin-operator-info{background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.15);border-radius:10px;padding:14px 18px;margin-bottom:20px}
+.pin-operator-name{color:#fff;font-size:15px;font-weight:700;margin-bottom:4px}
+.pin-operator-shift{display:inline-block;padding:3px 12px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.5px}
+.pin-operator-shift.shift-manana{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3)}
+.pin-operator-shift.shift-tarde{background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.3)}
+.pin-operator-shift.shift-noche{background:rgba(139,92,246,.15);color:#a78bfa;border:1px solid rgba(139,92,246,.3)}
+.pin-operator-shift.shift-admin{background:rgba(168,85,247,.15);color:#c084fc;border:1px solid rgba(168,85,247,.3)}
+.pin-operator-schedule{color:rgba(255,255,255,.4);font-size:10px;margin-top:6px;letter-spacing:.2px}
+.pin-label{color:rgba(255,255,255,.6);font-size:12px;margin-bottom:8px;font-weight:500}
+.pin-inputs-row{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
+.pin-digit{width:52px;height:58px;background:rgba(255,255,255,.05);border:1.5px solid rgba(168,85,247,.25);border-radius:10px;text-align:center;font-size:22px;font-weight:700;color:#fff;outline:none;transition:border-color .2s,box-shadow .2s}
+.pin-digit:focus{border-color:#A855F7;box-shadow:0 0 12px rgba(168,85,247,.25)}
+.pin-digit.error{border-color:#ef4444;box-shadow:0 0 12px rgba(239,68,68,.3);animation:pinShake .4s}
+@keyframes pinShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.pin-error{color:#f87171;font-size:12px;min-height:18px;margin-bottom:12px}
+.pin-btn{width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#6A0DAD,#8B5CF6);color:#fff;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.5px;transition:opacity .2s,transform .1s}
+.pin-btn:hover{opacity:.9}
+.pin-btn:active{transform:scale(.98)}
+.pin-back-btn{background:none;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);padding:8px 16px;border-radius:8px;font-size:12px;cursor:pointer;margin-top:12px;transition:all .2s}
+.pin-back-btn:hover{border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.8)}
+
 /* ===== USER BAR IN HEADER ===== */
 .user-bar{display:flex;align-items:center;gap:8px}
 .user-bar .user-name{font-size:12px;font-weight:600;color:var(--gray-700)}
@@ -518,6 +546,30 @@ html.dark .notif-item.unread{background:#082f49}
   <div class="login-footer">&copy; 2025 Bitacora NOC | Centro de Operaciones</div>
 </div>
 
+<!-- PIN CONFIRMATION OVERLAY -->
+<div class="pin-overlay" id="pinOverlay">
+  <div class="pin-box">
+    <h3>CONFIRMACION DE TURNO</h3>
+    <p class="pin-subtitle">Ingrese su PIN de 4 digitos para continuar</p>
+    <div class="pin-operator-info">
+      <div class="pin-operator-name" id="pinOperatorName">—</div>
+      <span class="pin-operator-shift shift-manana" id="pinOperatorShift">—</span>
+      <div class="pin-operator-schedule" id="pinOperatorSchedule"></div>
+    </div>
+    <div class="pin-label">PIN de seguridad</div>
+    <div class="pin-inputs-row">
+      <input type="password" maxlength="1" class="pin-digit" id="pinD0" inputmode="numeric" autocomplete="off">
+      <input type="password" maxlength="1" class="pin-digit" id="pinD1" inputmode="numeric" autocomplete="off">
+      <input type="password" maxlength="1" class="pin-digit" id="pinD2" inputmode="numeric" autocomplete="off">
+      <input type="password" maxlength="1" class="pin-digit" id="pinD3" inputmode="numeric" autocomplete="off">
+    </div>
+    <div class="pin-error" id="pinError"></div>
+    <button class="pin-btn" onclick="confirmPin()">CONFIRMAR TURNO <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+    <br>
+    <button class="pin-back-btn" onclick="pinGoBack()">Volver al login</button>
+  </div>
+</div>
+
 <!-- ADMIN DASHBOARD -->
 <div class="dashboard-overlay" id="dashOverlay">
   <div class="dash-header">
@@ -584,6 +636,7 @@ html.dark .notif-item.unread{background:#082f49}
       <div class="user-bar" id="userBar" style="display:none">
         <span class="user-name" id="userNameDisplay"></span>
         <span class="shift-badge" id="userShiftBadge"></span>
+        <span class="user-bar-operator" id="userBarOperator" style="display:none;font-size:10px;color:var(--sky-600);font-weight:600;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title=""></span>
         <button class="btn btn-logout" onclick="doLogout()">Salir</button>
       </div>
       <button class="btn btn-ghost btn-sm" onclick="window.print()" title="Imprimir">
@@ -1459,15 +1512,163 @@ function deleteProcess(i){_adminGate(function(){if(!confirm('Eliminar?'))return;
 
 // ===== AUTH SYSTEM =====
 const USERS={
-  OPERANOCHE:{pass:'noche1',shift:'TURNO NOCHE',cssClass:'shift-noche',role:'operator'},
-  OPERAMAÑANA:{pass:'mañana1',shift:'TURNO MAÑANA',cssClass:'shift-manana',role:'operator'},
-  OPERATARDE:{pass:'tarde1',shift:'TURNO TARDE',cssClass:'shift-tarde',role:'operator'},
-  OPERAADMIN:{pass:'nocadmin',shift:'ADMIN',cssClass:'shift-admin',role:'admin'},
-  OPERAWU:{pass:'0p3r4ci0n35',shift:'ADMIN',cssClass:'shift-admin',role:'admin'},
-  NOCPRUEBA:{pass:'pruebanoc',shift:'ADMIN',cssClass:'shift-admin',role:'admin'},
-  ADMILOSN:{pass:'admilosn',shift:'ADMIN',cssClass:'shift-admin',role:'admin'}
+  OPERANOCHE:{pass:'noche1',shift:'TURNO NOCHE',cssClass:'shift-noche',role:'operator',pin:'4821'},
+  OPERAMA\u00d1ANA:{pass:'ma\u00f1ana1',shift:'TURNO MA\u00d1ANA',cssClass:'shift-manana',role:'operator',pin:'1357'},
+  OPERATARDE:{pass:'tarde1',shift:'TURNO TARDE',cssClass:'shift-tarde',role:'operator',pin:'2468'},
+  OPERAADMIN:{pass:'nocadmin',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'},
+  OPERAWU:{pass:'0p3r4ci0n35',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'},
+  NOCPRUEBA:{pass:'pruebanoc',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'},
+  ADMILOSN:{pass:'admilosn',shift:'ADMIN',cssClass:'shift-admin',role:'admin',pin:'0000'}
 };
 let currentUser=null;
+let confirmedOperator=null;
+let pendingPinUser=null;
+
+function detectShiftKey(){
+  const h=new Date().getHours();
+  if(h>=6&&h<14)return 'MANANA';
+  if(h>=14&&h<22)return 'TARDE';
+  return 'NOCHE';
+}
+function getShiftSchedule(sk){
+  const schedules={
+    MANANA:{label:'06:00 a 14:00',weekday:'Lun a Jue',weekend:'Vie Sab Dom y Feriados'},
+    TARDE:{label:'14:00 a 22:00',weekday:'Lun a Jue',weekend:'Vie Sab Dom y Feriados'},
+    NOCHE:{label:'22:00 a 06:00',weekday:'Lun a Jue',weekend:'Vie Sab Dom y Feriados'}
+  };
+  return schedules[sk]||{label:'',weekday:'',weekend:''};
+}
+function getOperatorForShift(sk){
+  if(!SCHEDULE[sk])return null;
+  const now=new Date();
+  const dow=now.getDay();
+  const isWeekend=(dow===0||dow===6);
+  const isFriday=(dow===5);
+  const sch=SCHEDULE[sk];
+  if(sk==='NOCHE'){
+    if(isFriday)return sch.friday;
+    if(isWeekend)return sch.weekend;
+    return sch.weekday;
+  }
+  if(isWeekend)return sch.weekend;
+  return sch.weekday;
+}
+function getShiftCssClass(sk){
+  return sk==='MANANA'?'shift-manana':sk==='TARDE'?'shift-tarde':sk==='NOCHE'?'shift-noche':'shift-admin';
+}
+
+function showPinScreen(user){
+  pendingPinUser=user;
+  const isOp=user.role==='operator';
+  let opName='Administrador';
+  let shiftKey='ADMIN';
+  let shiftLabel='ADMIN';
+  let schedule='Acceso total al sistema';
+
+  if(isOp){
+    shiftKey=SHIFT_MAP[user.username];
+    shiftLabel=SHIFT_LABELS[shiftKey]||shiftKey;
+    opName=getOperatorForShift(shiftKey)||'—';
+    const sc=getShiftSchedule(shiftKey);
+    const now=new Date();
+    const dow=now.getDay();
+    const isWE=(dow===0||dow===6);
+    const isFr=(dow===5);
+    let dayType='';
+    if(shiftKey==='NOCHE'&&isFr)dayType='Viernes';
+    else if(isWE)dayType='Fin de Semana / Feriados';
+    else if(shiftKey==='NOCHE'&&isFr)dayType='Viernes';
+    else dayType=sc.weekday;
+    schedule=sc.label+' — '+dayType;
+  }
+
+  document.getElementById('pinOperatorName').textContent=opName;
+  const badge=document.getElementById('pinOperatorShift');
+  badge.textContent='TURNO '+shiftLabel.toUpperCase();
+  badge.className='pin-operator-shift '+getShiftCssClass(shiftKey);
+  document.getElementById('pinOperatorSchedule').textContent=schedule;
+
+  clearPinInputs();
+  document.getElementById('pinError').textContent='';
+  document.getElementById('pinOverlay').classList.add('show');
+  setTimeout(function(){document.getElementById('pinD0').focus();},100);
+}
+function clearPinInputs(){
+  for(var i=0;i<4;i++){
+    var el=document.getElementById('pinD'+i);
+    el.value='';
+    el.classList.remove('error');
+  }
+}
+function pinGoBack(){
+  document.getElementById('pinOverlay').classList.remove('show');
+  pendingPinUser=null;
+  currentUser=null;
+}
+
+function confirmPin(){
+  if(!pendingPinUser)return;
+  var pin='';
+  for(var i=0;i<4;i++)pin+=document.getElementById('pinD'+i).value;
+  if(pin.length<4){
+    document.getElementById('pinError').textContent='Complete los 4 digitos';
+    for(var i=0;i<4;i++){
+      if(!document.getElementById('pinD'+i).value)document.getElementById('pinD'+i).classList.add('error');
+    }
+    return;
+  }
+  if(pin!==pendingPinUser.pin){
+    document.getElementById('pinError').textContent='PIN incorrecto';
+    for(var i=0;i<4;i++)document.getElementById('pinD'+i).classList.add('error');
+    clearPinInputs();
+    setTimeout(function(){document.getElementById('pinD0').focus();},300);
+    return;
+  }
+  enterApp(pendingPinUser);
+}
+
+function enterApp(user){
+  document.getElementById('pinOverlay').classList.remove('show');
+  currentUser={username:user.username,...user};
+  sessionStorage.setItem('bitacora_user',user.username);
+
+  const isOp=user.role==='operator';
+  let opName='';
+  if(isOp){
+    var sk=SHIFT_MAP[user.username];
+    opName=getOperatorForShift(sk)||'';
+    confirmedOperator=opName;
+    sessionStorage.setItem('bitacora_operator',opName);
+  }else{
+    confirmedOperator=null;
+    sessionStorage.removeItem('bitacora_operator');
+  }
+
+  GH_CONFIG.token=_decodeTK();refreshGHHeaders();
+  document.getElementById('userBar').style.display='flex';
+  document.getElementById('userNameDisplay').textContent=user.username;
+  const badge=document.getElementById('userShiftBadge');
+  badge.textContent=user.shift;
+  badge.className='shift-badge '+user.cssClass;
+
+  var opEl=document.getElementById('userBarOperator');
+  if(opName){
+    opEl.textContent=opName;
+    opEl.title=opName;
+    opEl.style.display='';
+  }else{
+    opEl.style.display='none';
+  }
+
+  if(user.role==='admin'){
+    document.getElementById('adminMenuWrap').style.display='';
+  }else{
+    document.getElementById('adminMenuWrap').style.display='none';
+  }
+  pendingPinUser=null;
+  document.getElementById('loginError').textContent='';
+  render();
+}
 
 function doLogin(){
   const u=document.getElementById('loginUser').value.trim().toUpperCase();
@@ -1479,36 +1680,30 @@ function doLogin(){
     return;
   }
   currentUser={username:u,...user};
-  sessionStorage.setItem('bitacora_user',u);
-  GH_CONFIG.token=_decodeTK();refreshGHHeaders();
   document.getElementById('loginOverlay').classList.add('hide');
-  document.getElementById('userBar').style.display='flex';
-  document.getElementById('userNameDisplay').textContent=u;
-  const badge=document.getElementById('userShiftBadge');
-  badge.textContent=user.shift;
-  badge.className='shift-badge '+user.cssClass;
-  if(user.role==='admin'){
-    document.getElementById('adminMenuWrap').style.display='';
-  }else{
-    document.getElementById('adminMenuWrap').style.display='none';
-  }
-  document.getElementById('loginError').textContent='';
+  showPinScreen(user);
 }
+
 function doLogout(){
   // Check if cierre de turno was done today
   const day=store[currentDate];
   const sk=currentUser?SHIFT_MAP[currentUser.username]||'ADMIN':'';
   const hasCierre=day&&day.handovers&&day.handovers.some(h=>h.shift===sk);
-  if(!hasCierre&&currentUser){
+  if(!hasCierre&&currentUser&&currentUser.role==='operator'){
     if(!confirm('ATENCION: No ha realizado el Pase de Turno. Esta accion es OBLIGATORIA.\n\nDesea salir de todas formas?')){
       return;
     }
   }
   currentUser=null;
+  confirmedOperator=null;
+  pendingPinUser=null;
   sessionStorage.removeItem('bitacora_user');
+  sessionStorage.removeItem('bitacora_operator');
   document.getElementById('loginOverlay').classList.remove('hide');
+  document.getElementById('pinOverlay').classList.remove('show');
   document.getElementById('userBar').style.display='none';
   document.getElementById('adminMenuWrap').style.display='none';
+  document.getElementById('userBarOperator').style.display='none';
   document.getElementById('loginUser').value='';
   document.getElementById('loginPass').value='';
 }
@@ -1518,17 +1713,63 @@ function checkSession(){
   if(u&&USERS[u]){
     currentUser={username:u,...USERS[u]};
     document.getElementById('loginOverlay').classList.add('hide');
+
+    var savedOp=sessionStorage.getItem('bitacora_operator');
+    if(savedOp){
+      confirmedOperator=savedOp;
+    }else if(USERS[u].role==='operator'){
+      var sk=SHIFT_MAP[u];
+      confirmedOperator=getOperatorForShift(sk)||'';
+    }else{
+      confirmedOperator=null;
+    }
+
     document.getElementById('userBar').style.display='flex';
     document.getElementById('userNameDisplay').textContent=u;
     const badge=document.getElementById('userShiftBadge');
     badge.textContent=USERS[u].shift;
     badge.className='shift-badge '+USERS[u].cssClass;
+
+    var opEl=document.getElementById('userBarOperator');
+    if(confirmedOperator){
+      opEl.textContent=confirmedOperator;
+      opEl.title=confirmedOperator;
+      opEl.style.display='';
+    }else{
+      opEl.style.display='none';
+    }
+
     if(USERS[u].role==='admin'){
       document.getElementById('adminMenuWrap').style.display='';
     }else{
       document.getElementById('adminMenuWrap').style.display='none';
     }
   }
+}
+// PIN digit auto-advance
+for(var _pi=0;_pi<4;_pi++){
+  (function(idx){
+    var el=document.getElementById('pinD'+idx);
+    el.addEventListener('input',function(e){
+      if(e.target.value&&idx<3)document.getElementById('pinD'+(idx+1)).focus();
+      e.target.classList.remove('error');
+    });
+    el.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&!e.target.value&&idx>0){
+        document.getElementById('pinD'+(idx-1)).focus();
+      }
+      if(e.key==='Enter')confirmPin();
+    });
+    el.addEventListener('paste',function(e){
+      e.preventDefault();
+      var txt=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'');
+      for(var j=0;j<4&&j<txt.length;j++){
+        document.getElementById('pinD'+j).value=txt[j];
+        document.getElementById('pinD'+j).classList.remove('error');
+      }
+      if(txt.length>=4)document.getElementById('pinD3').focus();
+    });
+  })(_pi);
 }
 document.getElementById('loginPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('loginPass').focus();});
