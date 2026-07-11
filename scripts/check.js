@@ -765,8 +765,10 @@ function getShiftCssClass(sk){
   return sk==='MANANA'?'shift-manana':sk==='TARDE'?'shift-tarde':sk==='NOCHE'?'shift-noche':'shift-admin';
 }
 
-function showPinScreen(user){
-  pendingPinUser=user;
+function showPinScreen(username){
+  var user=USERS[username];
+  if(!user)return;
+  pendingPinUser={username:username,...user};
   const isOp=user.role==='operator';
   let opName='Administrador';
   let shiftKey='ADMIN';
@@ -774,9 +776,9 @@ function showPinScreen(user){
   let schedule='Acceso total al sistema';
 
   if(isOp){
-    shiftKey=SHIFT_MAP[user.username];
+    shiftKey=SHIFT_MAP[username]||'ADMIN';
     shiftLabel=SHIFT_LABELS[shiftKey]||shiftKey;
-    opName=getOperatorForShift(shiftKey)||'—';
+    opName=getOperatorForShift(shiftKey)||'\u2014';
     const sc=getShiftSchedule(shiftKey);
     const now=new Date();
     const dow=now.getDay();
@@ -889,7 +891,7 @@ function doLogin(){
   }
   currentUser={username:u,...user};
   document.getElementById('loginOverlay').classList.add('hide');
-  showPinScreen(user);
+  showPinScreen(u);
 }
 
 function doLogout(){
