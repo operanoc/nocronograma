@@ -73,6 +73,24 @@
       "date": "2026-07-11",
       "time": "04:15",
       "note": null
+    },
+    {
+      "id": "mrg3qdvq2xve9",
+      "server": "Perú D1",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-11",
+      "time": "02:30",
+      "note": null
+    },
+    {
+      "id": "mrg3qdvq5sejo",
+      "server": "Perú D1",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-11",
+      "time": "05:07",
+      "note": null
     }
   ],
   "backups": [
