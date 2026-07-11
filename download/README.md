@@ -16,21 +16,21 @@ Cada operador tiene su propia cuenta individual con su nombre real, lo que permi
 
 | Usuario | Password por defecto | Nombre Completo | Turnos Disponibles |
 |---------|---------------------|-----------------|-------------------|
-| STORREZ | Atos.123$ | Sebastian Torrez | Manana, Tarde, Noche (selector) |
-| DDIPINO | Atos.123$ | Daniel Di Pino | Manana (solo findes de semana) |
+| STORREZ | Atos.123$ | Sebastian Torrez | Mañana, Tarde, Noche (selector) |
+| DDIPINO | Atos.123$ | Daniel Di Pino | Mañana (solo findes de semana) |
 | FGODOY | Atos.123$ | Fulgencio Godoy | Tarde (L-V) |
-| HNUNEZ | Atos.123$ | Humberto Nunez | Tarde (findes de semana) |
-| HMAGARINOS | Atos.123$ | Hugo Magarinos | Noche (L-V) |
+| HNUNEZ | Atos.123$ | Humberto Nuñez | Tarde (findes de semana) |
+| HMAGARINOS | Atos.123$ | Hugo Magariños | Noche (L-V) |
 | GCASTELLANI | Atos.123$ | Gustavo Castellani | Noche (findes de semana) |
-| ARIVERO | Atos.123$ | Anibal Rivero | Noche (viernes) + Manana, Tarde, Noche (selector) |
-| OBALDOMIR | Atos.123$ | Omar Baldomir | Manana, Tarde (selector) |
+| ARIVERO | Atos.123$ | Anibal Rivero | Noche (viernes) + Mañana, Tarde, Noche (selector) |
+| OBALDOMIR | Atos.123$ | Omar Baldomir | Mañana, Tarde (selector) |
 
 ### Administradores
 
 | Usuario | Password | Nombre |
 |---------|----------|--------|
-| OPERAADMIN | nocadmin | Admin principal |
-| OPERAWU | 0p3r4ci0n35 | Cliente (consulta) |
+| OPERAADMIN | *(entregada en forma privada)* | Admin principal |
+| OPERAWU | *(entregada en forma privada)* | Cliente (consulta) |
 
 > **Nota:** Los administradores pueden cambiar y blanquear contraseñas de cualquier usuario desde el menu Admin (sincronizado via GitHub, funciona en todos los navegadores).
 
@@ -51,7 +51,7 @@ Cada operador tiene su propia cuenta individual con su nombre real, lo que permi
 - **Copia de dia anterior:** Copia la estructura del dia previo con horarios limpios
 
 ### Pase de turno (OBLIGATORIO)
-- Boton en el header con el nombre del turno del usuario ("Pase de Turno MANANA", etc.)
+- Boton en el header con el nombre del turno del usuario ("Pase de Turno MAÑANA", etc.)
 - Formulario con novedades obligatorias y checks de conformidad
 - Al realizar el pase, el dia queda **bloqueado** para operadores (solo admin puede modificar)
 - Notificacion automatica para los turnos entrantes
