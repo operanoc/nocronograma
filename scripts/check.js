@@ -792,13 +792,73 @@ document.getElementById('loginUser').addEventListener('keydown',e=>{if(e.key==='
 checkSession();
 
 // ===== ADMIN DASHBOARD =====
+var _dashCalMonth,_dashCalYear,_dashCalSelected=null;
 function openDashboard(){
   if(!currentUser||currentUser.role!=='admin')return;
   document.getElementById('dashOverlay').classList.add('show');
+  var now=new Date();_dashCalMonth=now.getMonth();_dashCalYear=now.getFullYear();
+  _dashCalSelected=null;
+  renderDashSidebar();
   renderDashboard();
 }
 function closeDashboard(){
   document.getElementById('dashOverlay').classList.remove('show');
+}
+function renderDashSidebar(){
+  var sb=document.getElementById('dashSidebar');
+  var today=new Date();today.setHours(12,0,0,0);
+  var selDate=_dashCalSelected?new Date(_dashCalSelected+'T12:00:00'):null;
+  var first=new Date(_dashCalYear,_dashCalMonth,1);
+  var last=new Date(_dashCalYear,_dashCalMonth+1,0);
+  var startDay=(first.getDay()+6)%7;
+  var h='';
+  // Calendar nav
+  h+='<div class="dash-cal-nav"><button onclick="_dashCalNav(-1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><span>'+MN[_dashCalMonth]+' '+_dashCalYear+'</span><button onclick="_dashCalNav(1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button></div>';
+  // Grid
+  h+='<div class="dash-cal-grid">';
+  DN.forEach(function(d){h+='<div class="dc-dayname">'+d+'</div>';});
+  // Previous month fill
+  for(var i=0;i<startDay;i++){
+    var dd=new Date(_dashCalYear,_dashCalMonth,-(startDay-i-1));
+    h+='<div class="dc-day other" onclick="_dashCalClick('+(_dashCalMonth===0?_dashCalYear-1:_dashCalYear)+','+(_dashCalMonth===0?11:_dashCalMonth-1)+','+dd.getDate()+')">'+dd.getDate()+'</div>';
+  }
+  // Current month
+  for(var d=1;d<=last.getDate();d++){
+    var ds=_dashCalYear+'-'+String(_dashCalMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var isT=today.getFullYear()===_dashCalYear&&today.getMonth()===_dashCalMonth&&today.getDate()===d;
+    var isS=selDate&&selDate.getFullYear()===_dashCalYear&&selDate.getMonth()===_dashCalMonth&&selDate.getDate()===d;
+    var hasD=!!store[ds];
+    var hasErr=hasD&&store[ds].backups&&store[ds].backups.some(function(b){return b.status&&(b.status.indexOf('Fail')>=0||b.status.indexOf('SUSP')>=0);});
+    var cls='dc-day';
+    if(isS)cls+=' selected';
+    else if(isT)cls+=' today';
+    if(hasD)cls+=hasErr?' has-err has-data':' has-data';
+    h+='<div class="'+cls+'" onclick="_dashCalClick('+_dashCalYear+','+_dashCalMonth+','+d+')" title="'+ds+'">'+d+'</div>';
+  }
+  // Next month fill
+  var rem=42-startDay-last.getDate();
+  for(var j=1;j<=rem;j++){
+    h+='<div class="dc-day other" onclick="_dashCalClick('+(_dashCalMonth===11?_dashCalYear+1:_dashCalYear)+','+(_dashCalMonth===11?0:_dashCalMonth+1)+','+j+')">'+j+'</div>';
+  }
+  h+='</div>';
+  // Legend
+  h+='<div class="dash-sidebar-legend"><div><span class="dot" style="background:var(--emerald-600)"></span> Con datos</div><div><span class="dot" style="background:var(--red-500)"></span> Con errores</div></div>';
+  // Actions
+  h+='<div class="dash-sidebar-actions">';
+  h+='<button onclick="downloadDayReport()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Descargar dia '+( _dashCalSelected||'...')+'</button>';
+  h+='</div>';
+  sb.innerHTML=h;
+}
+function _dashCalNav(dir){
+  _dashCalMonth+=dir;
+  if(_dashCalMonth>11){_dashCalMonth=0;_dashCalYear++;}
+  if(_dashCalMonth<0){_dashCalMonth=11;_dashCalYear--;}
+  renderDashSidebar();
+}
+function _dashCalClick(y,m,d){
+  var dt=new Date(y,m,d);
+  _dashCalSelected=dt.toISOString().split('T')[0];
+  renderDashSidebar();
 }
 
 function getDateRange(){
@@ -845,7 +905,7 @@ function fmtSecs(s){
 }
 
 function renderDashboard(){
-  const body=document.getElementById('dashBody');
+  const body=document.getElementById('dashContent');
   const{period,from,to}=getDateRange();
   const days=getDaysInRange(from,to);
   const totalDays=days.length;
@@ -1374,10 +1434,8 @@ function reportHeader(title,subtitle){
 }
 
 function downloadDayReport(){
-  const dateInput=document.getElementById('dashDatePicker');
-  const dateStr=dateInput.value;
-  if(!dateStr){toast('Selecciona una fecha');return;}
-  const day=store[dateStr]||{date:dateStr,dayType:'DIARIA',pollings:[],backups:[],processes:[],notes:'',timeline:[],handovers:[]};
+  var dateStr=_dashCalSelected||currentDate;
+  var day=store[dateStr]||{date:dateStr,dayType:'DIARIA',pollings:[],backups:[],processes:[],notes:'',timeline:[],handovers:[]};
   const now=new Date();
   let h=reportHeader('Bitacora NOC — '+fmt(dateStr),'Generado: '+now.toLocaleString('es-AR'));
   // Day info
