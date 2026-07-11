@@ -39,7 +39,7 @@ input,select,textarea{font:inherit;border:1px solid var(--gray-300);border-radiu
 input:focus,select:focus,textarea:focus{border-color:var(--emerald-600);box-shadow:0 0 0 3px rgba(106,13,173,.15)}
 textarea{resize:vertical;min-height:60px}
 
-.header{background:var(--white);border-bottom:1px solid var(--gray-200);padding:10px 16px;position:sticky;top:0;z-index:100;transition:background .3s,top .2s}
+.header{background:var(--white);border-bottom:1px solid var(--gray-200);padding:10px 16px;position:sticky;top:0;z-index:100;transition:background .3s}
 .header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .header h1{font-size:17px;font-weight:700;display:flex;align-items:center;gap:0}
 .header h1 svg{color:var(--emerald-600)}
@@ -470,15 +470,6 @@ html.dark .notif-item.unread{background:#082f49}
 
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.spin-icon{animation:spin 1s linear infinite;}
 
-/* Neon banner - Pase de Turno pendiente */
-.neon-banner{position:fixed;top:0;left:0;right:0;z-index:9999;display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 16px;background:rgba(10,14,39,.97);border-bottom:2px solid #ff0040;font-family:'Inter',system-ui,sans-serif;animation:neonPulse 1.5s ease-in-out infinite alternate;pointer-events:auto;}
-.neon-banner .neon-text{color:#ff0040;font-size:15px;font-weight:900;letter-spacing:3px;text-transform:uppercase;text-shadow:0 0 7px #ff0040,0 0 10px #ff0040,0 0 21px #ff0040,0 0 42px #ff0000,0 0 82px #ff0000;}
-.neon-banner .neon-arrow{color:#00E5B8;font-size:18px;animation:neonArrow 1s ease-in-out infinite alternate;}
-.neon-banner .neon-btn{background:transparent;border:1px solid #A855F7;color:#A855F7;padding:4px 14px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;text-shadow:0 0 5px #A855F7;transition:all .2s;pointer-events:auto;}
-.neon-banner .neon-btn:hover{background:#A855F7;color:#fff;text-shadow:none;box-shadow:0 0 12px #A855F7;}
-@keyframes neonPulse{0%{border-bottom-color:#ff0040;box-shadow:0 2px 20px rgba(255,0,64,.3)}100%{border-bottom-color:#ff4080;box-shadow:0 2px 40px rgba(255,0,64,.6),0 0 80px rgba(168,85,247,.15)}}
-@keyframes neonArrow{0%{transform:translateX(0)}100%{transform:translateX(8px)}}
-
 /* Admin hamburger menu */
 .admin-menu{position:fixed;top:0;left:0;bottom:0;width:240px;background:var(--white);border-right:1px solid var(--gray-200);box-shadow:4px 0 20px rgba(0,0,0,.1);z-index:200;overflow:hidden;padding:16px 0;transform:translateX(-100%);transition:transform .2s ease;display:flex;flex-direction:column}
 .admin-menu.show{transform:translateX(0)}
@@ -611,11 +602,6 @@ html.dark .notif-item.unread{background:#082f49}
   </div>
 </div>
 
-<div class="neon-banner" id="neonBanner" style="display:none">
-    <span class="neon-text">NO CERRASTE EL PASE DE TURNO!!!!</span>
-    <span class="neon-arrow">→</span>
-    <button class="neon-btn" onclick="openCierreModal()">CERRALO AHORA</button>
-  </div>
 <header class="header">
   <div class="header-inner">
     <h1>
@@ -2272,7 +2258,6 @@ function saveCierre(){
   });
   saveStore();closeModal();
   renderNovedades(day);updateNotifBadge(day);renderNotifPanel(day);
-  _updateNeonBanner();
   toast('Pase de turno registrado');
 }
 
@@ -2630,27 +2615,6 @@ doLogout=function(){
   showTurnoButtons();
   document.getElementById('novedadesSection').style.display='none';
   document.getElementById('notifPanel').classList.remove('show');
-  document.getElementById('neonBanner').style.display='none';
-};
-
-// ===== NEON BANNER: Pase de Turno pendiente =====
-function _updateNeonBanner(){
-  var banner=document.getElementById('neonBanner');
-  var hdr=document.querySelector('.header');
-  if(!currentUser||currentUser.role!=='operator'){banner.style.display='none';hdr.style.top='0';return;}
-  var sk=currentUser.shiftKey||'';
-  if(!sk){banner.style.display='none';hdr.style.top='0';return;}
-  var day=store[currentDate];
-  var hasCierre=day&&day.handovers&&day.handovers.some(function(h){return h.shift===sk;});
-  if(hasCierre){banner.style.display='none';hdr.style.top='0';}
-  else{banner.style.display='flex';hdr.style.top='42px';}
-}
-
-// Patch render to update neon banner on date change
-const __origRender2=render;
-render=function(){
-  __origRender2();
-  _updateNeonBanner();
 };
 
 // ===== AUDIT VIEW =====
