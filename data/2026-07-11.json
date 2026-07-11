@@ -116,5 +116,38 @@
       "date": "2026-07-11",
       "shift": "NOCHE"
     }
+  ],
+  "handovers": [
+    {
+      "id": "mrg3t07savmsp",
+      "operator": "Anibal Rivero",
+      "shift": "NOCHE",
+      "shiftLabel": "Noche",
+      "timestamp": "2026-07-11 05:29:44",
+      "text": "Todo ejecutado. \nAuditoria corriendo",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
+    }
+  ],
+  "audit": [
+    {
+      "type": "cierre",
+      "user": "ARIVERO",
+      "timestamp": "2026-07-11 05:29:44",
+      "detail": "Pase de turno - Noche"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "mrg3t07soz4hs",
+      "type": "handover",
+      "title": "Pase de Turno - Noche",
+      "desc": "Anibal Rivero: Todo ejecutado. \nAuditoria corriendo",
+      "timestamp": "2026-07-11 05:29:44",
+      "shift": "NOCHE",
+      "readBy": {}
+    }
   ]
 }
