@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+@page {
+    size: 720px 1020px;
+    margin: 0;
+}
+:root {
+    --c-bg: #0a0e27;
+    --c-surface: #141937;
+    --c-border: #1e2545;
+    --c-text: #e2e8f0;
+    --c-text-dim: #94a3b8;
+    --c-accent: #A855F7;
+    --c-teal: #00E5B8;
+    --c-white: #f8fafc;
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 720px;
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.65;
+}
+@media screen {
+    html { height: auto; display: flex; justify-content: center; background: #060818; }
+    body { transform-origin: top center; margin: 20px auto; }
+}
+
+/* COVER */
+.cover {
+    width: 720px; height: 1020px; box-sizing: border-box;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    background: linear-gradient(160deg, #0a0e27 0%, #141937 50%, #1a1040 100%);
+    padding: 70px;
+    position: relative; overflow: hidden;
+    break-after: page;
+}
+.cover::before {
+    content: ''; position: absolute; top: 20px; right: 20px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%);
+}
+.cover::after {
+    content: ''; position: absolute; bottom: 20px; left: 20px;
+    width: 250px; height: 250px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,184,0.1) 0%, transparent 70%);
+}
+.cover-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--c-teal); margin-bottom: 60px; position: relative; z-index: 1;
+}
+.cover-title {
+    font-size: 48px; font-weight: 900; color: var(--c-white);
+    text-align: center; line-height: 1.25; margin-bottom: 50px;
+    position: relative; z-index: 1;
+}
+.cover-sub {
+    font-size: 15px; color: var(--c-text-dim); text-align: center;
+    max-width: 440px; line-height: 1.8; margin-bottom: 80px;
+    position: relative; z-index: 1;
+}
+.cover-meta {
+    font-size: 12px; color: var(--c-text-dim); letter-spacing: 1px;
+    position: relative; z-index: 1; opacity: 0.7;
+}
+.cover-line {
+    width: 60px; height: 3px; background: var(--c-accent); border-radius: 2px;
+    margin-bottom: 50px; position: relative; z-index: 1;
+}
+
+/* MAIN CONTENT */
+.main-content {
+    padding: 55px 65px 40px 65px;
+}
+
+/* CHAPTER HEADER */
+.chapter-header {
+    break-after: avoid; break-inside: avoid;
+    margin-top: 32px; margin-bottom: 18px;
+}
+.section-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--c-teal); margin-bottom: 6px;
+}
+.section-title {
+    font-size: 24px; font-weight: 800; color: var(--c-white);
+    line-height: 1.2; margin-bottom: 10px;
+}
+.divider {
+    width: 40px; height: 2px; background: var(--c-accent); border-radius: 1px;
+}
+
+/* BODY TEXT */
+.body-text {
+    margin-bottom: 12px; color: var(--c-text); font-size: 14px; line-height: 1.7;
+}
+.body-text strong { color: var(--c-white); font-weight: 600; }
+
+/* CARDS */
+.card {
+    background: var(--c-surface); border: 1px solid var(--c-border);
+    border-radius: 10px; padding: 18px 20px; margin-bottom: 12px;
+    break-inside: avoid;
+}
+.card-title {
+    font-size: 13px; font-weight: 700; color: var(--c-accent); margin-bottom: 6px;
+}
+.card-text {
+    font-size: 13px; color: var(--c-text-dim); line-height: 1.6;
+}
+
+/* TABLE */
+.data-table {
+    width: 100%; border-collapse: collapse; font-size: 12px;
+    margin: 14px 0; break-inside: avoid;
+}
+.data-table th {
+    text-align: left; padding: 8px 10px; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--c-teal); border-bottom: 2px solid var(--c-border);
+    font-weight: 700;
+}
+.data-table td {
+    padding: 7px 10px; border-bottom: 1px solid var(--c-border);
+    color: var(--c-text);
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table code {
+    background: rgba(168,85,247,0.12); color: var(--c-accent);
+    padding: 1px 6px; border-radius: 4px; font-size: 11px;
+}
+
+/* LISTS */
+.step-list { padding-left: 0; list-style: none; counter-reset: step; }
+.step-list li {
+    counter-increment: step; position: relative;
+    padding: 8px 0 8px 36px; font-size: 13px; line-height: 1.6;
+    color: var(--c-text); break-inside: avoid;
+}
+.step-list li::before {
+    content: counter(step); position: absolute; left: 0; top: 8px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--c-accent); color: #fff;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+}
+.bullet-list { padding-left: 18px; margin: 8px 0; }
+.bullet-list li {
+    font-size: 13px; line-height: 1.65; color: var(--c-text);
+    margin-bottom: 4px; break-inside: avoid;
+}
+
+/* CALLOUT */
+.callout {
+    background: rgba(168,85,247,0.08); border-left: 3px solid var(--c-accent);
+    padding: 12px 16px; border-radius: 0 8px 8px 0;
+    margin: 14px 0; font-size: 13px; color: var(--c-text);
+    break-inside: avoid;
+}
+.callout-warn {
+    background: rgba(245,158,11,0.08); border-left: 3px solid #f59e0b;
+    padding: 12px 16px; border-radius: 0 8px 8px 0;
+    margin: 14px 0; font-size: 13px; color: var(--c-text);
+    break-inside: avoid;
+}
+
+/* SUB SECTION */
+.sub-title {
+    font-size: 16px; font-weight: 700; color: var(--c-white);
+    margin: 20px 0 8px 0; line-height: 1.3;
+}
+.sub-text {
+    font-size: 13px; color: var(--c-text-dim); line-height: 1.65;
+    margin-bottom: 8px;
+}
+
+/* ENDING */
+.ending {
+    width: 720px; height: 1020px; box-sizing: border-box;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    background: linear-gradient(160deg, #0a0e27 0%, #141937 50%, #1a1040 100%);
+    padding: 70px; break-before: page; overflow: hidden;
+    position: relative;
+}
+.ending-text {
+    font-size: 18px; color: var(--c-text-dim); text-align: center;
+    max-width: 400px; line-height: 1.7;
+}
+.ending-brand {
+    font-size: 28px; font-weight: 900; color: var(--c-accent);
+    margin-bottom: 20px; letter-spacing: 2px;
+}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+    <div class="cover-tag">Semantix NOC</div>
+    <div class="cover-title">Manual de Usuario</div>
+    <div class="cover-sub">Sistema de Registro Operativo del Network Operations Center. Guia completa de uso para operadores y administradores.</div>
+    <div class="cover-meta">Version 2.0 &mdash; Julio 2025</div>
+</div>
+
+<!-- CONTENT -->
+<div class="main-content">
+
+<!-- CAP 1 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 1</div>
+    <div class="section-title">Introduccion</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+La <strong>Bitacora NOC</strong> es el sistema de registro operativo del Network Operations Center (NOC) de Semantix. Permite a los operadores de cada turno documentar toda la actividad diaria: pollings de servidores, backups, procesos batch, novedades del turno y el pase de turno al finalizar la jornada.
+</div>
+<div class="body-text">
+El sistema funciona completamente en el navegador web y sincroniza los datos automaticamente con GitHub, por lo que la informacion queda almacenada en la nube y es accesible desde cualquier dispositivo con conexion a internet. No requiere instalacion ni configuracion adicional, simplemente se accede mediante la URL desde cualquier navegador moderno como Chrome, Firefox o Edge.
+</div>
+<div class="body-text">
+Cada operador tiene su propia cuenta individual con su nombre real, lo que permite un registro de auditoria completo: quien cargo que dato, a que hora y desde que cuenta. Esto es fundamental para la trazabilidad operativa y la responsabilidad sobre las tareas de cada turno.
+</div>
+<div class="callout">
+    <strong>URL de acceso:</strong> https://lecatexzonanorte.github.io/nocronograma/bitacora_noc_con_login.html
+</div>
+
+<!-- CAP 2 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 2</div>
+    <div class="section-title">Inicio de Sesion</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+Al ingresar a la aplicacion se muestra una pantalla de login con tema oscuro. El sistema convierte automaticamente el nombre de usuario a mayusculas, por lo que se puede escribir en minusculas. Cada persona utiliza su propio usuario y contrasena.
+</div>
+
+<div class="sub-title">Cuentas de Operadores</div>
+<div class="body-text">Los operadores acceden con su usuario individual y contrasena por defecto <code>Atos.123$</code>:</div>
+<table class="data-table">
+    <tr><th>Usuario</th><th>Nombre</th><th>Turnos</th></tr>
+    <tr><td><code>STORREZ</code></td><td>Sebastian Torrez</td><td>Manana, Tarde, Noche (elige al ingresar)</td></tr>
+    <tr><td><code>DDIPINO</code></td><td>Daniel Di Pino</td><td>Manana (solo findes de semana)</td></tr>
+    <tr><td><code>FGODOY</code></td><td>Fulgencio Godoy</td><td>Tarde (L-V)</td></tr>
+    <tr><td><code>HNUNEZ</code></td><td>Humberto Nunez</td><td>Tarde (findes de semana)</td></tr>
+    <tr><td><code>HMAGARINOS</code></td><td>Hugo Magarinos</td><td>Noche (L-V)</td></tr>
+    <tr><td><code>GCASTELLANI</code></td><td>Gustavo Castellani</td><td>Noche (findes de semana)</td></tr>
+    <tr><td><code>ARIVERO</code></td><td>Anibal Rivero</td><td>Noche (viernes) + otros (elige al ingresar)</td></tr>
+    <tr><td><code>OBALDOMIR</code></td><td>Omar Baldomir</td><td>Manana, Tarde (elige al ingresar)</td></tr>
+</table>
+
+<div class="sub-title">Cuentas de Administradores</div>
+<table class="data-table">
+    <tr><th>Usuario</th><th>Contrasena</th><th>Funcion</th></tr>
+    <tr><td><code>OPERAADMIN</code></td><td>nocadmin</td><td>Administrador principal</td></tr>
+    <tr><td><code>OPERAWU</code></td><td>0p3r4ci0n35</td><td>Administrador</td></tr>
+    <tr><td><code>ADMILOSN</code></td><td>admilosn</td><td>Administrador</td></tr>
+    <tr><td><code>NOCPRUEBA</code></td><td>pruebanoc</td><td>Pruebas</td></tr>
+</table>
+
+<div class="sub-title">Selector de Turno</div>
+<div class="body-text">
+Cuando un operador tiene mas de un turno asignado (Torrez, Rivero, Baldomir), al iniciar sesion aparece un dialogo que le pregunta que turno va a trabajar. Debe seleccionar entre las opciones disponibles (Manana, Tarde o Noche) para que el sistema registre correctamente la actividad de ese turno en particular. Los operadores con un solo turno fijo acceden directamente sin seleccion.
+</div>
+
+<div class="callout-warn">
+    <strong>Diferencia entre Operador y Administrador:</strong> El operador puede cargar datos del dia, agregar novedades y realizar el pase de turno, pero no puede modificar datos de un dia cerrado. El administrador tiene acceso total, incluyendo la modificacion de datos de dias cerrados, dashboard, auditoria y gestion de contrasenas.
+</div>
+
+<!-- CAP 3 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 3</div>
+    <div class="section-title">Interfaz Principal</div>
+    <div class="divider"></div>
+</div>
+
+<div class="sub-title">Header (barra superior)</div>
+<div class="body-text">
+La barra superior contiene los elementos principales de navegacion y acciones. A la izquierda aparece el boton <strong>ADMIN</strong> (solo visible para administradores), que abre el menu lateral con opciones de gestion. Luego esta el titulo de la aplicacion "Bitacora NOC". A la derecha se encuentran el indicador de sincronizacion, el boton de Pase de Turno, el panel de notificaciones, el menu de exportacion, y la barra de usuario con el nombre, badge de turno y boton para salir.
+</div>
+<div class="body-text">
+El <strong>indicador de sincronizacion</strong> muestra si los datos estan guardados en GitHub. Cuando gira, hay cambios pendientes. Cuando se detiene, todo esta sincronizado. El <strong>boton de Pase de Turno</strong> muestra el nombre del turno del usuario logueado (por ejemplo "Pase de Turno MANANA") y es obligatorio completarlo antes de salir.
+</div>
+
+<div class="sub-title">Navegacion por fecha</div>
+<div class="body-text">
+Debajo del header hay una barra con flechas para ir al dia anterior o siguiente, un selector de fecha que abre un calendario al hacer clic, un boton "Hoy" para volver rapidamente al dia actual, la indicacion del dia de la semana, y un selector para cambiar el tipo de dia entre "Diaria (L-V)", "Fin de Semana" o "BKP Mensual".
+</div>
+
+<div class="sub-title">Barra de acciones rapidas</div>
+<div class="body-text">
+Contiene un buscador para filtrar servidores, backups o procesos por nombre, un boton "Copiar dia anterior" que replica la estructura del dia previo con horarios limpios, y un menu desplegable de exportacion con opciones de CSV y reportes HTML.
+</div>
+
+<div class="sub-title">Tarjetas de estadisticas</div>
+<div class="body-text">
+Cuatro tarjetas muestran un resumen rapido del dia: cantidad de servidores con pollings cargados, proporcion de pollings completados, cantidad de backups registrados, y proporcion de procesos en estado OK sobre el total. Estos numeros se actualizan automaticamente al agregar o modificar datos.
+</div>
+
+<div class="sub-title">Pestanas (Tabs)</div>
+<div class="body-text">
+Tres pestanas organizan la informacion principal: <strong>Pollings</strong> (servidores agrupados por region), <strong>Backups</strong> (lista de backups con horarios y duracion), y <strong>Procesos</strong> (lista de procesos con su estado OK o Error). Debajo de las pestanas se encuentra la seccion de Novedades del Turno con un timeline cronologico.
+</div>
+
+<!-- CAP 4 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 4</div>
+    <div class="section-title">Registro de Pollings</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+Los pollings son verificaciones periodicas que se realizan sobre los servidores de cada pais. Para cada servidor se registra la hora de inicio y la hora de fin del polling. El sistema agrupa automaticamente los servidores por region (Argentina, Peru, Panama, Chile, Mexico) para facilitar la navegacion.
+</div>
+
+<div class="sub-title">Como cargar un polling</div>
+<ol class="step-list">
+    <li>Navegar a la pestana <strong>Pollings</strong>.</li>
+    <li>Hacer clic en el boton <strong>+ Agregar</strong> (solo visible si el dia no esta cerrado).</li>
+    <li>En el modal, seleccionar el servidor del desplegable. El sistema muestra el pais automaticamente.</li>
+    <li>Cargar los campos de <strong>Inicio</strong> y <strong>Fin</strong> con las horas correspondientes.</li>
+    <li>Opcionalmente, agregar una nota (por ejemplo "SIN AC" si hubo problema de acceso).</li>
+    <li>Hacer clic en <strong>Guardar</strong>.</li>
+</ol>
+<div class="body-text">
+Si se cargan hora de inicio y hora de fin, el sistema calcula automaticamente la duracion y la muestra junto al servidor. Cada servidor tiene iconos de lapiz (editar) y papelera (eliminar) a la derecha. Los administradores pueden editar y eliminar incluso en dias cerrados. Si un polling tiene la nota "SIN AC", se muestra en rojo para identificarlo rapidamente.
+</div>
+
+<!-- CAP 5 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 5</div>
+    <div class="section-title">Registro de Backups</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+Los backups son copias de seguridad de los servidores del NOC. Se registra el servidor, el tipo de job, las fechas y horas de inicio y fin, el estado (OK o Error) y la duracion se calcula automaticamente. El sistema soporta correctamente backups que cruzan medianoche, por ejemplo un backup que empieza el lunes a las 22:00 y termina el martes a las 06:00. Para estos casos es importante completar tanto la fecha como la hora en ambos campos.
+</div>
+
+<div class="sub-title">Como cargar un backup</div>
+<ol class="step-list">
+    <li>Navegar a la pestana <strong>Backups</strong>.</li>
+    <li>Hacer clic en el boton <strong>+ Agregar</strong>.</li>
+    <li>Completar los campos: Servidor, JOB, Fecha/Hora inicio, Fecha/Hora fin, Estado.</li>
+    <li>La duracion se calcula sola al completar inicio y fin.</li>
+    <li>Hacer clic en <strong>Guardar</strong>.</li>
+</ol>
+
+<!-- CAP 6 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 6</div>
+    <div class="section-title">Registro de Procesos</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+Los procesos son tareas batch que se ejecutan diariamente en el NOC. Existen 9 procesos predefinidos que aparecen en el desplegable: Tarjeta Naranja, EPE, BANCOR, Rentas de Cordoba, AFIP 72, AFIP 24, AFIP 48, Cierre AFIP y Montaje de cintas. Ademas se pueden crear procesos personalizados escribiendo el nombre directamente en el campo del formulario. Cada proceso se registra con su estado OK o Error, lo que permite un seguimiento claro de la ejecucion diaria.
+</div>
+<div class="body-text">
+Para cargar el estado de un proceso, navegar a la pestana Procesos, hacer clic en "+ Agregar", seleccionar o escribir el nombre del proceso, elegir el estado y guardar. Los iconos de lapiz y papelera permiten editar o eliminar procesos existentes. Al igual que con pollings y backups, los administradores pueden modificar procesos en dias cerrados.
+</div>
+
+<!-- CAP 7 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 7</div>
+    <div class="section-title">Novedades del Turno</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+Las novedades son notas cronologicas que los operadores registran durante su turno. Sirven para documentar incidencias, tareas realizadas, observaciones o cualquier evento relevante. Se muestran en un timeline con el nombre del operador y la hora de cada entrada.
+</div>
+<div class="body-text">
+Para agregar una novedad, hacer clic en el boton <strong>+ Agregar Novedad</strong> en la seccion correspondiente, escribir el texto y guardar. El sistema registra automaticamente el operador y la hora. A diferencia de los otros datos, las novedades <strong>se pueden agregar incluso en dias cerrados</strong>, lo que permite documentar eventos posteriores al pase de turno si es necesario. Cada novedad tiene un boton de papelera para eliminarla individualmente.
+</div>
+
+<!-- CAP 8 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 8</div>
+    <div class="section-title">Pase de Turno (Obligatorio)</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+El pase de turno es el formulario obligatorio que cada operador debe completar al finalizar su turno. Contiene un resumen de las novedades y la conformidad de que las tareas fueron completadas. El boton en el header indica el turno del usuario, por ejemplo "Pase de Turno MANANA" o "Pase de Turno NOCHE". Los administradores ven simplemente "Pase de Turno" sin especificar turno.
+</div>
+
+<div class="sub-title">Como realizar el pase de turno</div>
+<ol class="step-list">
+    <li>Hacer clic en el boton <strong>"Pase de Turno"</strong> en el header.</li>
+    <li>En el modal, seleccionar el operador que realiza el pase.</li>
+    <li>Completar el campo <strong>Novedades</strong> (obligatorio) con el detalle de lo ocurrido durante el turno.</li>
+    <li>Marcar los checks de conformidad: pollings completos, backups completos, procesos completos.</li>
+    <li>Hacer clic en <strong>Confirmar Pase</strong>.</li>
+</ol>
+
+<div class="callout-warn">
+    <strong>Importante:</strong> Al realizar el pase de turno, el dia queda <strong>bloqueado</strong> para los operadores. Solo los administradores pueden modificar datos de un dia cerrado. Si el operador intenta salir sin haber hecho el pase, el sistema muestra una advertencia pidiendo confirmacion.
+</div>
+<div class="body-text">
+Despues del pase, se genera una notificacion automatica para los turnos entrantes que aparece en la campana del header. El pase queda registrado en el historial de auditoria con la fecha, hora, operador y detalle.
+</div>
+
+<!-- CAP 9 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 9</div>
+    <div class="section-title">Bloqueo de Dia Cerrado</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+Cuando un operador realiza el pase de turno, el dia queda cerrado. Para los operadores, esto significa que no se pueden agregar, editar ni eliminar pollings, backups ni procesos. Si intentan modificar algo, se muestra un modal que indica que el dia esta cerrado y que solo un administrador puede modificar los datos. Las unicas acciones permitidas para operadores en dias cerrados son agregar novedades al timeline y consultar la informacion.
+</div>
+<div class="body-text">
+Para los administradores, en cambio, se muestra un banner amarillo "DIA CERRADO" como recordatorio visual, pero no hay restriccion de edicion. Los botones de agregar, editar y eliminar aparecen con normalidad, y pueden realizar todas las modificaciones necesarias. Ademas, los administradores tienen la posibilidad de <strong>reabrir</strong> un dia cerrado desde el menu de administracion, lo que registra el motivo de la reapertura en el historial de auditoria.
+</div>
+
+<!-- CAP 10 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 10</div>
+    <div class="section-title">Menu de Administrador</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+Al iniciar sesion con una cuenta de administrador, aparece un boton morado con el texto "ADMIN" y un icono de hamburguesa a la izquierda del titulo. Al hacer clic se despliega un menu lateral con las siguientes opciones:
+</div>
+
+<div class="card">
+    <div class="card-title">Dashboard</div>
+    <div class="card-text">Abre un panel con metricas y estadisticas por periodo (semanal, mensual, anual, historico). Muestra totales de dias con datos, pollings completados, backups realizados y tasa de error de procesos. Incluye una tabla de detalles por dia y la posibilidad de descargar reportes en HTML.</div>
+</div>
+<div class="card">
+    <div class="card-title">Historial de Auditoria</div>
+    <div class="card-text">Muestra un registro completo de todos los pases de turno (CIERRE) y reaperturas de dias (REAPERTURA) con fecha, hora, usuario que realizo la accion y el detalle o motivo. Es util para verificar quien cerro o reabrio un dia y por que.</div>
+</div>
+<div class="card">
+    <div class="card-title">Blanquear Contrasenas</div>
+    <div class="card-text">Permite cambiar o restaurar la contrasena de cualquier usuario del sistema. Se muestra una lista con todos los operadores y administradores, la contrasena actual enmascarada, un campo para escribir la nueva contrasena, y botones para guardar o blanquear (restaurar al valor por defecto). Los cambios se sincronizan con GitHub y funcionan en todos los navegadores (Chrome, Firefox, Edge).</div>
+</div>
+<div class="card">
+    <div class="card-title">Importar XLSX</div>
+    <div class="card-text">Permite importar datos desde un archivo Excel (.xlsx o .xls) para cargar informacion de dias anteriores de forma masiva en lugar de ingresarla manualmente uno por uno.</div>
+</div>
+
+<!-- CAP 11 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 11</div>
+    <div class="section-title">Exportacion de Datos</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+El boton de exportacion en el header permite descargar los datos del dia actual en diferentes formatos. La opcion <strong>CSV</strong> genera un archivo de valores separados por comas que se puede abrir con Excel, Google Sheets o cualquier hoja de calculo. Incluye todos los pollings, backups, procesos, novedades y pases de turno del dia seleccionado.
+</div>
+<div class="body-text">
+Desde el Dashboard (solo administradores), tambien se pueden descargar reportes en formato HTML: un reporte general del periodo seleccionado, un listado historico de pases de turno, y un reporte detallado por dia especifico. Estos reportes incluyen toda la informacion del dia con formato profesional listo para imprimir o compartir.
+</div>
+
+<!-- CAP 12 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 12</div>
+    <div class="section-title">Notificaciones</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+Cuando un operador realiza el pase de turno, se genera una notificacion que aparece en la campana del header con un numero rojo indicando las no leidas. Al hacer clic en la campana se despliega un panel con todas las notificaciones, donde se puede ver el detalle de cada una. El boton "Marcar leidas" limpia el contador y quita el indicador rojo. Las notificaciones tambien se generan al agregar novedades al timeline, manteniendo informados a todos los operadores de los eventos relevantes del turno.
+</div>
+
+<!-- CAP 13 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 13</div>
+    <div class="section-title">Sincronizacion con GitHub</div>
+    <div class="divider"></div>
+</div>
+<div class="body-text">
+Los datos se guardan automaticamente en el navegador (localStorage) y simultaneamente se sincronizan con GitHub mediante la API de Contents. El indicador de sincronizacion en el header gira cuando hay cambios pendientes de subir y se detiene cuando todo esta sincronizado. Cada dia se guarda como un archivo JSON separado en la carpeta <code>data/</code> del repositorio. La sincronizacion tiene un retraso de 500 milisegundos (debounce) para evitar demasiadas peticiones mientras se escribe rapidamente.
+</div>
+<div class="body-text">
+Si la sincronizacion falla, los datos se mantienen en el navegador y se reintentan al guardar nuevamente. Para solucionar problemas de sincronizacion, verificar la conexion a internet y recargar la pagina. Los datos locales se preservan incluso si se cierra el navegador. Al volver a abrir la aplicacion, se cargan los datos locales y se sincronizan con GitHub para obtener las ultimas actualizaciones de otros operadores.
+</div>
+
+<!-- CAP 14 -->
+<div class="chapter-header">
+    <div class="section-tag">Capitulo 14</div>
+    <div class="section-title">Resolucion de Problemas</div>
+    <div class="divider"></div>
+</div>
+
+<div class="card">
+    <div class="card-title">"No puedo editar nada, el dia esta cerrado"</div>
+    <div class="card-text">Cuando un turno completa el pase de turno, el dia se bloquea para operadores. Solo un administrador puede modificar datos en un dia cerrado. Contactar a un administrador si es necesario hacer correcciones.</div>
+</div>
+<div class="card">
+    <div class="card-title">"Olvide hacer el pase de turno y ya sali"</div>
+    <div class="card-text">Iniciar sesion nuevamente, navegar al dia correspondiente y realizar el pase de turno. El sistema lo permitira mientras otro turno no haya cerrado el dia desde otra cuenta.</div>
+</div>
+<div class="card">
+    <div class="card-title">"Los datos no se ven en otra computadora"</div>
+    <div class="card-text">Verificar que el indicador de sincronizacion no este girando. Si esta detenido, los datos estan en GitHub. Si el problema persiste, puede haber un problema de conexion o de cache del navegador. Probar con Ctrl+F5 para forzar una recarga limpia.</div>
+</div>
+<div class="card">
+    <div class="card-title">"No aparece el boton de Pase de Turno"</div>
+    <div class="card-text">Asegurarse de haber iniciado sesion correctamente. El boton solo aparece despues del login. Si el problema persiste, recargar la pagina. El boton se muestra tanto para operadores como para administradores.</div>
+</div>
+<div class="card">
+    <div class="card-title">"Quiero corregir un dato de un dia anterior"</div>
+    <div class="card-text">Si el dia no esta cerrado, se puede navegar a la fecha y editarlo normalmente. Si el dia esta cerrado, es necesario iniciar sesion como administrador para poder modificarlo.</div>
+</div>
+
+</div>
+
+<!-- ENDING -->
+<div class="ending">
+    <div class="ending-brand">BITACORA NOC</div>
+    <div class="ending-text">Sistema de Registro Operativo<br>Semantix Network Operations Center</div>
+</div>
+
+</body>
+</html>
