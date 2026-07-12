@@ -4,5 +4,13 @@
   "pollings": [],
   "backups": [],
   "processes": [],
-  "notes": ""
+  "notes": "",
+  "audit": [
+    {
+      "type": "password_change",
+      "user": "ARIVERO",
+      "timestamp": "12/7/2026, 11:55:41",
+      "detail": "Cambio de contraseña propio (self-service)"
+    }
+  ]
 }
