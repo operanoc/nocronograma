@@ -256,6 +256,26 @@ html.dark .toast{background:var(--gray-100);color:var(--gray-900)}
 .login-remember input{accent-color:#A855F7;width:14px;height:14px}
 .login-forgot{font-size:12px;color:#A855F7;text-decoration:none;font-weight:500;transition:color .15s}
 .login-forgot:hover{color:#C084FC;text-decoration:underline}
+.chgpw-overlay{position:fixed;inset:0;background:#0a0e27 url('login-bg.png') center/cover no-repeat;z-index:9998;display:none;align-items:center;justify-content:center;overflow:hidden}
+.chgpw-overlay::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(0,229,184,.06) 0%,transparent 50%),rgba(10,14,39,.45);pointer-events:none}
+.chgpw-overlay.show{display:flex}
+.chgpw-box{background:rgba(20,25,55,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(168,85,247,.15);border-radius:16px;padding:28px 32px;width:100%;max-width:360px;position:relative;z-index:1;box-shadow:0 0 60px rgba(168,85,247,.08)}
+.chgpw-box h3{color:#fff;font-size:16px;font-weight:700;margin:0 0 4px;letter-spacing:.5px;text-align:center}
+.chgpw-box .chgpw-sub{color:rgba(255,255,255,.45);font-size:11px;margin:0 0 20px;text-align:center}
+.chgpw-box .chgpw-field{margin-bottom:14px}
+.chgpw-box .chgpw-label{display:block;color:rgba(255,255,255,.55);font-size:11px;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.chgpw-box .chgpw-input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#fff;font-size:13px;outline:none;box-sizing:border-box;transition:border-color .2s}
+.chgpw-box .chgpw-input:focus{border-color:#A855F7}
+.chgpw-box .chgpw-msg{text-align:center;font-size:12px;margin-top:10px;min-height:18px;font-weight:500}
+.chgpw-box .chgpw-msg.ok{color:#00E5B8}
+.chgpw-box .chgpw-msg.err{color:#f87171}
+.chgpw-btns{display:flex;gap:10px;margin-top:18px}
+.chgpw-btns button{flex:1;padding:9px 0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;border:none}
+.chgpw-btn-apply{background:#A855F7;color:#fff}
+.chgpw-btn-apply:hover{background:#9333ea}
+.chgpw-btn-apply:disabled{opacity:.4;cursor:not-allowed}
+.chgpw-btn-back{background:none;border:1px solid rgba(255,255,255,.12)!important;color:rgba(255,255,255,.5)}
+.chgpw-btn-back:hover{border-color:rgba(255,255,255,.25)!important;color:rgba(255,255,255,.7)}
 .login-error{color:#dc2626;font-size:12px;margin-top:12px;min-height:18px}
 .login-footer{position:absolute;bottom:24px;left:0;right:0;text-align:center;color:rgba(255,255,255,.3);font-size:11px;z-index:1;letter-spacing:.3px}
 .login-shift-badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:600;margin-top:4px}
@@ -546,7 +566,7 @@ html.dark .notif-item.unread{background:#082f49}
     <div class="login-error" id="loginError"></div>
     <div class="login-bottom-row">
       <label class="login-remember"><input type="checkbox" id="loginRemember"> Recordarme</label>
-      <a href="javascript:void(0)" class="login-forgot" onclick="document.getElementById('loginError').textContent='Contacte al administrador'">Olvidaste tu contrase\u00f1a?</a>
+      <a href="javascript:void(0)" class="login-forgot" onclick="chgpwOpen()">Olvidaste tu contrase\u00f1a?</a>
     </div>
     <div style="margin-top:22px;padding-top:14px;border-top:1px solid #e2e8f0;text-align:center">
       <span style="font-size:10px;color:#94a3b8;letter-spacing:.5px;text-transform:uppercase">Created by</span><br>
@@ -564,6 +584,31 @@ html.dark .notif-item.unread{background:#082f49}
     <div class="shiftsel-name" id="shiftselName"></div>
     <div class="shiftsel-btns" id="shiftselBtns"></div>
     <button class="shiftsel-back" onclick="shiftselBack()">Volver al login</button>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD -->
+<div class="chgpw-overlay" id="chgpwOverlay">
+  <div class="chgpw-box">
+    <h3>CAMBIAR CONTRASE\u00d1A</h3>
+    <p class="chgpw-sub">Ingrese su usuario y contrase\u00f1a actual para continuar</p>
+    <div class="chgpw-field">
+      <label class="chgpw-label">Usuario</label>
+      <input class="chgpw-input" id="chgpwUser" type="text" placeholder="Su usuario" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="chgpw-field">
+      <label class="chgpw-label">Contrase\u00f1a actual</label>
+      <input class="chgpw-input" id="chgpwCurrent" type="password" placeholder="Clave actual" autocomplete="off">
+    </div>
+    <div class="chgpw-field">
+      <label class="chgpw-label">Nueva contrase\u00f1a</label>
+      <input class="chgpw-input" id="chgpwNew" type="password" placeholder="Nueva clave" autocomplete="off">
+    </div>
+    <div class="chgpw-msg" id="chgpwMsg"></div>
+    <div class="chgpw-btns">
+      <button class="chgpw-btn-back" onclick="chgpwClose()">Volver</button>
+      <button class="chgpw-btn-apply" id="chgpwApply" onclick="selfChangePass()">Cambiar</button>
+    </div>
   </div>
 </div>
 
@@ -2676,6 +2721,58 @@ function openAuditView(){
   overlay.classList.add('show');
 }
 function closeAuditView(){document.getElementById('auditOverlay').classList.remove('show');}
+
+// ===== SELF PASSWORD CHANGE =====
+function chgpwOpen(){
+  document.getElementById('chgpwUser').value=document.getElementById('loginUser').value.trim().toUpperCase();
+  document.getElementById('chgpwCurrent').value='';
+  document.getElementById('chgpwNew').value='';
+  document.getElementById('chgpwMsg').textContent='';
+  document.getElementById('chgpwMsg').className='chgpw-msg';
+  document.getElementById('chgpwApply').disabled=false;
+  document.getElementById('chgpwOverlay').classList.add('show');
+  document.getElementById('chgpwCurrent').focus();
+}
+function chgpwClose(){
+  document.getElementById('chgpwOverlay').classList.remove('show');
+  document.getElementById('loginError').textContent='';
+}
+async function selfChangePass(){
+  var msgEl=document.getElementById('chgpwMsg');
+  var btnEl=document.getElementById('chgpwApply');
+  var username=document.getElementById('chgpwUser').value.trim().toUpperCase();
+  var currentPass=document.getElementById('chgpwCurrent').value;
+  var newPass=document.getElementById('chgpwNew').value;
+  if(!username||!USERS[username]){
+    msgEl.textContent='Usuario no v\u00e1lido';msgEl.className='chgpw-msg err';return;
+  }
+  var effectivePass=_getEffectivePass(username);
+  if(currentPass!==effectivePass){
+    msgEl.textContent='Contrase\u00f1a actual incorrecta';msgEl.className='chgpw-msg err';return;
+  }
+  if(!newPass){
+    msgEl.textContent='Ingrese la nueva contrase\u00f1a';msgEl.className='chgpw-msg err';return;
+  }
+  btnEl.disabled=true;
+  // Save to GitHub
+  var overrides=_getPasswordOverrides();
+  if(!overrides)overrides={};
+  overrides[username]=newPass;
+  _setPasswordOverrides(overrides);
+  USERS[username].pass=newPass;
+  await ghPushPasswords();
+  // Audit log on today's file
+  var now=new Date();
+  var todayStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  if(!store[todayStr])getDay(todayStr);
+  var day=store[todayStr];
+  if(!day.audit)day.audit=[];
+  var ts=new Date().toLocaleString('es-AR',{timeZone:'America/Argentina/Buenos_Aires'});
+  day.audit.push({type:'password_change',user:username,timestamp:ts,detail:'Cambio de contrase\u00f1a propio (self-service)'});
+  try{await ghPushDay(todayStr,day);}catch(e){}
+  msgEl.textContent='Contrase\u00f1a cambiada con \u00e9xito';msgEl.className='chgpw-msg ok';
+  setTimeout(function(){chgpwClose();},1800);
+}
 
 
 // ===== PASSWORD RESET (ADMIN) =====
