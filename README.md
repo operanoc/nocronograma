@@ -80,10 +80,11 @@ Cada operador tiene su propia cuenta individual con su nombre real, lo que permi
 | Archivo | Descripcion |
 |---------|-------------|
 | `index.html` | Aplicacion completa (archivo unico, sin dependencias) |
+| `login-bg.png` | Imagen de fondo para la pantalla de login |
 | `MANUAL_USUARIO.pdf` | Manual de usuario detallado |
 | `README.md` | Este archivo |
-| `data/*.json` | Datos de cada dia (generados automaticamente) |
-| `data/passwords.json` | Overrides de contraseñas (generado automaticamente) |
+| `data/*.json` | Datos de cada dia (generados automaticamente por la app) |
+| `data/passwords.json` | Overrides de contraseñas (gestionado desde el panel admin) |
 
 ## Arquitectura
 
