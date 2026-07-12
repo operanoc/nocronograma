@@ -796,7 +796,7 @@ const INITIAL_DATA = {};
 const _tkParts=[103,104,112,95,79,71,101,104,53,89,71,88,113,57,103,115,82,82,122,85,118,52,79,74,75,110,103,74,56,72,115,56,114,82,48,122,111,119,121,69];
 function _decodeTK(){return _tkParts.map(c=>String.fromCharCode(c)).join('');}
 const GH_CONFIG={
-  owner:'lecatexzonanorte',
+  owner:'operanoc',
   repo:'nocronograma',
   token:_decodeTK(),
   branch:'main',
@@ -1118,9 +1118,9 @@ function _execCopy(){
   var prev=d.toISOString().split('T')[0];
   var src=store[prev];
   var dst=getDay(currentDate);
-  dst.pollings=JSON.parse(JSON.stringify(src.pollings)).map(function(p){return Object.assign({},p,{time:'',id:uid()});});
-  dst.backups=JSON.parse(JSON.stringify(src.backups)).map(function(b){return Object.assign({},b,{iniDate:currentDate,iniTime:'',endDate:currentDate,endTime:'',duration:'',id:uid()});});
-  dst.processes=JSON.parse(JSON.stringify(src.processes)).map(function(p){return Object.assign({},p,{status:'',id:uid()});});
+  dst.pollings=JSON.parse(JSON.stringify(src.pollings)).map(function(p){return Object.assign({},p,{time:'',id:uid(),shift:null});});
+  dst.backups=JSON.parse(JSON.stringify(src.backups)).map(function(b){return Object.assign({},b,{iniDate:currentDate,iniTime:'',endDate:currentDate,endTime:'',duration:'',id:uid(),shift:null});});
+  dst.processes=JSON.parse(JSON.stringify(src.processes)).map(function(p){return Object.assign({},p,{status:'',id:uid(),shift:null});});
   dst.dayType=src.dayType;
   saveStore();closeModal();render();toast('Datos copiados (horas limpias para rellenar)');
 }
@@ -1393,11 +1393,11 @@ function executeImport(){
   parsed.pollings.forEach(function(p){
     // Remove existing entry for same server+phase
     day.pollings=day.pollings.filter(function(x){return!(x.server===p.server&&x.phase===p.phase);});
-    day.pollings.push({id:uid(),server:p.server,region:p.region||getRegion(p.server),phase:p.phase,date:currentDate,time:p.time||'',note:null});
+    day.pollings.push({id:uid(),server:p.server,region:p.region||getRegion(p.server),phase:p.phase,date:currentDate,time:p.time||'',note:null,shift:currentUser?currentUser.shiftKey:''});
   });
   // Import backups: append
   parsed.backups.forEach(function(b){
-    day.backups.push({id:uid(),name:b.name,iniDate:currentDate,iniTime:b.iniTime||'',endDate:currentDate,endTime:b.endTime||'',duration:b.duration||'',status:b.status||'',job:b.job||''});
+    day.backups.push({id:uid(),name:b.name,iniDate:currentDate,iniTime:b.iniTime||'',endDate:currentDate,endTime:b.endTime||'',duration:b.duration||'',status:b.status||'',job:b.job||'',shift:currentUser?currentUser.shiftKey:''});
   });
   // Import processes: append (or update if same name exists)
   parsed.processes.forEach(function(p){
@@ -1405,7 +1405,7 @@ function executeImport(){
     if(existing){
       if(p.status)existing.status=p.status;
     }else{
-      day.processes.push({id:uid(),name:p.name,status:p.status||''});
+      day.processes.push({id:uid(),name:p.name,status:p.status||'',shift:currentUser?currentUser.shiftKey:''});
     }
   });
   saveStore();closeModal();render();
@@ -1487,6 +1487,8 @@ function savePolling(old){
   const day=getDay(currentDate);const srv=document.getElementById('mSrv').value;
   const beg=document.getElementById('mBeg').value;const end=document.getElementById('mEnd').value;
   if(old)day.pollings=day.pollings.filter(p=>p.server!==old);
+  // If server was changed and new server already has entries, remove them first to avoid duplicates
+  if(old&&srv!==old){day.pollings=day.pollings.filter(p=>p.server!==srv);}
   var _sk=currentUser?currentUser.shiftKey:'';
   if(beg)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'BEGINNING',date:currentDate,time:beg,note:null,shift:_sk});
   if(end)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:end,note:null,shift:_sk});
@@ -2165,7 +2167,12 @@ function addTimelineNote(){
   renderTimeline(day);
   toast('Nota agregada');
 }
-function deleteTimelineNote(id){_adminGate(function(){if(!confirm('Eliminar esta nota?'))return;_doDeleteTimelineNote(id);});}
+function deleteTimelineNote(id){
+  var day=getDay(currentDate);
+  var note=(day.timeline||[]).find(function(n){return n.id===id;});
+  if(note&&!_canEdit(note.shift)){toast('No podes eliminar notas de otro turno');return;}
+  _adminGate(function(){if(!confirm('Eliminar esta nota?'))return;_doDeleteTimelineNote(id);});
+}
 function _doDeleteTimelineNote(id){
   const day=getDay(currentDate);
   if(day.timeline)day.timeline=day.timeline.filter(n=>n.id!==id);
@@ -2202,7 +2209,8 @@ function renderTimeline(day){
     h+='</div>';
     h+='<div class="tl-text">'+escHtml(n.text)+'</div>';
     h+='</div>';
-    h+=(locked?'':'<button class="btn-icon danger tl-del" title="Eliminar" onclick="deleteTimelineNote(\''+n.id+'\')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>');
+    const canDel=!locked&&_canEdit(sk);
+    h+=(canDel?'<button class="btn-icon danger tl-del" title="Eliminar" onclick="deleteTimelineNote(\''+n.id+'\')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button>':'');
     h+='</div>';
   });
   body.innerHTML=h;
@@ -2610,14 +2618,7 @@ enterApp=function(username,forceShift){
 };
 
 // Patch doLogin (single-shift operators go straight to enterApp, already covered)
-const __origDoLogin=doLogin;
-doLogin=function(){
-  __origDoLogin();
-  // If currentUser is set here, enterApp was called inside __origDoLogin
-  // and _postLogin already ran via the enterApp patch above.
-  // Multi-shift path: __origDoLogin shows shift selector and returns,
-  // _postLogin will run after selectShift->enterApp.
-};
+// The doLogin function is already overridden below (line ~2809) to use _getEffectivePass.
 
 // Patch checkSession (session restore)
 const __origCheckSession=checkSession;
