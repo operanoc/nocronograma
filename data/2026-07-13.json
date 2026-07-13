@@ -431,6 +431,18 @@
       "status": "ok",
       "shift": "TARDE",
       "user": "FGODOY"
+    },
+    {
+      "name": "Pinot",
+      "iniDate": "2026-07-13",
+      "iniTime": "17:00",
+      "endDate": "2026-07-13",
+      "endTime": "17:26",
+      "job": "BKPMIMIX",
+      "duration": "0:26",
+      "status": "ok",
+      "shift": "TARDE",
+      "user": "FGODOY"
     }
   ],
   "processes": [
