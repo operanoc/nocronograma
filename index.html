@@ -1779,9 +1779,17 @@ function doLogin(){
   }
   if(user.role==='operator'){
     var avail=getOperatorAvailableShifts(u);
+    if(avail.length===1){
+      enterApp(u,avail[0]);
+      return;
+    }
     if(avail.length>1){
       document.getElementById('loginOverlay').classList.add('hide');
       showShiftSelector(u);
+      return;
+    }
+    if(avail.length===0){
+      document.getElementById('loginError').textContent='No tiene turnos asignados';
       return;
     }
   }
@@ -3014,9 +3022,17 @@ doLogin=function(){
   }
   if(user.role==='operator'){
     var avail=getOperatorAvailableShifts(u);
+    if(avail.length===1){
+      enterApp(u,avail[0]);
+      return;
+    }
     if(avail.length>1){
       document.getElementById('loginOverlay').classList.add('hide');
       showShiftSelector(u);
+      return;
+    }
+    if(avail.length===0){
+      document.getElementById('loginError').textContent='No tiene turnos asignados';
       return;
     }
   }
