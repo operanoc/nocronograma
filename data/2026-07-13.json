@@ -535,6 +535,19 @@
   ],
   "notifications": [
     {
+      "id": "mrj3vhmjpo4t5",
+      "type": "handover",
+      "title": "Pase de Turno - Noche",
+      "desc": "Gustavo Castellani: PASE DE TURNO\t \t\t13/7/2026\n \t \tPOLLING  $\t \t \tOK\n \t \tPOLLING  1\t \t \tOK\n \t \tTERMI...",
+      "timestamp": "2026-07-13 07:54:58",
+      "shift": "NOCHE",
+      "readBy": {
+        "MANANA": true,
+        "TARDE": true,
+        "ADMIN": true
+      }
+    },
+    {
       "id": "mrjge5kt2pvgc",
       "type": "handover",
       "title": "Pase de Turno - Mañana",
@@ -544,18 +557,6 @@
       "readBy": {
         "TARDE": true,
         "ADMIN": true
-      }
-    },
-    {
-      "id": "mrj3vhmjpo4t5",
-      "type": "handover",
-      "title": "Pase de Turno - Noche",
-      "desc": "Gustavo Castellani: PASE DE TURNO\t \t\t13/7/2026\n \t \tPOLLING  $\t \t \tOK\n \t \tPOLLING  1\t \t \tOK\n \t \tTERMI...",
-      "timestamp": "2026-07-13 07:54:58",
-      "shift": "NOCHE",
-      "readBy": {
-        "MANANA": true,
-        "TARDE": true
       }
     }
   ]
