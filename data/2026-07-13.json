@@ -1,0 +1,457 @@
+{
+  "date": "2026-07-13",
+  "dayType": "DIARIA",
+  "pollings": [
+    {
+      "id": "mrj02ommlwrik",
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "05:54",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj02ommp4cod",
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "06:02",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0kpep372jn",
+      "server": "México - GDE - M2",
+      "region": "MEXICO",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "06:09",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0kpep7s2on",
+      "server": "México - GDE - M2",
+      "region": "MEXICO",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "06:20",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0o1ql47xld",
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "01:21",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0o1qly6ehy",
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "03:04",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0ocve97k7s",
+      "server": "Argentina P1",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "03:33",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0ocvejoeus",
+      "server": "Argentina P1",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "04:42",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0pa79xo5qh",
+      "server": "Perú D3",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "00:24",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0pa79z9bxy",
+      "server": "Perú D3",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "00:33",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0pmf9ro1rc",
+      "server": "Panamá D1",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "03:09",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0pmf9jurfd",
+      "server": "Panamá D1",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "04:05",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0qufyrjq79",
+      "server": "Perú D1",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "03:40",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0qufy9zok3",
+      "server": "Perú D1",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "06:20",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0yawlfh67r",
+      "server": "Chile MT",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "05:54",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj0yawldwjhg",
+      "server": "Chile MT",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "06:27",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj1ye10f32ta",
+      "server": "Chile OP",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "06:35",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj1ye109d0je",
+      "server": "Chile OP",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "06:46",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj3yhoh52bhb",
+      "server": "Panamá MT",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "05:53",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj3yhoht3t17",
+      "server": "Panamá MT",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "06:25",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj3yy2hkgcrd",
+      "server": "Panamá OC",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "06:44",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj3yy2irux2a",
+      "server": "Panamá OC",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "07:09",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj3zhi7l97is",
+      "server": "Panamá Mas Me Dan",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "07:22",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj3zhi78obbe",
+      "server": "Panamá Mas Me Dan",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "07:45",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj40gubu7yif",
+      "server": "Chile Vigo",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "06:47",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj40gubb7lc0",
+      "server": "Chile Vigo",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "07:12",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj41xbom2mfv",
+      "server": "Chile OC",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "07:20",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj41xboq5vdf",
+      "server": "Chile OC",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "07:45",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj4ydhtyq76f",
+      "server": "Perú OC",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "07:22",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj4ydhtxvp8c",
+      "server": "Perú OC",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "08:23",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj54zpqshf2s",
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "07:53",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj54zpqbtz6y",
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "08:16",
+      "note": null,
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj55ea813apx",
+      "server": "Chile Los Heroes",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "",
+      "note": "SIN AC",
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrj55ea87pqgx",
+      "server": "Chile Los Heroes",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "",
+      "note": "SIN AC",
+      "shift": "MANANA"
+    },
+    {
+      "id": "mrjentyq2tfnx",
+      "server": "Chile CencoPay",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "08:24",
+      "note": null,
+      "shift": "ADMIN"
+    },
+    {
+      "id": "mrjentyqt1lne",
+      "server": "Chile CencoPay",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "08:45",
+      "note": null,
+      "shift": "ADMIN"
+    }
+  ],
+  "backups": [
+    {
+      "name": "Regional",
+      "iniDate": "2026-07-13",
+      "iniTime": "00:35",
+      "endDate": "2026-07-13",
+      "endTime": "02:35",
+      "job": "BKPDIARIOU",
+      "duration": "2:00",
+      "status": "ok",
+      "shift": "MANANA"
+    }
+  ],
+  "processes": [
+    {
+      "name": "Rentas de Córdoba",
+      "status": "OK",
+      "shift": "MANANA"
+    },
+    {
+      "name": "BANCOR",
+      "status": "OK",
+      "shift": "MANANA"
+    },
+    {
+      "name": "Tarjeta Naranja",
+      "status": "OK",
+      "shift": "MANANA"
+    },
+    {
+      "name": "EPE",
+      "status": "Error",
+      "shift": "MANANA"
+    },
+    {
+      "name": "AFIP 24",
+      "status": "OK",
+      "shift": "MANANA"
+    },
+    {
+      "name": "AFIP 72",
+      "status": "OK",
+      "shift": "MANANA"
+    }
+  ],
+  "notes": "",
+  "timeline": [
+    {
+      "id": "mrj0l30iw5rdn",
+      "operator": "ARIVERO",
+      "text": "AFIP 72 DI ERROR , SE ENVIE MAIL PARA SU VERIFICAION",
+      "time": "06:22:54",
+      "date": "2026-07-13",
+      "shift": "MANANA"
+    }
+  ],
+  "handovers": [
+    {
+      "id": "mrj3vhmj0bm6w",
+      "operator": "Gustavo Castellani",
+      "shift": "NOCHE",
+      "shiftLabel": "Noche",
+      "timestamp": "2026-07-13 07:54:58",
+      "text": "PASE DE TURNO\t \t\t13/7/2026\n \t \tPOLLING  $\t \t \tOK\n \t \tPOLLING  1\t \t \tOK\n \t \tTERMINALES\t \t \tOK\n \t \tPOLLING D3  PERU\t \t \tOK\n \t \tBACK-UP  REGIONAL\t \t \tOK\n \t \tPOLLING   D1 PERU\t \t \tCORRIENDO\n \t \tPOLLING   D1 PANAMA\t \t \tOK\n \t \tBCHAGENTES\t \t \tOK\n \t \tBCH_UTIL\t \t \tCORRIENDO",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
+    }
+  ],
+  "audit": [
+    {
+      "type": "cierre",
+      "user": "GCASTELLANI",
+      "timestamp": "2026-07-13 07:54:58",
+      "detail": "Pase de turno - Noche"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "mrj3vhmjpo4t5",
+      "type": "handover",
+      "title": "Pase de Turno - Noche",
+      "desc": "Gustavo Castellani: PASE DE TURNO\t \t\t13/7/2026\n \t \tPOLLING  $\t \t \tOK\n \t \tPOLLING  1\t \t \tOK\n \t \tTERMI...",
+      "timestamp": "2026-07-13 07:54:58",
+      "shift": "NOCHE",
+      "readBy": {
+        "MANANA": true
+      }
+    }
+  ]
+}
