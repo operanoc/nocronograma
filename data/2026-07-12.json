@@ -19,9 +19,9 @@
       "iniDate": "2026-07-12",
       "iniTime": "02:03",
       "endDate": "2026-07-12",
-      "endTime": null,
+      "endTime": "12:00",
       "job": null,
-      "duration": null,
+      "duration": "9:57",
       "status": null,
       "shift": "NOCHE"
     }
