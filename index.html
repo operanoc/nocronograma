@@ -2569,9 +2569,31 @@ function renderNotifPanel(day){
 function readNotif(nid){
   const day=getDay(currentDate);
   const notifs=day.notifications||[];
+  const n=notifs.find(x=>x.id===nid);
+  if(!n)return;
+  // Close notif dropdown
+  document.getElementById('notifPanel').classList.remove('show');
+  // Build modal content
+  var iconClass=n.type==='handover'?'handover':n.type==='alert'?'alert':'info';
+  var iconSvg=n.type==='handover'?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>':n.type==='alert'?'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>':'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+  var html='<div style="text-align:center;padding:10px 0">';
+  html+='<div class="notif-icon-wrap '+iconClass+'" style="width:48px;height:48px;font-size:20px;margin:0 auto 12px">'+iconSvg+'</div>';
+  html+='<div style="font-size:15px;font-weight:600;color:var(--gray-800);margin-bottom:8px">'+escHtml(n.title)+'</div>';
+  html+='<div style="font-size:13px;color:var(--gray-600);line-height:1.6;white-space:pre-wrap;word-break:break-word;max-height:200px;overflow-y:auto">'+escHtml(n.desc)+'</div>';
+  html+='<div style="font-size:11px;color:var(--gray-400);margin-top:10px">'+escHtml(n.timestamp)+'</div>';
+  html+='</div>';
+  document.getElementById('modalTitle').textContent='';
+  document.getElementById('modalBody').innerHTML=html;
+  document.getElementById('modalFooter').innerHTML='<button class="btn btn-primary" onclick="ackNotif(\''+n.id+'\')">OK</button>';
+  openModal();
+}
+function ackNotif(nid){
+  const day=getDay(currentDate);
+  const notifs=day.notifications||[];
   const mySk=currentUser?currentUser.shiftKey:'';
   const n=notifs.find(x=>x.id===nid);
   if(n){if(!n.readBy)n.readBy={};n.readBy[mySk]=true;saveStore();}
+  closeModal();
   renderNotifPanel(day);renderNovedades(day);
 }
 function markAllRead(){
