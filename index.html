@@ -2982,7 +2982,7 @@ function _chatPush(msg){
     if(r.status===404){
       // Archivo no existe, crear con este primer mensaje
       _chatSha=null;
-      var content=JSON.stringify({messages:[msg]});
+      var content=utf8ToBase64(JSON.stringify({messages:[msg]}));
       return fetch(GH_API+'/'+_CHAT_FILE,{
         method:'PUT',
         headers:GH_HEADERS,
@@ -3012,7 +3012,7 @@ function _chatPush(msg){
     // Update local cache
     _chatMessages=msgs;
     // Push to GitHub
-    var content=JSON.stringify({messages:msgs});
+    var content=utf8ToBase64(JSON.stringify({messages:msgs}));
     return fetch(GH_API+'/'+_CHAT_FILE,{
       method:'PUT',
       headers:GH_HEADERS,
@@ -3035,7 +3035,7 @@ function _chatPush(msg){
           }
           if(allMsgs.length>_CHAT_MAX)allMsgs=allMsgs.slice(-_CHAT_MAX);
           _chatMessages=allMsgs;
-          var content2=JSON.stringify({messages:allMsgs});
+          var content2=utf8ToBase64(JSON.stringify({messages:allMsgs}));
           return fetch(GH_API+'/'+_CHAT_FILE,{
             method:'PUT',
             headers:GH_HEADERS,
