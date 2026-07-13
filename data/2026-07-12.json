@@ -531,10 +531,11 @@
       "iniTime": "02:56",
       "endDate": "2026-07-12",
       "endTime": "05:58",
-      "job": null,
+      "job": "SEMANAL",
       "duration": "3:02",
-      "status": null,
-      "shift": "NOCHE"
+      "status": "OK",
+      "shift": "NOCHE",
+      "user": "OPERAADMIN"
     },
     {
       "id": "17839085149708f659",
