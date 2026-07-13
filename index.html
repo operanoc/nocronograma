@@ -520,15 +520,16 @@ html.dark .notif-item.unread{background:#082f49}
 .chat-input-bar input:focus{border-color:var(--emerald-600)}
 .chat-input-bar button{width:36px;height:36px;border-radius:50%;background:var(--emerald-600);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
 .chat-input-bar button:hover{background:var(--emerald-800)}
-.chat-users-bar{padding:8px 12px;border-bottom:1px solid var(--gray-100);display:flex;gap:6px;overflow-x:auto;flex-shrink:0;background:var(--gray-50)}
-.chat-users-bar::-webkit-scrollbar{height:3px}
-.chat-users-bar::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:2px}
-.chat-user-chip{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;color:var(--gray-600);background:var(--gray-200);white-space:nowrap;flex-shrink:0;position:relative;transition:background .15s,color .15s}
-.chat-user-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--gray-400);flex-shrink:0}
-.chat-user-chip.on-shift{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
-.chat-user-chip.on-shift .dot{background:#10b981;box-shadow:0 0 6px rgba(16,185,129,.5);animation:livePulse 2s ease-in-out infinite}
-.chat-user-chip.is-me{background:var(--emerald-100);color:var(--emerald-800);border:1px solid var(--emerald-300)}
-.chat-user-chip.is-me .dot{background:var(--emerald-600)}
+.chat-users-bar{padding:6px 12px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:8px;flex-shrink:0;background:var(--gray-50)}
+.chat-users-bar label{font-size:11px;color:var(--gray-500);font-weight:600;flex-shrink:0}
+.chat-user-select{flex:1;padding:5px 8px;border:1px solid var(--gray-200);border-radius:6px;font-size:12px;font-weight:600;background:var(--white);color:var(--gray-800);outline:none;cursor:pointer;min-width:0}
+.chat-user-select:focus{border-color:var(--emerald-600)}
+.chat-user-select option{font-weight:500}
+.chat-user-select option.on-shift{color:#065f46;font-weight:700;background:#ecfdf5}
+.chat-user-select option.is-me{color:var(--emerald-800);font-weight:700}
+.chat-shift-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0}
+.chat-shift-tag.active{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+.chat-shift-tag.inactive{background:var(--gray-100);color:var(--gray-400);border:1px solid var(--gray-200)}
 .chat-empty{text-align:center;padding:40px 16px;color:var(--gray-400);font-size:13px}
 .chat-date-sep{text-align:center;font-size:10px;color:var(--gray-400);padding:4px 0}
 @media(max-width:640px){.chat-panel{right:8px;bottom:80px;width:calc(100vw - 16px);height:calc(100vh - 100px);max-height:none;border-radius:12px}.chat-fab{bottom:16px;right:16px;width:48px;height:48px}}
@@ -2892,26 +2893,40 @@ function _renderChatUsers(){
   if(!el)return;
   var info=_getShiftOperators();
   var onShift=new Set(info.primary);
-  var html='';
-  // Admins primero
   var admins=[],ops=[];
   Object.keys(USERS).forEach(function(u){
     var usr=USERS[u];
     if(usr.role==='admin'||usr.role==='readonly')admins.push(u);
     else ops.push(u);
   });
-  admins.concat(ops).forEach(function(u){
+  var allUsers=admins.concat(ops);
+  // Generar opciones del select con optgroups
+  var html='<label>Para:</label><select class="chat-user-select" id="chatUserSelect">';
+  // Optgroup: Admins
+  html+='<optgroup label="Admins">';
+  admins.forEach(function(u){
+    var usr=USERS[u];
+    var isMe=currentUser&&currentUser.username===u;
+    var cls=isMe?'is-me':'';
+    var label=(usr.name||u)+(isMe?' (Vos)':'');
+    html+='<option value="'+u+'" class="'+cls+'">'+escHtml(label)+'</option>';
+  });
+  html+='</optgroup>';
+  // Optgroup: Operadores (con indicador de turno)
+  html+='<optgroup label="Operadores">';
+  ops.forEach(function(u){
     var usr=USERS[u];
     var isMe=currentUser&&currentUser.username===u;
     var isOnShift=onShift.has(u);
-    var cls='chat-user-chip';
-    if(isMe)cls+=' is-me';
-    else if(isOnShift)cls+=' on-shift';
-    var displayName=(usr.name||u).split(' ');
-    var shortName=displayName.length>1?displayName[0][0]+displayName[displayName.length-1][0]:displayName[0];
-    var shiftTag=isOnShift?' <span style="font-size:9px;opacity:.7">['+info.shift.substring(0,3)+']</span>':'';
-    html+='<div class="'+cls+'" title="'+escHtml(usr.name||u)+(isOnShift?' - Turno '+info.shift:'')+(usr.role==='admin'?' (Admin)':usr.role==='readonly'?' (Lectura)':'')+'"><span class="dot"></span>'+escHtml(shortName)+shiftTag+'</div>';
+    var cls=isMe?'is-me':isOnShift?'on-shift':'';
+    var tag=isOnShift?' \u2705 ':'';
+    var label=(usr.name||u)+(isMe?' (Vos)':'')+tag;
+    html+='<option value="'+u+'" class="'+cls+'">'+escHtml(label)+'</option>';
   });
+  html+='</optgroup></select>';
+  // Tag del turno actual
+  var shiftLabel=info.shift==='MANANA'?'\ud83c\udf05 MA\u00d1ANA':info.shift==='TARDE'?'\u26c5 TARDE':'\ud83c\udf19 NOCHE';
+  html+='<span class="chat-shift-tag active">'+shiftLabel+'</span>';
   el.innerHTML=html;
 }
 function _updateChatOnline(msgs){
@@ -3620,7 +3635,7 @@ doLogin=function(){
     <span class="chat-online" id="chatOnline"></span>
     <button class="btn-icon" onclick="toggleChat()" style="margin-left:4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
-  <div class="chat-users-bar" id="chatUsersBar"></div>
+  <div class="chat-users-bar" id="chatUsersBar"><label>Para:</label><select class="chat-user-select"><option>Cargando...</option></select></div>
   <div class="chat-msgs" id="chatMsgs"></div>
   <div class="chat-input-bar">
     <input type="text" id="chatInput" placeholder="Escribir mensaje..." maxlength="500" onkeydown="if(event.key==='Enter')sendChat()">
