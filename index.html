@@ -2105,6 +2105,7 @@ async function _renderDashboard(){
   let bkpDurations=[];
   let bkpNames={};
   let bkpDetail={};
+  let bkpLog=[];
   let procNames={};
 
   days.forEach(([dateStr,day])=>{
@@ -2154,6 +2155,18 @@ async function _renderDashboard(){
         }
         if(b.job){bkpDetail[b.name].jobs[b.job]=(bkpDetail[b.name].jobs[b.job]||0)+1;}
       }
+      // Log each BKP execution with times
+      bkpLog.push({
+        date:dateStr,
+        name:b.name||'—',
+        iniDate:b.iniDate||dateStr,
+        iniTime:b.iniTime||'',
+        endDate:b.endDate||dateStr,
+        endTime:b.endTime||'',
+        duration:b.duration||'',
+        status:b.status||'',
+        job:b.job||''
+      });
     });
 
     (day.processes||[]).forEach(p=>{
@@ -2324,6 +2337,25 @@ async function _renderDashboard(){
       });
       h+='</div>';
     }
+  }else{
+    h+='<div class="dash-empty">No hay datos de backups para el periodo</div>';
+  }
+  h+='</div>';
+
+  // BKP times table - every execution with start/end times
+  h+='<div class="dash-section"><div class="dash-section-header"><h3>Tiempos de Backups (detallado) - '+rangeLabel+'</h3></div>';
+  if(bkpLog.length){
+    // Sort by date desc, then name
+    bkpLog.sort(function(a,b){return b.date.localeCompare(a.date)||a.name.localeCompare(b.name);});
+    h+='<div style="overflow-x:auto;max-height:500px;overflow-y:auto"><table class="dash-table"><thead style="position:sticky;top:0;z-index:1"><tr><th>Fecha</th><th>Backup</th><th class="num">Hora Inicio</th><th class="num">Hora Fin</th><th class="num">Duracion</th><th>Estado</th><th>JOB</th></tr></thead><tbody>';
+    bkpLog.forEach(function(b){
+      var stUp=(b.status||'').toUpperCase();
+      var isFail=stUp.includes('FAIL')||stUp.includes('SUSP');
+      var stCls=isFail?'fail-cell':(b.status?'ok-cell':'');
+      var inProg=!b.endTime&&!b.status;
+      h+='<tr><td style="white-space:nowrap">'+b.date+'</td><td><strong>'+escHtml(b.name)+'</strong></td><td class="num" style="white-space:nowrap;font-family:\'SF Mono\',Monaco,Consolas,monospace;font-size:12px">'+(b.iniTime||'—')+'</td><td class="num" style="white-space:nowrap;font-family:\'SF Mono\',Monaco,Consolas,monospace;font-size:12px">'+(b.endTime||'—')+'</td><td class="num" style="font-family:\'SF Mono\',Monaco,Consolas,monospace;font-size:12px">'+(b.duration||'—')+'</td><td class="'+stCls+'">'+(inProg?'<span style="color:var(--sky-600);font-weight:600">EN EJEC.</span>':escHtml(b.status||'—'))+'</td><td style="font-size:11px;color:var(--gray-500)">'+escHtml(b.job||'—')+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
   }else{
     h+='<div class="dash-empty">No hay datos de backups para el periodo</div>';
   }
