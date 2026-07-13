@@ -570,7 +570,9 @@
       "pollOk": true,
       "bkpOk": true,
       "procOk": true,
-      "readBy": {}
+      "readBy": {
+        "ADMIN": true
+      }
     },
     {
       "id": "178390650541946b7e",
@@ -582,7 +584,9 @@
       "pollOk": true,
       "bkpOk": true,
       "procOk": true,
-      "readBy": {}
+      "readBy": {
+        "ADMIN": true
+      }
     },
     {
       "id": "1783906505419e194f",
@@ -594,7 +598,9 @@
       "pollOk": true,
       "bkpOk": true,
       "procOk": true,
-      "readBy": {}
+      "readBy": {
+        "ADMIN": true
+      }
     }
   ],
   "audit": [
@@ -625,7 +631,9 @@
       "desc": "Anibal Rivero: Todo ejecutado. \nAuditoria corriendo",
       "timestamp": "2026-07-11 05:29:44",
       "shift": "NOCHE",
-      "readBy": {}
+      "readBy": {
+        "ADMIN": true
+      }
     },
     {
       "id": "17839065054198d1e5",
@@ -645,7 +653,9 @@
       "desc": "Humberto Nuñez: TODO REALIZADO OK SIN NOVEDADES",
       "timestamp": "2026-07-11 22:00:00",
       "shift": "TARDE",
-      "readBy": {}
+      "readBy": {
+        "ADMIN": true
+      }
     }
   ]
 }
