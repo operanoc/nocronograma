@@ -2,19 +2,7 @@
   "date": "2026-07-12",
   "dayType": "FIN_DE_SEMANA",
   "pollings": [],
-  "backups": [
-    {
-      "name": "Regional",
-      "iniDate": "2026-07-12",
-      "iniTime": null,
-      "endDate": "2026-07-12",
-      "endTime": null,
-      "job": "BKPMIMIX",
-      "duration": null,
-      "status": null,
-      "shift": "NOCHE"
-    }
-  ],
+  "backups": [],
   "processes": [],
   "notes": "",
   "audit": [
