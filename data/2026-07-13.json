@@ -535,17 +535,6 @@
   ],
   "notifications": [
     {
-      "id": "mrjge5kt2pvgc",
-      "type": "handover",
-      "title": "Pase de Turno - Mañana",
-      "desc": "Anibal Rivero: todo realizado, queda pendiente afip 72 hs, a la espera del envio del archivo co...",
-      "timestamp": "2026-07-13 13:45:24",
-      "shift": "MANANA",
-      "readBy": {
-        "TARDE": true
-      }
-    },
-    {
       "id": "mrj3vhmjpo4t5",
       "type": "handover",
       "title": "Pase de Turno - Noche",
@@ -554,6 +543,17 @@
       "shift": "NOCHE",
       "readBy": {
         "MANANA": true,
+        "TARDE": true
+      }
+    },
+    {
+      "id": "mrjge5kt2pvgc",
+      "type": "handover",
+      "title": "Pase de Turno - Mañana",
+      "desc": "Anibal Rivero: todo realizado, queda pendiente afip 72 hs, a la espera del envio del archivo co...",
+      "timestamp": "2026-07-13 13:45:24",
+      "shift": "MANANA",
+      "readBy": {
         "TARDE": true
       }
     }
