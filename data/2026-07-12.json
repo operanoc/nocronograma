@@ -527,13 +527,12 @@
       "name": "REGDRS",
       "iniDate": "2026-07-12",
       "iniTime": "02:56",
-      "endDate": "",
-      "endTime": "",
-      "job": "SEMANAL",
-      "duration": "",
-      "status": "",
-      "shift": "NOCHE",
-      "user": "GCASTELLANI"
+      "endDate": "2026-07-12",
+      "endTime": "05:58",
+      "job": null,
+      "duration": "3:02",
+      "status": null,
+      "shift": "NOCHE"
     },
     {
       "id": "17839085149708f659",
