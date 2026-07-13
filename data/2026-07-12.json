@@ -507,10 +507,11 @@
       "iniTime": "02:39",
       "endDate": "2026-07-12",
       "endTime": "08:40",
-      "job": null,
+      "job": "SEMANAL",
       "duration": "6:01",
-      "status": null,
-      "shift": "NOCHE"
+      "status": "OK",
+      "shift": "NOCHE",
+      "user": "OPERAADMIN"
     },
     {
       "name": "Semillón",
