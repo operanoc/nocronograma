@@ -877,7 +877,7 @@ function setSyncStatus(s,msg){
   _syncStatus=s;
   const el=document.getElementById('syncIndicator');
   if(!el)return;
-  if(s==='idle'){el.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>';el.title='Sin sincronizar';el.style.color='var(--gray-400)';}
+  if(s==='idle'){el.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';el.title='Click para sincronizar con GitHub';el.style.color='var(--gray-400)';}
   else if(s==='saving'){el.innerHTML='<svg class="spin-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>';el.title='Guardando en GitHub...';el.style.color='var(--sky-600)';}
   else if(s==='ok'){el.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';el.title='Sincronizado con GitHub';el.style.color='var(--emerald-600)';}
   else if(s==='error'){el.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';el.title=msg||'Error de sincronización';el.style.color='var(--red-500)';}
@@ -923,6 +923,7 @@ async function ghFetchAll(){
   const result={};
   for(const f of files){
     if(!f.name.endsWith('.json'))continue;
+    if(f.name==='passwords.json')continue;
     const dateKey=f.name.replace('.json','');
     try{
       const dayData=await ghFetchDay(dateKey);
@@ -1762,6 +1763,8 @@ function enterApp(username,forceShift){
   }
   document.getElementById('loginError').textContent='';
   render();
+  // Re-sync from GitHub after login to ensure fresh data
+  syncFromGitHub();
 }
 
 function doLogin(){
@@ -2909,7 +2912,7 @@ var _passFileSHA=null;
 async function ghFetchPasswords(){
   try{
     const path='data/passwords.json';
-    const resp=await fetch(GH_API+'/'+path+'?ref='+GH_CONFIG.branch,{headers:GH_HEADERS});
+    const resp=await fetch(GH_API+'/'+path+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'});
     if(resp.status===404){_passOverrides={};_passFileSHA=null;return;}
     if(!resp.ok)return;
     const data=await resp.json();
