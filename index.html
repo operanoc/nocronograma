@@ -93,7 +93,7 @@ main{flex:1;max-width:1200px;margin:0 auto;width:100%;padding:16px}
 .search-box svg{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--gray-400);width:14px;height:14px}
 
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;max-width:720px;margin-left:auto;margin-right:auto}
 .stat-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:12px;text-align:center;transition:background .3s;position:relative}
 .stat-value{font-size:22px;font-weight:700;color:var(--gray-900)}
 .stat-label{font-size:11px;color:var(--gray-500);margin-top:2px}
@@ -148,11 +148,11 @@ main{flex:1;max-width:1200px;margin:0 auto;width:100%;padding:16px}
 
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.show{opacity:1;pointer-events:auto}
-.modal{background:var(--white);border-radius:12px;width:100%;max-width:480px;box-shadow:var(--shadow-md);transform:translateY(10px);transition:transform .2s}
+.modal{background:var(--white);border-radius:12px;width:100%;max-width:480px;max-height:80vh;box-shadow:var(--shadow-md);transform:translateY(10px);transition:transform .2s;display:flex;flex-direction:column;overflow:hidden}
 .modal-overlay.show .modal{transform:translateY(0)}
 .modal-header{padding:16px 20px 0;display:flex;align-items:center;justify-content:space-between}
 .modal-header h3{font-size:16px;font-weight:600}
-.modal-body{padding:14px 20px}
+.modal-body{padding:14px 20px;overflow-y:auto;flex:1}
 .modal-footer{padding:0 20px 16px;display:flex;gap:8px;justify-content:flex-end}
 .form-group{margin-bottom:10px}
 .form-group label{display:block;font-size:12px;font-weight:500;color:var(--gray-600);margin-bottom:3px}
@@ -471,7 +471,7 @@ html.dark .notif-item.unread{background:#082f49}
 .novedades-header h3{font-size:13px;font-weight:600;color:var(--gray-600);display:flex;align-items:center;gap:6px;margin:0}
 .novedades-header .nv-badge{background:var(--amber-600);color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px}
 .novedades-body{max-height:0;overflow:hidden;transition:max-height .3s}
-.novedades-body.open{max-height:600px;overflow-y:auto}
+.novedades-body.open{max-height:2000px;overflow-y:auto}
 .novedades-body::-webkit-scrollbar{width:5px}
 .novedades-body::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:3px}
 .nv-card{padding:12px 16px;border-bottom:1px solid var(--gray-50)}
@@ -493,12 +493,49 @@ html.dark .notif-item.unread{background:#082f49}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.spin-icon{animation:spin 1s linear infinite;}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:.4}}.live-dot{width:8px;height:8px;border-radius:50%;background:#00E5B8;display:inline-block;animation:livePulse 1.5s ease-in-out infinite;margin-right:5px;flex-shrink:0;}.live-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:#00E5B8;letter-spacing:.5px;padding:3px 10px;border-radius:99px;background:rgba(0,229,184,.1);border:1px solid rgba(0,229,184,.3);user-select:none;}
+
+/* ===== INTERNAL CHAT ===== */
+.chat-fab{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:var(--emerald-600);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:250;display:none;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s}
+.chat-fab:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.chat-fab.has-unread::after{content:'';position:absolute;top:2px;right:2px;width:14px;height:14px;background:var(--red-500);border-radius:50%;border:2px solid var(--white);animation:livePulse 1.5s ease-in-out infinite}
+.chat-panel{position:fixed;bottom:88px;right:24px;width:380px;max-width:calc(100vw - 32px);height:480px;max-height:calc(100vh - 120px);background:var(--white);border:1px solid var(--gray-200);border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.15);z-index:250;display:none;flex-direction:column;overflow:hidden;animation:chatSlideIn .2s ease}
+@keyframes chatSlideIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.chat-panel.show{display:flex}
+.chat-head{padding:12px 16px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.chat-head h4{font-size:14px;font-weight:700;color:var(--gray-800);margin:0;flex:1}
+.chat-head .chat-online{font-size:10px;color:var(--emerald-600);font-weight:600;display:flex;align-items:center;gap:4px}
+.chat-head .chat-online::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--emerald-600)}
+.chat-msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.chat-msgs::-webkit-scrollbar{width:4px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:2px}
+.chat-msg{max-width:80%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.45;word-break:break-word;position:relative}
+.chat-msg.mine{align-self:flex-end;background:var(--emerald-600);color:#fff;border-bottom-right-radius:4px}
+.chat-msg.theirs{align-self:flex-start;background:var(--gray-100);color:var(--gray-800);border-bottom-left-radius:4px}
+.chat-msg-sender{font-size:10px;font-weight:700;margin-bottom:2px;opacity:.7}
+.chat-msg-time{font-size:9px;opacity:.5;margin-top:3px;text-align:right}
+.chat-msg.mine .chat-msg-time{text-align:right}
+.chat-input-bar{padding:10px 12px;border-top:1px solid var(--gray-100);display:flex;gap:8px;flex-shrink:0}
+.chat-input-bar input{flex:1;padding:8px 12px;border:1px solid var(--gray-200);border-radius:99px;font-size:13px;outline:none;transition:border-color .15s}
+.chat-input-bar input:focus{border-color:var(--emerald-600)}
+.chat-input-bar button{width:36px;height:36px;border-radius:50%;background:var(--emerald-600);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.chat-input-bar button:hover{background:var(--emerald-800)}
+.chat-users-bar{padding:8px 12px;border-bottom:1px solid var(--gray-100);display:flex;gap:6px;overflow-x:auto;flex-shrink:0;background:var(--gray-50)}
+.chat-users-bar::-webkit-scrollbar{height:3px}
+.chat-users-bar::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:2px}
+.chat-user-chip{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;color:var(--gray-600);background:var(--gray-200);white-space:nowrap;flex-shrink:0;position:relative;transition:background .15s,color .15s}
+.chat-user-chip .dot{width:7px;height:7px;border-radius:50%;background:var(--gray-400);flex-shrink:0}
+.chat-user-chip.on-shift{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+.chat-user-chip.on-shift .dot{background:#10b981;box-shadow:0 0 6px rgba(16,185,129,.5);animation:livePulse 2s ease-in-out infinite}
+.chat-user-chip.is-me{background:var(--emerald-100);color:var(--emerald-800);border:1px solid var(--emerald-300)}
+.chat-user-chip.is-me .dot{background:var(--emerald-600)}
+.chat-empty{text-align:center;padding:40px 16px;color:var(--gray-400);font-size:13px}
+.chat-date-sep{text-align:center;font-size:10px;color:var(--gray-400);padding:4px 0}
+@media(max-width:640px){.chat-panel{right:8px;bottom:80px;width:calc(100vw - 16px);height:calc(100vh - 100px);max-height:none;border-radius:12px}.chat-fab{bottom:16px;right:16px;width:48px;height:48px}}
 
 /* Admin hamburger menu */
 .admin-menu{position:fixed;top:0;left:0;bottom:0;width:240px;background:var(--white);border-right:1px solid var(--gray-200);box-shadow:4px 0 20px rgba(0,0,0,.1);z-index:200;overflow:hidden;padding:16px 0;transform:translateX(-100%);transition:transform .2s ease;display:flex;flex-direction:column}
 .admin-menu.show{transform:translateX(0)}
-#clavePanel.show{right:0}
-#claveOverlay.show{display:block}
 .admin-menu .menu-header{padding:0 16px 12px;border-bottom:1px solid var(--gray-200);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
 .admin-menu .menu-header span{font-size:14px;font-weight:700;color:var(--gray-800)}
 .admin-menu .menu-header button{background:none;border:none;cursor:pointer;color:var(--gray-400);padding:4px;border-radius:4px;display:flex;align-items:center;transition:color .1s}
@@ -665,7 +702,7 @@ html.dark .notif-item.unread{background:#082f49}
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
       Bitácora NOC
     </h1>
-    <div class="header-actions"><span id="claveBtn" onclick="openClavePanel()" style="display:none;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;border:1px solid #FBBF24;background:rgba(251,191,36,.1);color:#FBBF24;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s" title="Claves AS400"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Claves <span id="claveCount" style="font-size:10px;opacity:.8"></span></span><span id="syncIndicator" onclick="forceSync()" style="display:inline-flex;align-items:center;cursor:pointer;" title="Sin sincronizar - click para sincronizar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>
+    <div class="header-actions"><span id="liveIndicator" class="live-badge" style="display:none"><span class="live-dot"></span>EN VIVO</span><span id="syncIndicator" onclick="forceSync()" style="display:inline-flex;align-items:center;cursor:pointer;" title="Sin sincronizar - click para sincronizar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>
 
       <button class="btn-cierre" id="cierreBtn" onclick="openCierreModal()" title="Pase de Turno" style="display:none">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -700,11 +737,7 @@ html.dark .notif-item.unread{background:#082f49}
 
 <!-- Admin side menu (outside header because position:fixed) -->
 <div class="admin-overlay" id="adminOverlay" onclick="closeAdminMenu()"></div>
-<!-- Panel de Claves AS400 -->
-<div class="admin-overlay" id="claveOverlay" onclick="closeClavePanel()" style="z-index:200"></div>
-<div id="clavePanel" style="display:none;position:fixed;top:0;right:-420px;width:400px;max-width:90vw;height:100vh;background:var(--white);border-left:1px solid var(--gray-200);z-index:201;transition:right .25s ease;padding:16px;overflow-y:auto;box-shadow:-4px 0 20px rgba(0,0,0,.3)">
-  <div id="clavePanelBody"></div>
-</div>
+
 <div class="admin-menu" id="adminMenu">
   <div class="menu-header"><span>Admin</span><button onclick="closeAdminMenu()" title="Cerrar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
   <button class="menu-item" onclick="openDashboard();closeAdminMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg> Dashboard</button>
@@ -792,7 +825,6 @@ html.dark .notif-item.unread{background:#082f49}
   </div>
 
   <div class="stats">
-    <div class="stat-card" id="statCardServers"><div class="stat-value" id="statServers">0</div><div class="stat-label">Servidores</div></div>
     <div class="stat-card" id="statCardPollings"><div class="stat-value stat-emerald" id="statPollings">0/0</div><div class="stat-label">Pollings OK</div></div>
     <div class="stat-card" id="statCardBackups"><div class="stat-value stat-sky" id="statBackups">0</div><div class="stat-label">Backups</div></div>
     <div class="stat-card" id="statCardProcesses"><div class="stat-value stat-violet" id="statProcesses">—</div><div class="stat-label">Procesos OK</div></div>
@@ -869,162 +901,6 @@ function refreshGHHeaders(){
 let GH_HEADERS={};
 refreshGHHeaders();
 
-// ===== CLAVES DE BORRADO DE POLLING =====
-var _clavesData=null;
-var _clavesSHA=null;
-var _CLAVE_USERS=['DDIPINO','ARIVERO','STORREZ','HNUNEZ','OBALDOMIR'];
-function _canUseClave(){return currentUser&&_CLAVE_USERS.indexOf(currentUser.username)>=0;}
-async function ghFetchClaves(){
-  try{
-    console.log('[claves] Obteniendo claves desde GitHub...');
-    var resp=await fetch(GH_API+'/data/claves.json?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'});
-    console.log('[claves] Response status:',resp.status);
-    if(resp.status===404){console.warn('[claves] Archivo no encontrado (404)');_clavesData=null;return;}
-    if(!resp.ok){console.warn('[claves] Response no ok:',resp.status);return;}
-    var data=await resp.json();
-    _clavesSHA=data.sha;
-    _clavesData=JSON.parse(decodeURIComponent(escape(atob((data.content||'').replace(/\s/g,'')))));
-    console.log('[claves] Cargadas. Hojas:',Object.keys(_clavesData),'. Disponibles:',_countClavesDisponibles());
-  }catch(e){console.error('[claves] Error:',e);}
-}
-async function ghPushClaves(){
-  if(!_clavesData)return;
-  try{
-    var content=utf8ToBase64(JSON.stringify(_clavesData,null,2));
-    var body={message:'claves: actualizar registro',content:content,branch:GH_CONFIG.branch};
-    if(_clavesSHA)body.sha=_clavesSHA;
-    var resp=await fetch(GH_API+'/data/claves.json',{method:'PUT',headers:GH_HEADERS,body:JSON.stringify(body)});
-    if(!resp.ok){console.warn('Failed to push claves',await resp.text());return;}
-    var data=await resp.json();
-    _clavesSHA=data.content.sha;
-  }catch(e){console.warn('Failed to push claves',e);}
-}
-function _findClave(keyInput){
-  if(!_clavesData)return null;
-  var k=keyInput.trim().toLowerCase();
-  for(var sheet in _clavesData){
-    var arr=_clavesData[sheet];
-    for(var i=0;i<arr.length;i++){
-      if(!arr[i].usada&&arr[i].clave.toLowerCase()===k){return {sheet:sheet,index:i,entry:arr[i]};}
-    }
-  }
-  return null;
-}
-function _countClavesDisponibles(){
-  if(!_clavesData)return 0;
-  var c=0;
-  for(var s in _clavesData){for(var i=0;i<_clavesData[s].length;i++){if(!_clavesData[s][i].usada)c++;}}
-  return c;
-}
-async function openClavePanel(){
-  if(!_canUseClave()){toast('No tenes permiso para usar claves');return;}
-  // Mostrar panel inmediatamente con estado de carga
-  document.getElementById('claveOverlay').classList.add('show');
-  document.getElementById('clavePanel').style.display='block';
-  requestAnimationFrame(function(){document.getElementById('clavePanel').classList.add('show');});
-  // Si no hay datos, reintentar la carga
-  if(!_clavesData){
-    document.getElementById('clavePanelBody').innerHTML='<div style="text-align:center;padding:40px 0"><svg class="spin-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg><p style="color:var(--gray-400);margin-top:12px;font-size:13px">Cargando claves...</p></div>';
-    await ghFetchClaves();
-  }
-  if(!_clavesData){
-    document.getElementById('clavePanelBody').innerHTML='<div style="text-align:center;padding:40px 0"><p style="color:var(--red-500);font-size:14px;font-weight:600">No se pudieron cargar las claves</p><p style="color:var(--gray-400);font-size:12px;margin-top:8px">Verificá tu conexión e intentá de nuevo</p><button class="btn" style="margin-top:16px;background:var(--gray-200);color:var(--gray-800)" onclick="openClavePanel()">Reintentar</button></div>';
-    return;
-  }
-  _clavePanelSheet=Object.keys(_clavesData)[0]||'';
-  _claveFilter='all';
-  _renderClavePanel();
-}
-function closeClavePanel(){
-  document.getElementById('clavePanel').classList.remove('show');
-  setTimeout(function(){document.getElementById('claveOverlay').classList.remove('show');document.getElementById('clavePanel').style.display='none';},250);
-}
-var _clavePanelSheet='';
-var _claveFilter='all';
-function _renderClavePanel(){
-  var sheets=Object.keys(_clavesData);
-  var totalDisp=_countClavesDisponibles();
-  var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><h3 style="font-size:16px;font-weight:700;margin-bottom:2px">Claves AS400</h3><p style="font-size:12px;color:var(--gray-400)">Disponibles: <strong style="color:#FBBF24">'+totalDisp+'</strong></p></div><button class="btn-icon" onclick="closeClavePanel()" title="Cerrar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
-  // Tabs: Todas / Disponibles / Usadas
-  h+='<div style="display:flex;gap:4px;margin-bottom:10px">';
-  var tabs=[{k:'all',l:'Todas'},{k:'avail',l:'Disponibles'},{k:'used',l:'Usadas'}];
-  for(var t=0;t<tabs.length;t++){h+='<button class="btn btn-sm" style="background:'+( _claveFilter===tabs[t].k?'rgba(251,191,36,.2)':'transparent')+';color:'+( _claveFilter===tabs[t].k?'#FBBF24':'var(--gray-400)')+';border:1px solid '+( _claveFilter===tabs[t].k?'#FBBF24':'var(--gray-200)')+'" onclick="_claveFilter=\''+tabs[t].k+'\';_renderClavePanel()">'+tabs[t].l+'</button>';}
-  h+='</div>';
-  // Sheet tabs
-  h+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">';
-  for(var si=0;si<sheets.length;si++){
-    var s=sheets[si];var isA=_clavePanelSheet===s;
-    h+='<button class="btn btn-sm" style="background:'+(isA?'rgba(251,191,36,.15)':'transparent')+';color:'+(isA?'#FBBF24':'var(--gray-400)')+';border:1px solid '+(isA?'#FBBF24':'var(--gray-200)')+'" onclick="_clavePanelSheet=\''+s.replace(/'/g,"\\'")+'\';_renderClavePanel()">'+s+'</button>';
-  }
-  h+='</div>';
-  // Use clave box
-  h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding:10px;background:var(--gray-50);border-radius:8px;border:1px solid var(--gray-200)">';
-  h+='<input type="text" id="claveUseInput" placeholder="Clave" style="flex:1;min-width:120px;padding:6px 10px;font-size:13px" onkeydown="if(event.key===\'Enter\')useClave()">';
-  h+='<input type="text" id="claveUseMotivo" placeholder="Motivo" style="flex:2;min-width:150px;padding:6px 10px;font-size:13px" onkeydown="if(event.key===\'Enter\')useClave()">';
-  h+='<button class="btn" style="background:#FBBF24;color:#000;font-weight:600;padding:6px 14px" onclick="useClave()">Usar</button>';
-  h+='</div>';
-  h+='<div id="claveUseError" style="color:var(--red-600);font-size:11px;margin-bottom:8px;min-height:14px"></div>';
-  // List
-  var arr=_clavesData[_clavePanelSheet]||[];
-  h+='<div style="max-height:50vh;overflow-y:auto">';
-  for(var i=0;i<arr.length;i++){
-    var e=arr[i];
-    if(_claveFilter==='avail'&&e.usada)continue;
-    if(_claveFilter==='used'&&!e.usada)continue;
-    var bg=e.usada?'var(--gray-50)':'transparent';
-    var op=e.usada?'0.5':'1';
-    h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:'+bg+';opacity:'+op+';border-bottom:1px solid var(--gray-100)">';
-    h+='<div style="min-width:80px"><span style="font-family:monospace;font-size:13px;font-weight:600;color:'+(e.usada?'var(--gray-400)':'#FBBF24')+'">'+escHtml(e.clave)+'</span></div>';
-    h+='<div style="flex:1;font-size:11px;color:var(--gray-400)">'+escHtml(e.label)+'</div>';
-    if(e.usada){
-      h+='<div style="text-align:right;font-size:10px;color:var(--gray-400)">';
-      h+='<span style="background:var(--gray-200);padding:1px 6px;border-radius:4px;font-size:9px">USADA</span> ';
-      if(e.usado_por)h+=escHtml(e.usado_por)+' ';
-      if(e.fecha_uso)h+='<br>'+escHtml(e.fecha_uso)+' ';
-      if(e.comentario)h+='<br><em style="color:var(--gray-400)">'+escHtml(e.comentario)+'</em>';
-      h+='</div>';
-    }else{
-      h+='<span style="background:rgba(251,191,36,.15);color:#FBBF24;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:600">DISPONIBLE</span>';
-    }
-    h+='</div>';
-  }
-  h+='</div>';
-  document.getElementById('clavePanelBody').innerHTML=h;
-}
-async function useClave(){
-  var input=document.getElementById('claveUseInput').value;
-  var motivo=document.getElementById('claveUseMotivo').value;
-  var errEl=document.getElementById('claveUseError');
-  if(!input.trim()){errEl.textContent='Ingres\u00e1 la clave';return;}
-  var found=_findClave(input);
-  if(!found){errEl.textContent='Clave inv\u00e1lida o ya usada';return;}
-  var userName=currentUser?currentUser.name||currentUser.username:'';
-  var now=new Date();
-  var fechaStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  found.entry.usada=true;
-  found.entry.usado_por=userName;
-  found.entry.fecha_uso=fechaStr;
-  found.entry.comentario=motivo;
-  await ghPushClaves();
-  _updateClaveBtn();
-  _renderClavePanel();
-  toast('Clave '+found.entry.clave+' registrada');
-}
-function _updateClaveBtn(){
-  var btn=document.getElementById('claveBtn');
-  var cnt=document.getElementById('claveCount');
-  if(!btn)return;
-  if(_canUseClave()&&_clavesData){
-    btn.style.display='inline-flex';
-    cnt.textContent='('+_countClavesDisponibles()+')';
-  }else if(_canUseClave()){
-    btn.style.display='inline-flex';
-    cnt.textContent='(?)';
-  }else{
-    btn.style.display='none';
-  }
-}
-
 let currentDate=(function(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})(),activeTab='pollings',calMonth,calYear,store={};
 const SEARCH=document.getElementById('searchInput');
 
@@ -1034,12 +910,54 @@ let _ghSHAs={};
 let _saveTimer=null;
 // Sync status
 let _syncStatus='idle'; // idle | saving | error | ok
+// Live polling for admins
+let _livePollTimer=null;
+const _LIVE_POLL_INTERVAL=15000;
+function startLivePoll(){
+  if(_livePollTimer)return;
+  console.log('[live] Iniciando polling en vivo cada',_LIVE_POLL_INTERVAL,'ms');
+  document.getElementById('liveIndicator').style.display='';
+  _livePollTimer=setInterval(async function(){
+    if(!currentUser||currentUser.role!=='admin'){stopLivePoll();return;}
+    try{
+      var dayToCheck=currentDate;
+      var fresh=await ghFetchDay(dayToCheck);
+      if(!fresh)return;
+      var current=store[dayToCheck];
+      var currentJSON=current?JSON.stringify(current):'';
+      var freshJSON=JSON.stringify(fresh);
+      if(currentJSON!==freshJSON){
+        store[dayToCheck]=fresh;
+        try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}
+        console.log('[live] Datos actualizados para',dayToCheck);
+        render();
+      }
+    }catch(e){console.warn('[live] Poll error',e);}
+  },_LIVE_POLL_INTERVAL);
+}
+function stopLivePoll(){
+  if(_livePollTimer){clearInterval(_livePollTimer);_livePollTimer=null;}
+  var el=document.getElementById('liveIndicator');if(el)el.style.display='none';
+  console.log('[live] Polling detenido');
+}
+// Helper: resolve username to display name
+function _userLabel(u){
+  if(!u)return '';
+  var usr=USERS[u];
+  return usr?(usr.name||u):u;
+}
+// Helper: small user badge for admin view
+function _userBadge(u){
+  if(!u||!isAdmin())return '';
+  var label=_userLabel(u);
+  return '<span style="font-size:10px;color:var(--gray-500);background:var(--gray-100);padding:1px 7px;border-radius:99px;margin-left:4px;white-space:nowrap">'+label+'</span>';
+}
 
 function setSyncStatus(s,msg){
   _syncStatus=s;
   const el=document.getElementById('syncIndicator');
   if(!el)return;
-  if(s==='idle'){el.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>';el.title='Sin sincronizar';el.style.color='var(--gray-400)';}
+  if(s==='idle'){el.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';el.title='Click para sincronizar con GitHub';el.style.color='var(--gray-400)';}
   else if(s==='saving'){el.innerHTML='<svg class="spin-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg>';el.title='Guardando en GitHub...';el.style.color='var(--sky-600)';}
   else if(s==='ok'){el.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';el.title='Sincronizado con GitHub';el.style.color='var(--emerald-600)';}
   else if(s==='error'){el.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';el.title=msg||'Error de sincronización';el.style.color='var(--red-500)';}
@@ -1085,6 +1003,7 @@ async function ghFetchAll(){
   const result={};
   for(const f of files){
     if(!f.name.endsWith('.json'))continue;
+    if(f.name==='passwords.json')continue;
     const dateKey=f.name.replace('.json','');
     try{
       const dayData=await ghFetchDay(dateKey);
@@ -1130,25 +1049,24 @@ function saveStore(){
   _saveTimer=setTimeout(async()=>{
     setSyncStatus('saving');
     const dayData=store[currentDate];
-    // Only push to GitHub if the day has actual content (avoid pushing empty days)
-    if(dayData&&(dayData.pollings&&dayData.pollings.length>0||dayData.backups&&dayData.backups.length>0||dayData.processes&&dayData.processes.length>0||dayData.handovers&&dayData.handovers.length>0||dayData.timeline&&dayData.timeline.length>0)){
-      try{
-        await ghPushDay(currentDate,dayData);
-        setSyncStatus('ok');
-      }catch(e){
-        console.warn('GitHub save error',e);
-        setSyncStatus('error','Error al guardar en GitHub');
-      }
-    }else{
+    try{
+      await ghPushDay(currentDate,dayData);
       setSyncStatus('ok');
+      console.log('[save] Guardado en GitHub:',currentDate);
+    }catch(e){
+      console.warn('GitHub save error',e);
+      setSyncStatus('error','Error al guardar en GitHub');
     }
     _saveTimer=null;
   },500);
 }
 function getDay(d){if(!store[d]){const dt=new Date(d+'T12:00:00');const dow=dt.getDay();store[d]={date:d,dayType:(dow===0||dow===6)?'FIN_DE_SEMANA':'DIARIA',pollings:[],backups:[],processes:[],notes:''};try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}}return store[d];}
 function isAdmin(){return currentUser&&currentUser.role==='admin';}
+function isFullAdmin(){return isAdmin();}
+function isReadOnly(){return currentUser&&currentUser.role==='readonly';}
 function _canEdit(entryShift){
   if(isAdmin()) return true;
+  if(isReadOnly()) return false;
   var sk=currentUser?currentUser.shiftKey:'';
   // If entry has no shift (legacy data), check if ANY handover exists on this day
   if(!entryShift){
@@ -1193,7 +1111,7 @@ const TL={DIARIA:'Diaria (L-V)',FIN_DE_SEMANA:'Fin de Semana',BKP_MENSUAL:'BKP M
 const TB={DIARIA:'badge-emerald',FIN_DE_SEMANA:'badge-amber',BKP_MENSUAL:'badge-rose'};
 const SERVERS=['Depu Gran Base','Argentina P$','Argentina P1','Argentina P2','Perú D1','Perú D2','Perú D3','Perú Aserviban MT','Perú OC','Perú X30','Panamá D1','Panamá MT','Panamá OC','Panamá A. Propias','Panamá Mas Me Dan','Chile MT','Chile OP','Chile Vigo','Chile OC','Chile Cencosud','Chile Los Heroes','Chile CencoPay','México - SIE - M1','México - GDE - M2'];
 const BKN=['Regional','Pinot','Semillon','Semillón','Merlot','REGDRS'];
-const JOBS=['BKPDIARIO','BKPDIARIOU','BKPMIMIX','OP.21'];
+const JOBS=['BKPDIARIO','BKPDIARIOU','BKPMIMIX','OP.21','SEMANAL'];
 const PROCS=['Tarjeta Naranja','EPE','BANCOR','Rentas de Córdoba','AFIP 72','AFIP 24','AFIP 48','Cierre AFIP','Montaje de cintas'];
 const STATS=['OK','Error'];
 const MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -1231,21 +1149,28 @@ function render(){
   document.getElementById('dayLabel').textContent=DAYN[d.getDay()];
   document.getElementById('typeSelect').value=day.dayType;
   const tb=document.getElementById('typeBadge');tb.className='badge '+TB[day.dayType];tb.textContent=TL[day.dayType];
-  const servers=[...new Set(day.pollings.map(p=>p.server))].length;
   const endings=day.pollings.filter(p=>p.phase==='ENDING').length;
   const total=day.pollings.length;
-  document.getElementById('statServers').textContent=servers;
   document.getElementById('statPollings').textContent=total>0?(endings+'/'+Math.floor(total/2)):'0/0';
   document.getElementById('statBackups').textContent=day.backups.length;
   const okP=day.processes.filter(p=>p.status==='OK').length;
   document.getElementById('statProcesses').textContent=day.processes.length>0?(okP+'/'+day.processes.length):'\u2014';
+  // Hide edit controls for readonly users
+  if(isReadOnly()){
+    document.querySelector('.quick-bar').style.display='none';
+    document.getElementById('tlAddBar').style.display='none';
+    document.getElementById('typeSelect').disabled=true;
+  }else{
+    document.querySelector('.quick-bar').style.display='';
+    document.getElementById('tlAddBar').style.display='';
+    document.getElementById('typeSelect').disabled=false;
+  }
   // Idle warning: check if day has no data after X hours into the shift
   var _hasData=day.pollings.length>0||day.backups.length>0||day.processes.length>0;
   var _idleHrs=2; // hours threshold
   var _now=new Date();
   var _hrsIntoDay=(_now.getHours()+(_now.getMinutes()/60));
   var _showIdle=currentDate===_now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0')+'-'+String(_now.getDate()).padStart(2,'0')&&_hrsIntoDay>=_idleHrs&&!_hasData;
-  document.getElementById('statCardServers').classList.toggle('stat-idle',_showIdle);
   document.getElementById('statCardPollings').classList.toggle('stat-idle',_showIdle);
   document.getElementById('statCardBackups').classList.toggle('stat-idle',_showIdle);
   document.getElementById('statCardProcesses').classList.toggle('stat-idle',_showIdle);
@@ -1276,7 +1201,9 @@ function renderPollings(day,locked){
       const canAct=!locked&&_canEdit(srvShift);
       const acts=canAct?'<span class="server-actions"><button class="btn-icon" title="Editar" onclick="openPollingModal(\''+srv+'\')">'+PENCIL+'</button><button class="btn-icon danger" title="Eliminar" onclick="deletePolling(\''+srv+'\')">'+TRASH+'</button></span>':'';
 
-      h+='<div class="server-row'+(sinAc?' error':'')+'"><div style="display:flex;align-items:center;gap:6px;flex:1;min-width:100px"><span class="server-name">'+srv+'</span>'+(sinAc?'<span class="badge badge-red">Sin AC</span>':'')+'</div><div class="server-meta"><span><span class="label">Ini </span><span class="time-val">'+(beg?beg.time||'—':'—')+'</span></span><span><span class="label">Fin </span><span class="time-val">'+(end?end.time||'—':'—')+'</span></span>'+(dur&&dur!=='—'?'<span class="dur">'+dur+'</span>':'')+acts+'</div></div>';
+      const srvUser=beg?beg.user:(end?end.user:null);
+
+      h+='<div class="server-row'+(sinAc?' error':'')+'"><div style="display:flex;align-items:center;gap:6px;flex:1;min-width:100px"><span class="server-name">'+srv+'</span>'+_userBadge(srvUser)+(sinAc?'<span class="badge badge-red">Sin AC</span>':'')+'</div><div class="server-meta"><span><span class="label">Ini </span><span class="time-val">'+(beg?beg.time||'\u2014':'\u2014')+'</span></span><span><span class="label">Fin </span><span class="time-val">'+(end?end.time||'\u2014':'\u2014')+'</span></span>'+(dur&&dur!=='\u2014'?'<span class="dur">'+dur+'</span>':'')+acts+'</div></div>';
     });h+='</div></div>';});h+='</div></div>';el.innerHTML=h;
 }
 
@@ -1285,7 +1212,7 @@ function renderBackups(day,locked){
   const addBtn=locked?'':'<button class="btn btn-primary btn-sm" onclick="openBackupModal()">+ Agregar</button>';
   let h='<div class="card"><div class="card-header"><h2>Backups</h2>'+addBtn+'</div><div class="card-body">';
   if(!day.backups.length){h+='<div class="empty-state"><p>No hay backups</p></div>';}
-  else{h+='<div style="padding:12px 16px">';day.backups.forEach((b,i)=>{if(!matchesFilter(b.name+(b.job||'')))return;const fail=b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'));const canAct=!locked&&_canEdit(b.shift);const canComp=!locked&&_canCompleteBackup(b);let acts='';if(canAct){acts='<span class="server-actions"><button class="btn-icon" onclick="openBackupModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteBackup('+i+')">'+TRASH+'</button></span>';}else if(canComp){acts='<span class="server-actions"><button class="btn-icon" style="color:#00E5B8" title="Completar backup" onclick="openBackupModal('+i+','+true+')">'+PENCIL+'</button></span>';}const iniShow=(b.iniDate||currentDate)+' '+(b.iniTime||'\u2014');const endShow=(b.endDate||currentDate)+' '+(b.endTime||'\u2014');const isInProgress=!b.endTime&&!b.status;h+='<div class="bkp-row'+(fail?' fail':'')+(isInProgress?' bkp-inprog':'')+'"><div class="bkp-name"><span>'+b.name+'</span>'+(b.job?'<span class="badge badge-gray badge-mono" style="font-size:10px">'+b.job+'</span>':'')+sBadge(b.status)+(isInProgress?'<span class="badge" style="background:rgba(0,229,184,.15);color:#00E5B8;font-size:10px;margin-left:4px">EN EJECUCI\u00d3N</span>':'')+'</div><div class="server-meta"><span><span class="label">Inicio </span><span class="time-val">'+iniShow+'</span></span><span><span class="label">Fin </span><span class="time-val">'+endShow+'</span></span>'+(b.duration?'<span class="dur">'+b.duration+'</span>':'')+acts+'</div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
+  else{h+='<div style="padding:12px 16px">';day.backups.forEach((b,i)=>{if(!matchesFilter(b.name+(b.job||'')))return;const fail=b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'));const canAct=!locked&&_canEdit(b.shift);const canComp=!locked&&_canCompleteBackup(b);let acts='';if(canAct){acts='<span class="server-actions"><button class="btn-icon" onclick="openBackupModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteBackup('+i+')">'+TRASH+'</button></span>';}else if(canComp){acts='<span class="server-actions"><button class="btn-icon" style="color:#00E5B8" title="Completar backup" onclick="openBackupModal('+i+','+true+')">'+PENCIL+'</button></span>';}const iniShow=(b.iniDate||currentDate)+' '+(b.iniTime||'\u2014');const endShow=(b.endDate||currentDate)+' '+(b.endTime||'\u2014');const isInProgress=!b.endTime&&!b.status;h+='<div class="bkp-row'+(fail?' fail':'')+(isInProgress?' bkp-inprog':'')+'"><div class="bkp-name"><span>'+b.name+'</span>'+_userBadge(b.user)+(b.job?'<span class="badge badge-gray badge-mono" style="font-size:10px">'+b.job+'</span>':'')+sBadge(b.status)+(isInProgress?'<span class="badge" style="background:rgba(0,229,184,.15);color:#00E5B8;font-size:10px;margin-left:4px">EN EJECUCI\u00d3N</span>':'')+'</div><div class="server-meta"><span><span class="label">Inicio </span><span class="time-val">'+iniShow+'</span></span><span><span class="label">Fin </span><span class="time-val">'+endShow+'</span></span>'+(b.duration?'<span class="dur">'+b.duration+'</span>':'')+acts+'</div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
 }
 
 function renderProcesses(day,locked){
@@ -1293,7 +1220,7 @@ function renderProcesses(day,locked){
   const addBtn=locked?'':'<button class="btn btn-primary btn-sm" onclick="openProcessModal()">+ Agregar</button>';
   let h='<div class="card"><div class="card-header"><h2>Procesos</h2>'+addBtn+'</div><div class="card-body">';
   if(!day.processes.length){h+='<div class="empty-state"><p>No hay procesos</p></div>';}
-  else{h+='<div style="padding:12px 16px">';day.processes.forEach((p,i)=>{if(!matchesFilter(p.name+(p.status||'')))return;const canAct=!locked&&_canEdit(p.shift);const acts=canAct? sBadge(p.status)+'<button class="btn-icon" onclick="openProcessModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteProcess('+i+')">'+TRASH+'</button>' : sBadge(p.status);h+='<div class="proc-row"><div class="proc-name">'+sIcon(p.status)+'<span>'+p.name+'</span></div><div style="display:flex;align-items:center;gap:6px">'+acts+'</div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
+  else{h+='<div style="padding:12px 16px">';day.processes.forEach((p,i)=>{if(!matchesFilter(p.name+(p.status||'')))return;const canAct=!locked&&_canEdit(p.shift);const acts=canAct? sBadge(p.status)+'<button class="btn-icon" onclick="openProcessModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteProcess('+i+')">'+TRASH+'</button>' : sBadge(p.status);h+='<div class="proc-row"><div class="proc-name">'+sIcon(p.status)+'<span>'+p.name+'</span>'+_userBadge(p.user)+'</div><div style="display:flex;align-items:center;gap:6px">'+acts+'</div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
 }
 
 // Navigation
@@ -1613,11 +1540,11 @@ function executeImport(){
   parsed.pollings.forEach(function(p){
     // Remove existing entry for same server+phase
     day.pollings=day.pollings.filter(function(x){return!(x.server===p.server&&x.phase===p.phase);});
-    day.pollings.push({id:uid(),server:p.server,region:p.region||getRegion(p.server),phase:p.phase,date:currentDate,time:p.time||'',note:null,shift:currentUser?currentUser.shiftKey:''});
+    day.pollings.push({id:uid(),server:p.server,region:p.region||getRegion(p.server),phase:p.phase,date:currentDate,time:p.time||'',note:null,shift:currentUser?currentUser.shiftKey:'',user:currentUser?currentUser.username:''});
   });
   // Import backups: append
   parsed.backups.forEach(function(b){
-    day.backups.push({id:uid(),name:b.name,iniDate:currentDate,iniTime:b.iniTime||'',endDate:currentDate,endTime:b.endTime||'',duration:b.duration||'',status:b.status||'',job:b.job||'',shift:currentUser?currentUser.shiftKey:''});
+    day.backups.push({id:uid(),name:b.name,iniDate:currentDate,iniTime:b.iniTime||'',endDate:currentDate,endTime:b.endTime||'',duration:b.duration||'',status:b.status||'',job:b.job||'',shift:currentUser?currentUser.shiftKey:'',user:currentUser?currentUser.username:''});
   });
   // Import processes: append (or update if same name exists)
   parsed.processes.forEach(function(p){
@@ -1625,7 +1552,7 @@ function executeImport(){
     if(existing){
       if(p.status)existing.status=p.status;
     }else{
-      day.processes.push({id:uid(),name:p.name,status:p.status||'',shift:currentUser?currentUser.shiftKey:''});
+      day.processes.push({id:uid(),name:p.name,status:p.status||'',shift:currentUser?currentUser.shiftKey:'',user:currentUser?currentUser.username:''});
     }
   });
   saveStore();closeModal();render();
@@ -1686,7 +1613,7 @@ function _confirmReopen(){
 }
 function closeLockedModal(){document.getElementById('lockedModal').classList.remove('show');}
 function openModal(){document.getElementById('modalOverlay').classList.add('show');}
-function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
+function closeModal(){var m=document.querySelector('#modalOverlay > .modal');if(m){m.removeAttribute('data-notif-wide');m.style.maxWidth='';}document.getElementById('modalOverlay').classList.remove('show');}
 
 function openPollingModal(server){
   _adminGate(function(){
@@ -1710,9 +1637,10 @@ function savePolling(old){
   // If server was changed and new server already has entries, remove them first to avoid duplicates
   if(old&&srv!==old){day.pollings=day.pollings.filter(p=>p.server!==srv);}
   var _sk=currentUser?currentUser.shiftKey:'';
-  if(beg)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'BEGINNING',date:currentDate,time:beg,note:null,shift:_sk});
-  if(end)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:end,note:null,shift:_sk});
-  if(!beg&&!end){day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'BEGINNING',date:currentDate,time:'',note:'SIN AC',shift:_sk});day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:'',note:'SIN AC',shift:_sk});}
+  var _u=currentUser?currentUser.username:'';
+  if(beg)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'BEGINNING',date:currentDate,time:beg,note:null,shift:_sk,user:_u});
+  if(end)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:end,note:null,shift:_sk,user:_u});
+  if(!beg&&!end){day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'BEGINNING',date:currentDate,time:'',note:'SIN AC',shift:_sk,user:_u});day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:'',note:'SIN AC',shift:_sk,user:_u});}
   saveStore();closeModal();render();toast('Guardado');
 }
 function deletePolling(s){_adminGate(function(){var day=getDay(currentDate);var es=day.pollings.filter(function(p){return p.server===s;});var srvShift=es.length?(es[0].shift||null):null;if(!_canEdit(srvShift)){toast('No podes eliminar entries de otro turno');return;}if(!confirm('Eliminar '+s+'?'))return;day.pollings=day.pollings.filter(function(p){return p.server!==s;});saveStore();render();toast('Eliminado');});}
@@ -1723,7 +1651,9 @@ function _openBackupModalInner(idx,completeOnly){
   const endDate=b&&b.endDate?b.endDate:currentDate;
   const readOnly=completeOnly?'readonly style="background:var(--gray-100);cursor:default"':'';
   document.getElementById('modalTitle').textContent=completeOnly?'Completar Backup':(b?'Editar Backup':'Nuevo Backup');
-  document.getElementById('modalBody').innerHTML='<div class="form-row"><div class="form-group"><label>Nombre</label><select id="mBkN" '+(completeOnly||b?'disabled':'')+'>'+BKN.map(n=>'<option value="'+n+'"'+(b&&b.name===n?' selected':'')+'>'+n+'</option>').join('')+'</select></div><div class="form-group"><label>JOB</label><select id="mBkJ" '+(completeOnly||b?'disabled':'')+'><option value="">—</option>'+JOBS.map(j=>'<option value="'+j+'"'+(b&&b.job===j?' selected':'')+'>'+j+'</option>').join('')+'</select></div></div><div class="form-row"><div class="form-group"><label>Fecha Inicio</label><input type="date" id="mBkID" value="'+currentDate+'" onchange="autoCalcBkpDur()" '+(completeOnly?'disabled':'')+'></div><div class="form-group"><label>Hora Inicio</label><input type="time" id="mBkI" value="'+(b?b.iniTime||'':'')+'" onchange="autoCalcBkpDur()" '+(completeOnly?'disabled':'')+'></div></div><div class="form-row"><div class="form-group"><label>Fecha Fin</label><input type="date" id="mBkED" value="'+endDate+'" onchange="autoCalcBkpDur()"></div><div class="form-group"><label>Hora Fin</label><input type="time" id="mBkE" value="'+(b?b.endTime||'':'')+'" onchange="autoCalcBkpDur()"></div></div><div class="form-row"><div class="form-group"><label>Duracion (auto)</label><input id="mBkD" value="'+(b?b.duration||'':'')+'" placeholder="Se calcula solo" readonly style="background:var(--gray-100);cursor:default"></div><div class="form-group"><label>Estado</label><input id="mBkS" value="'+(b?b.status||'':'')+'" placeholder="OK / Robot Fail"></div></div>';
+  var canEditName=isAdmin()?true:!b;
+  var canEditJob=isAdmin()?true:!b;
+  document.getElementById('modalBody').innerHTML='<div class="form-row"><div class="form-group"><label>Nombre</label><select id="mBkN" '+(completeOnly||!canEditName?'disabled':'')+'>'+BKN.map(n=>'<option value="'+n+'"'+(b&&b.name===n?' selected':'')+'>'+n+'</option>').join('')+'</select></div><div class="form-group"><label>JOB</label><select id="mBkJ" '+(completeOnly||!canEditJob?'disabled':'')+'><option value="">—</option>'+JOBS.map(j=>'<option value="'+j+'"'+(b&&b.job===j?' selected':'')+'>'+j+'</option>').join('')+'</select></div></div><div class="form-row"><div class="form-group"><label>Fecha Inicio</label><input type="date" id="mBkID" value="'+currentDate+'" onchange="autoCalcBkpDur()" '+(completeOnly?'disabled':'')+'></div><div class="form-group"><label>Hora Inicio</label><input type="time" id="mBkI" value="'+(b?b.iniTime||'':'')+'" onchange="autoCalcBkpDur()" '+(completeOnly?'disabled':'')+'></div></div><div class="form-row"><div class="form-group"><label>Fecha Fin</label><input type="date" id="mBkED" value="'+endDate+'" onchange="autoCalcBkpDur()"></div><div class="form-group"><label>Hora Fin</label><input type="time" id="mBkE" value="'+(b?b.endTime||'':'')+'" onchange="autoCalcBkpDur()"></div></div><div class="form-row"><div class="form-group"><label>Duracion (auto)</label><input id="mBkD" value="'+(b?b.duration||'':'')+'" placeholder="Se calcula solo" readonly style="background:var(--gray-100);cursor:default"></div><div class="form-group"><label>Estado</label><input id="mBkS" value="'+(b?b.status||'':'')+'" placeholder="OK / Robot Fail"></div></div>';
   document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveBackup('+idx+','+!!completeOnly+')">'+(completeOnly?'Completar':(b?'Actualizar':'Guardar'))+'</button>';
   openModal();
 }
@@ -1750,7 +1680,7 @@ function saveBackup(idx,completeOnly){
   const iniDate=document.getElementById('mBkID').value||currentDate;
   const iniTime=document.getElementById('mBkI').value||null;
   if(!duration&&iniDate&&iniTime&&endDate&&endTime){const iniMs=new Date(iniDate+'T'+iniTime).getTime();const endMs=new Date(endDate+'T'+endTime).getTime();const d=Math.round((endMs-iniMs)/1000);if(d>=0){const h=Math.floor(d/3600),m=Math.floor((d%3600)/60);duration=h+':'+String(m).padStart(2,'0');}}
-  const o={name:document.getElementById('mBkN').value,iniDate:iniDate,iniTime:iniTime,endDate:endDate,endTime:endTime,job:document.getElementById('mBkJ').value||null,duration:duration,status:status,shift:currentUser?currentUser.shiftKey:''};
+  const o={name:document.getElementById('mBkN').value,iniDate:iniDate,iniTime:iniTime,endDate:endDate,endTime:endTime,job:document.getElementById('mBkJ').value||null,duration:duration,status:status,shift:currentUser?currentUser.shiftKey:'',user:currentUser?currentUser.username:''};
   if(idx!==undefined){o.shift=day.backups[idx].shift||o.shift;day.backups[idx]=o;}else day.backups.push(o);saveStore();closeModal();render();toast('Guardado');
 }
 function deleteBackup(i){_adminGate(function(){var day=getDay(currentDate);var b=day.backups[i];if(b&&!_canEdit(b.shift)){toast('No podes eliminar entries de otro turno');return;}if(!confirm('Eliminar?'))return;day.backups.splice(i,1);saveStore();render();toast('Eliminado');});}
@@ -1773,7 +1703,7 @@ function saveProcess(idx){
   const name=sel==='__custom__'?document.getElementById('mPNCustom').value.trim():sel;
   if(!name){toast('Escribir nombre del proceso');return;}
   var _sk=currentUser?currentUser.shiftKey:'';
-  const o={name:name,status:document.getElementById('mPS').value,shift:_sk};
+  const o={name:name,status:document.getElementById('mPS').value,shift:_sk,user:currentUser?currentUser.username:''};
   if(idx!==undefined){o.shift=day.processes[idx].shift||_sk;day.processes[idx]=o;}else day.processes.push(o);saveStore();closeModal();render();toast('Guardado');
 }
 function deleteProcess(i){_adminGate(function(){var day=getDay(currentDate);var p=day.processes[i];if(p&&!_canEdit(p.shift)){toast('No podes eliminar entries de otro turno');return;}if(!confirm('Eliminar?'))return;day.processes.splice(i,1);saveStore();render();toast('Eliminado');});}
@@ -1790,7 +1720,7 @@ const USERS={
   ARIVERO:{pass:'Atos.123$',role:'operator',name:'Anibal Rivero'},
   OBALDOMIR:{pass:'Atos.123$',role:'operator',name:'Omar Baldomir'},
   OPERAADMIN:{pass:'nocadmin',role:'admin'},
-  OPERAWU:{pass:'0p3r4ci0n35',role:'admin'},
+  OPERAWU:{pass:'0p3r4ci0n35',role:'readonly'},
   NOCPRUEBA:{pass:'pruebanoc',role:'admin'},
   ADMILOSN:{pass:'admilosn',role:'admin'}
 };
@@ -1909,7 +1839,7 @@ function enterApp(username,forceShift){
   document.getElementById('userNameDisplay').textContent=username;
   var badge=document.getElementById('userShiftBadge');
   var lbl=SHIFT_LABELS?SHIFT_LABELS[shiftKey]||shiftKey:shiftKey;
-  badge.textContent=user.role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
+  badge.textContent=user.role==='readonly'?'LECTURA':user.role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
   badge.className='shift-badge '+getShiftCssClass(shiftKey);
 
   var opEl=document.getElementById('userBarOperator');
@@ -1921,13 +1851,26 @@ function enterApp(username,forceShift){
     opEl.style.display='none';
   }
 
-  if(user.role==='admin'){
+  if(user.role==='admin'||user.role==='readonly'){
     document.getElementById('adminMenuWrap').style.display='';
+    if(isReadOnly()){
+      var menuItems=document.querySelectorAll('#adminMenu .menu-item');
+      menuItems.forEach(function(btn){
+        if(btn.textContent.includes('contrase'))btn.style.display='none';
+      });
+    }
+    if(!isReadOnly())startLivePoll();
   }else{
     document.getElementById('adminMenuWrap').style.display='none';
+    stopLivePoll();
   }
+  // Chat disponible para todos los usuarios logueados
+  document.getElementById('chatFab').style.display='flex';
+  startChatPoll();
   document.getElementById('loginError').textContent='';
   render();
+  // Re-sync from GitHub after login to ensure fresh data
+  syncFromGitHub();
 }
 
 function doLogin(){
@@ -1969,6 +1912,11 @@ function doLogout(){
   }
   currentUser=null;
   confirmedOperator=null;
+  stopLivePoll();
+  stopChatPoll();
+  document.getElementById('chatFab').style.display='none';
+  document.getElementById('chatPanel').classList.remove('show');
+  _chatOpen=false;
   sessionStorage.removeItem('bitacora_user');
   sessionStorage.removeItem('bitacora_operator');
   sessionStorage.removeItem('bitacora_shiftKey');
@@ -1996,7 +1944,7 @@ function checkSession(){
     document.getElementById('userNameDisplay').textContent=u;
     var badge=document.getElementById('userShiftBadge');
     var lbl=SHIFT_LABELS?SHIFT_LABELS[savedShiftKey]||savedShiftKey:savedShiftKey;
-    badge.textContent=USERS[u].role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
+    badge.textContent=USERS[u].role==='readonly'?'LECTURA':USERS[u].role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
     badge.className='shift-badge '+getShiftCssClass(savedShiftKey);
     var opEl=document.getElementById('userBarOperator');
     if(confirmedOperator){
@@ -2006,12 +1954,20 @@ function checkSession(){
     }else{
       opEl.style.display='none';
     }
-    if(USERS[u].role==='admin'){
+    if(USERS[u].role==='admin'||USERS[u].role==='readonly'){
       document.getElementById('adminMenuWrap').style.display='';
+      if(USERS[u].role==='readonly'){
+        var menuItems=document.querySelectorAll('#adminMenu .menu-item');
+        menuItems.forEach(function(btn){if(btn.textContent.includes('contrase'))btn.style.display='none';});
+      }
+      if(USERS[u].role==='admin')startLivePoll();
     }else{
       document.getElementById('adminMenuWrap').style.display='none';
+      stopLivePoll();
     }
-    _updateClaveBtn();
+    // Chat disponible para todos los usuarios logueados
+    document.getElementById('chatFab').style.display='flex';
+    startChatPoll();
   }
 }
 document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
@@ -2021,7 +1977,7 @@ checkSession();
 // ===== ADMIN DASHBOARD =====
 var _dashCalMonth,_dashCalYear,_dashCalSelected=null;
 function openDashboard(){
-  if(!currentUser||currentUser.role!=='admin')return;
+  if(!currentUser||(currentUser.role!=='admin'&&currentUser.role!=='readonly'))return;
   document.getElementById('dashOverlay').classList.add('show');
   var now=new Date();_dashCalMonth=now.getMonth();_dashCalYear=now.getFullYear();
   _dashCalSelected=null;
@@ -2197,6 +2153,8 @@ async function _renderDashboard(){
   let dailyStats=[];
   let bkpDurations=[];
   let bkpNames={};
+  let bkpDetail={};
+  let bkpLog=[];
   let procNames={};
 
   days.forEach(([dateStr,day])=>{
@@ -2221,19 +2179,43 @@ async function _renderDashboard(){
 
     (day.backups||[]).forEach(b=>{
       totalBkps++;
-      if(b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'))){
+      var bFail=b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'));
+      if(bFail){
         failedBkps++;
       }else if(b.status&&b.status!==''){
         okBkps++;
-      }else if(b.startTime&&b.endTime){
+      }else if(b.iniTime&&b.endTime){
         okBkps++;
       }
-      if(b.name)bkpNames[b.name]=(bkpNames[b.name]||0)+1;
-      if(b.duration){
-        const parts=b.duration.split(':').map(Number);
-        const secs=(parts[0]||0)*3600+(parts[1]||0)*60;
-        if(secs>0)bkpDurations.push(secs);
+      // Detailed BKP stats
+      if(b.name){
+        bkpNames[b.name]=(bkpNames[b.name]||0)+1;
+        if(!bkpDetail[b.name])bkpDetail[b.name]={count:0,ok:0,fail:0,durs:[],jobs:{}};
+        bkpDetail[b.name].count++;
+        if(bFail){bkpDetail[b.name].fail++;}
+        else{bkpDetail[b.name].ok++;}
+        if(b.duration){
+          var parts=b.duration.split(':').map(Number);
+          var secs=(parts[0]||0)*3600+(parts[1]||0)*60;
+          if(secs>0){
+            bkpDurations.push(secs);
+            bkpDetail[b.name].durs.push(secs);
+          }
+        }
+        if(b.job){bkpDetail[b.name].jobs[b.job]=(bkpDetail[b.name].jobs[b.job]||0)+1;}
       }
+      // Log each BKP execution with times
+      bkpLog.push({
+        date:dateStr,
+        name:b.name||'—',
+        iniDate:b.iniDate||dateStr,
+        iniTime:b.iniTime||'',
+        endDate:b.endDate||dateStr,
+        endTime:b.endTime||'',
+        duration:b.duration||'',
+        status:b.status||'',
+        job:b.job||''
+      });
     });
 
     (day.processes||[]).forEach(p=>{
@@ -2251,6 +2233,7 @@ async function _renderDashboard(){
       pollTotal:Math.max(dayPollBeg,dayPollEnd),
       bkpOk:(day.backups||[]).filter(b=>!(b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP')))).length,
       bkpFail:(day.backups||[]).filter(b=>b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'))).length,
+      bkpTotal:(day.backups||[]).length,
       procOk:(day.processes||[]).filter(p=>{const u=(p.status||'').toUpperCase();return u==='OK';}).length,
       procTotal:(day.processes||[]).length
     });
@@ -2331,13 +2314,13 @@ async function _renderDashboard(){
   // Daily breakdown table
   h+='<div class="dash-section"><div class="dash-section-header"><h3>Desglose por dia - '+rangeLabel+'</h3></div>';
   if(dailyStats.length){
-    h+='<div style="overflow-x:auto"><table class="dash-table"><thead><tr><th>Fecha</th><th class="num">Pollings OK</th><th class="num">Pollings Total</th><th class="num">BKP OK</th><th class="num">BKP Fail</th><th class="num">Proc OK</th><th class="num">Proc Total</th><th>Completitud</th></tr></thead><tbody>';
+    h+='<div style="overflow-x:auto"><table class="dash-table"><thead><tr><th>Fecha</th><th class="num">Pollings OK</th><th class="num">Pollings Total</th><th class="num">BKP OK</th><th class="num">BKP Total</th><th class="num">BKP Fail</th><th class="num">Proc OK</th><th class="num">Proc Total</th><th>Completitud</th></tr></thead><tbody>';
     dailyStats.forEach(d=>{
-      const total=d.pollTotal+d.bkpOk+d.bkpFail+d.procTotal;
+      const total=d.pollTotal+d.bkpTotal+d.procTotal;
       const done=d.pollCompleted+d.bkpOk+d.procOk;
       const pct=total>0?Math.round(done/total*100):0;
       const cls=pct>=90?'ok-cell':pct>=70?'warn-cell':'fail-cell';
-      h+='<tr><td>'+d.date+'</td><td class="num '+(d.pollCompleted>=d.pollTotal?'ok-cell':'')+'">'+d.pollCompleted+'</td><td class="num">'+d.pollTotal+'</td><td class="num ok-cell">'+d.bkpOk+'</td><td class="num '+(d.bkpFail>0?'fail-cell':'')+'">'+d.bkpFail+'</td><td class="num ok-cell">'+d.procOk+'</td><td class="num">'+d.procTotal+'</td><td><div style="display:flex;align-items:center;gap:6px"><div class="dash-pct-bar"><div class="dash-pct-fill '+(pct>=90?'ok-fill':pct>=70?'warn-fill':'fail-fill')+'" style="width:'+pct+'%"></div></div><span class="num '+cls+'" style="min-width:36px">'+pct+'%</span></div></td></tr>';
+      h+='<tr><td>'+d.date+'</td><td class="num '+(d.pollCompleted>=d.pollTotal?'ok-cell':'')+'">'+d.pollCompleted+'</td><td class="num">'+d.pollTotal+'</td><td class="num ok-cell">'+d.bkpOk+'</td><td class="num">'+d.bkpTotal+'</td><td class="num '+(d.bkpFail>0?'fail-cell':'')+'">'+d.bkpFail+'</td><td class="num ok-cell">'+d.procOk+'</td><td class="num">'+d.procTotal+'</td><td><div style="display:flex;align-items:center;gap:6px"><div class="dash-pct-bar"><div class="dash-pct-fill '+(pct>=90?'ok-fill':pct>=70?'warn-fill':'fail-fill')+'" style="width:'+pct+'%"></div></div><span class="num '+cls+'" style="min-width:36px">'+pct+'%</span></div></td></tr>';
     });
     h+='</tbody></table></div>';
   }else{
@@ -2360,17 +2343,70 @@ async function _renderDashboard(){
   }
   h+='</div>';
 
-  // Backup detail table
-  h+='<div class="dash-section"><div class="dash-section-header"><h3>Detalle de Backups por nombre - '+rangeLabel+'</h3></div>';
-  const bkpEntries=Object.entries(bkpNames).sort((a,b)=>b[1]-a[1]);
+  // Backup detail section - comprehensive
+  h+='<div class="dash-section"><div class="dash-section-header"><h3>Analisis de Backups - '+rangeLabel+'</h3></div>';
+  var bkpEntries=Object.entries(bkpDetail).sort((a,b)=>b[1].count-a[1].count);
   if(bkpEntries.length){
-    h+='<div style="overflow-x:auto"><table class="dash-table"><thead><tr><th>Backup</th><th class="num">Ejecuciones</th></tr></thead><tbody>';
-    bkpEntries.forEach(([name,count])=>{
-      h+='<tr><td>'+name+'</td><td class="num">'+count+'</td></tr>';
+    // Summary KPIs row
+    var avgBkpSec=bkpDurations.length?Math.round(bkpDurations.reduce((a,b)=>a+b,0)/bkpDurations.length):0;
+    var minBkpSec=bkpDurations.length?Math.min(...bkpDurations):0;
+    var maxBkpSec=bkpDurations.length?Math.max(...bkpDurations):0;
+    var bkpNoDur=totalBkps-bkpDurations.length;
+    h+='<div class="dash-summary" style="margin-bottom:16px">';
+    h+='<div class="dash-stat dash-ok"><div class="dash-val">'+okBkps+'</div><div class="dash-lbl">Completados</div></div>';
+    h+='<div class="dash-stat dash-fail"><div class="dash-val">'+failedBkps+'</div><div class="dash-lbl">Fallidos</div></div>';
+    h+='<div class="dash-stat dash-info"><div class="dash-val">'+fmtSecs(avgBkpSec)+'</div><div class="dash-lbl">Duracion promedio</div></div>';
+    h+='<div class="dash-stat dash-info"><div class="dash-val">'+fmtSecs(minBkpSec)+'</div><div class="dash-lbl">Duracion minima</div></div>';
+    h+='<div class="dash-stat '+(maxBkpSec>7200?'dash-fail':maxBkpSec>3600?'dash-warn':'dash-info')+'"><div class="dash-val">'+fmtSecs(maxBkpSec)+'</div><div class="dash-lbl">Duracion maxima</div></div>';
+    h+='</div>';
+
+    // Detailed table
+    h+='<div style="overflow-x:auto"><table class="dash-table"><thead><tr><th>Backup</th><th class="num">Ejecuciones</th><th class="num">OK</th><th class="num">Fallidos</th><th class="num">% Exito</th><th class="num">Dur. Prom.</th><th class="num">Dur. Min</th><th class="num">Dur. Max</th><th>JOB mas usado</th></tr></thead><tbody>';
+    bkpEntries.forEach(function(entry){
+      var name=entry[0],d=entry[1];
+      var pct=d.count>0?Math.round(d.ok/d.count*100):0;
+      var avgD=d.durs.length?Math.round(d.durs.reduce(function(a,b){return a+b;},0)/d.durs.length):0;
+      var minD=d.durs.length?Math.min.apply(null,d.durs):0;
+      var maxD=d.durs.length?Math.max.apply(null,d.durs):0;
+      var topJob=Object.entries(d.jobs).sort(function(a,b){return b[1]-a[1];})[0];
+      var pctCls=pct>=95?'ok-cell':pct>=80?'warn-cell':'fail-cell';
+      h+='<tr><td><strong>'+escHtml(name)+'</strong></td><td class="num">'+d.count+'</td><td class="num ok-cell">'+d.ok+'</td><td class="num '+(d.fail>0?'fail-cell':'')+'">'+d.fail+'</td><td class="num '+pctCls+'">'+pct+'%</td><td class="num">'+fmtSecs(avgD)+'</td><td class="num">'+fmtSecs(minD)+'</td><td class="num '+(maxD>7200?'fail-cell':maxD>3600?'warn-cell':'')+'">'+fmtSecs(maxD)+'</td><td style="font-size:11px;color:var(--gray-600)">'+(topJob?escHtml(topJob[0])+' ('+topJob[1]+')':'—')+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+
+    // Slowest backups bar chart
+    var bkpAvgList=bkpEntries.map(function(entry){var n=entry[0],d=entry[1];return{name:n,avg:d.durs.length?Math.round(d.durs.reduce(function(a,b){return a+b;},0)/d.durs.length):0,count:d.count};}).filter(function(x){return x.avg>0;}).sort(function(a,b){return b.avg-a.avg;}).slice(0,8);
+    if(bkpAvgList.length){
+      h+='<h4 style="margin:16px 0 8px;font-size:13px;color:var(--gray-700)">Backups mas lentos (promedio)</h4>';
+      h+='<div class="dash-bar-chart">';
+      var maxBkpAvg=bkpAvgList[0].avg;
+      bkpAvgList.forEach(function(s){
+        var p=Math.round(s.avg/maxBkpAvg*100);
+        h+='<div class="dash-bar-row"><span class="dash-bar-label" title="'+escHtml(s.name)+'">'+escHtml(s.name)+'</span><div class="dash-bar-track"><div class="dash-bar-fill" style="width:'+p+'%;background:#dc2626"></div></div><span class="dash-bar-val">'+fmtSecs(s.avg)+'</span></div>';
+      });
+      h+='</div>';
+    }
+  }else{
+    h+='<div class="dash-empty">No hay datos de backups para el periodo</div>';
+  }
+  h+='</div>';
+
+  // BKP times table - every execution with start/end times
+  h+='<div class="dash-section"><div class="dash-section-header"><h3>Tiempos de Backups (detallado) - '+rangeLabel+'</h3></div>';
+  if(bkpLog.length){
+    // Sort by date desc, then name
+    bkpLog.sort(function(a,b){return b.date.localeCompare(a.date)||a.name.localeCompare(b.name);});
+    h+='<div style="overflow-x:auto;max-height:500px;overflow-y:auto"><table class="dash-table"><thead style="position:sticky;top:0;z-index:1"><tr><th>Fecha</th><th>Backup</th><th class="num">Hora Inicio</th><th class="num">Hora Fin</th><th class="num">Duracion</th><th>Estado</th><th>JOB</th></tr></thead><tbody>';
+    bkpLog.forEach(function(b){
+      var stUp=(b.status||'').toUpperCase();
+      var isFail=stUp.includes('FAIL')||stUp.includes('SUSP');
+      var stCls=isFail?'fail-cell':(b.status?'ok-cell':'');
+      var inProg=!b.endTime&&!b.status;
+      h+='<tr><td style="white-space:nowrap">'+b.date+'</td><td><strong>'+escHtml(b.name)+'</strong></td><td class="num" style="white-space:nowrap;font-family:\'SF Mono\',Monaco,Consolas,monospace;font-size:12px">'+(b.iniTime||'—')+'</td><td class="num" style="white-space:nowrap;font-family:\'SF Mono\',Monaco,Consolas,monospace;font-size:12px">'+(b.endTime||'—')+'</td><td class="num" style="font-family:\'SF Mono\',Monaco,Consolas,monospace;font-size:12px">'+(b.duration||'—')+'</td><td class="'+stCls+'">'+(inProg?'<span style="color:var(--sky-600);font-weight:600">EN EJEC.</span>':escHtml(b.status||'—'))+'</td><td style="font-size:11px;color:var(--gray-500)">'+escHtml(b.job||'—')+'</td></tr>';
     });
     h+='</tbody></table></div>';
   }else{
-    h+='<div class="dash-empty">No hay datos de backups</div>';
+    h+='<div class="dash-empty">No hay datos de backups para el periodo</div>';
   }
   h+='</div>';
 
@@ -2596,9 +2632,14 @@ function saveCierre(){
     id:uid(),
     type:'handover',
     title:'Pase de Turno - '+entry.shiftLabel,
-    desc:op+': '+text.substring(0,80)+(text.length>80?'...':''),
-    timestamp:ts,
+    desc:text,
+    operator:op,
     shift:sk,
+    shiftLabel:entry.shiftLabel,
+    pollOk:entry.pollOk,
+    bkpOk:entry.bkpOk,
+    procOk:entry.procOk,
+    timestamp:ts,
     readBy:{}
   });
   saveStore();closeModal();
@@ -2619,8 +2660,8 @@ function renderNovedades(day){
   const badge=document.getElementById('nvBadge');
   const mySk=currentUser?currentUser.shiftKey:'';
   const isAdmin=currentUser&&currentUser.role==='admin';
-  // For operators: only show handovers from their own shift
-  const hovers=(day.handovers||[]).filter(h=>isAdmin||h.shift===mySk);
+  // Show ALL handovers so every shift can read what the previous shift left
+  const hovers=(day.handovers||[]);
   if(!hovers.length){sec.style.display='none';return;}
   sec.style.display='';
   // Count unread (from other shifts, only relevant for display)
@@ -2686,9 +2727,55 @@ function renderNotifPanel(day){
 function readNotif(nid){
   const day=getDay(currentDate);
   const notifs=day.notifications||[];
+  const n=notifs.find(x=>x.id===nid);
+  if(!n)return;
+  // Close notif dropdown
+  document.getElementById('notifPanel').classList.remove('show');
+  // Use wider modal for handover notifications
+  var modalEl=document.querySelector('#modalOverlay > .modal');
+  if(n.type==='handover'){
+    modalEl.setAttribute('data-notif-wide','1');
+    modalEl.style.maxWidth='640px';
+  }
+  // Build modal content
+  var iconClass=n.type==='handover'?'handover':n.type==='alert'?'alert':'info';
+  var iconSvg=n.type==='handover'?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>':n.type==='alert'?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>':'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+  var html='<div style="padding:4px 0">';
+  // Header row: icon + title + timestamp
+  html+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">';
+  html+='<div class="notif-icon-wrap '+iconClass+'" style="width:44px;height:44px;font-size:18px;flex-shrink:0">'+iconSvg+'</div>';
+  html+='<div style="flex:1;min-width:0">';
+  html+='<div style="font-size:16px;font-weight:700;color:var(--gray-800);line-height:1.3">'+escHtml(n.title)+'</div>';
+  html+='<div style="font-size:11px;color:var(--gray-400);margin-top:3px;font-family:\'SF Mono\',Monaco,Consolas,monospace">'+escHtml(n.timestamp)+'</div>';
+  html+='</div></div>';
+  // Extra info for handovers: operator, shift, checks
+  if(n.type==='handover'){
+    html+='<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px;padding:8px 12px;background:var(--gray-50);border-radius:8px;border:1px solid var(--gray-100)">';
+    if(n.operator)html+='<span style="font-size:13px;font-weight:600;color:var(--gray-800)">'+escHtml(n.operator)+'</span>';
+    if(n.shiftLabel)html+='<span class="nv-card-shift '+(SHIFT_CSS[n.shift]||'admin')+'">'+escHtml(n.shiftLabel)+'</span>';
+    var chk=function(v,l){return v?'<span style="font-size:12px;color:var(--emerald-600);font-weight:600">&#10003; '+l+'</span>':'<span style="font-size:12px;color:var(--red-500);font-weight:600">&#10007; '+l+'</span>';};
+    html+=chk(n.pollOk,'Pollings')+chk(n.bkpOk,'Backups')+chk(n.procOk,'Procesos');
+    html+='</div>';
+  }
+  // Description (full text)
+  html+='<div style="font-size:13px;color:var(--gray-700);line-height:1.7;white-space:pre-wrap;word-break:break-word;max-height:50vh;overflow-y:auto;padding:12px 14px;background:var(--gray-50);border-radius:8px;border:1px solid var(--gray-100)">'+escHtml(n.desc)+'</div>';
+  html+='</div>';
+  document.getElementById('modalTitle').textContent='';
+  document.getElementById('modalBody').innerHTML=html;
+  document.getElementById('modalFooter').innerHTML='<button class="btn btn-primary" onclick="ackNotif(\''+n.id+'\')">OK</button>';
+  openModal();
+}
+function ackNotif(nid){
+  const day=getDay(currentDate);
+  const notifs=day.notifications||[];
   const mySk=currentUser?currentUser.shiftKey:'';
   const n=notifs.find(x=>x.id===nid);
   if(n){if(!n.readBy)n.readBy={};n.readBy[mySk]=true;saveStore();}
+  // Reset modal width
+  var modalEl=document.querySelector('#modalOverlay > .modal');
+  modalEl.removeAttribute('data-notif-wide');
+  modalEl.style.maxWidth='';
+  closeModal();
   renderNotifPanel(day);renderNovedades(day);
 }
 function markAllRead(){
@@ -2700,6 +2787,276 @@ function markAllRead(){
   (day.handovers||[]).forEach(h=>{if(!h.readBy)h.readBy={};h.readBy[mySk]=true;});
   saveStore();renderNotifPanel(day);renderNovedades(day);toast('Notificaciones marcadas como leidas');
 }
+// ===== INTERNAL CHAT =====
+var _chatMessages=[];
+var _chatPollTimer=null;
+var _chatLastId=null;
+var _chatSha=null;
+var _chatOpen=false;
+var _chatUnread=0;
+var _chatSending=false;
+var _CHAT_FILE='data/chat.json';
+var _CHAT_POLL=8000;
+var _CHAT_MAX=300;
+
+function _chatSenderName(u){
+  if(!u)return '???';
+  var usr=USERS[u];
+  return usr?(usr.name||u):u;
+}
+function _chatMyName(){
+  if(!currentUser)return '';
+  return currentUser.name||currentUser.username;
+}
+function toggleChat(){
+  var panel=document.getElementById('chatPanel');
+  _chatOpen=!_chatOpen;
+  if(_chatOpen){
+    panel.classList.add('show');
+    _chatUnread=0;
+    document.getElementById('chatFab').classList.remove('has-unread');
+    _renderChatUsers();
+    renderChatMessages();
+    document.getElementById('chatInput').focus();
+  }else{
+    panel.classList.remove('show');
+  }
+}
+function startChatPoll(){
+  if(_chatPollTimer)return;
+  _chatPoll();
+  _chatPollTimer=setInterval(_chatPoll,_CHAT_POLL);
+}
+function stopChatPoll(){
+  if(_chatPollTimer){clearInterval(_chatPollTimer);_chatPollTimer=null;}
+}
+function _chatPoll(){
+  if(!currentUser)return;
+  fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
+  .then(function(r){
+    if(r.status===404){
+      // Archivo no existe todavía, inicializar vacío
+      _chatSha=null;
+      if(!_chatMessages.length)renderChatMessages();
+      return null;
+    }
+    if(!r.ok)throw new Error(r.status);
+    return r.json();
+  })
+  .then(function(data){
+    if(!data)return;
+    // Capturar SHA del archivo
+    if(data.sha)_chatSha=data.sha;
+    var msgs=data.messages||[];
+    // Detectar mensajes nuevos para contador unread
+    if(!_chatOpen&&msgs.length){
+      var prevLastId=_chatLastId;
+      _chatLastId=msgs[msgs.length-1].id;
+      msgs.forEach(function(m){
+        if(prevLastId&&m.id!==prevLastId&&m.from!==currentUser.username){
+          // Verificar si el mensaje es posterior al ultimo que ya vi
+          var prevIdx=_chatMessages.findIndex(function(pm){return pm.id===m.id;});
+          if(prevIdx===-1){
+            _chatUnread++;
+          }
+        }
+      });
+      if(_chatUnread>0)document.getElementById('chatFab').classList.add('has-unread');
+    } else if(msgs.length){
+      _chatLastId=msgs[msgs.length-1].id;
+    }
+    _chatMessages=msgs;
+    renderChatMessages();
+    _updateChatOnline(msgs);
+  })
+  .catch(function(e){});
+}
+function _getShiftOperators(){
+  var shift=detectShiftKey();
+  var dayType=getDayType();
+  var primary=[];
+  var backup=[];
+  Object.keys(OPERATOR_SHIFTS).forEach(function(u){
+    var asgn=OPERATOR_SHIFTS[u];
+    for(var i=0;i<asgn.primary.length;i++){
+      if(asgn.primary[i].shift===shift&&asgn.primary[i].day===dayType){
+        primary.push(u);return;
+      }
+    }
+    if(asgn.backup.indexOf(shift)>=0)backup.push(u);
+  });
+  return {primary:primary,backup:backup,shift:shift};
+}
+function _renderChatUsers(){
+  var el=document.getElementById('chatUsersBar');
+  if(!el)return;
+  var info=_getShiftOperators();
+  var onShift=new Set(info.primary);
+  var html='';
+  // Admins primero
+  var admins=[],ops=[];
+  Object.keys(USERS).forEach(function(u){
+    var usr=USERS[u];
+    if(usr.role==='admin'||usr.role==='readonly')admins.push(u);
+    else ops.push(u);
+  });
+  admins.concat(ops).forEach(function(u){
+    var usr=USERS[u];
+    var isMe=currentUser&&currentUser.username===u;
+    var isOnShift=onShift.has(u);
+    var cls='chat-user-chip';
+    if(isMe)cls+=' is-me';
+    else if(isOnShift)cls+=' on-shift';
+    var displayName=(usr.name||u).split(' ');
+    var shortName=displayName.length>1?displayName[0][0]+displayName[displayName.length-1][0]:displayName[0];
+    var shiftTag=isOnShift?' <span style="font-size:9px;opacity:.7">['+info.shift.substring(0,3)+']</span>':'';
+    html+='<div class="'+cls+'" title="'+escHtml(usr.name||u)+(isOnShift?' - Turno '+info.shift:'')+(usr.role==='admin'?' (Admin)':usr.role==='readonly'?' (Lectura)':'')+'"><span class="dot"></span>'+escHtml(shortName)+shiftTag+'</div>';
+  });
+  el.innerHTML=html;
+}
+function _updateChatOnline(msgs){
+  var now=Date.now();
+  var recent={};
+  msgs.forEach(function(m){
+    var age=now-new Date(m.ts).getTime();
+    if(age<120000){
+      recent[m.from]=true;
+    }
+  });
+  // Always include current user
+  if(currentUser)recent[currentUser.username]=true;
+  var count=Object.keys(recent).length;
+  var el=document.getElementById('chatOnline');
+  if(el)el.textContent=count+' en linea';
+  // Actualizar lista de usuarios
+  _renderChatUsers();
+}
+function renderChatMessages(){
+  var el=document.getElementById('chatMsgs');
+  if(!_chatMessages.length){
+    el.innerHTML='<div class="chat-empty">No hay mensajes a\u00fan. Escribí algo para empezar.</div>';
+    return;
+  }
+  var html='';
+  var lastDate='';
+  var myUser=currentUser?currentUser.username:'';
+  // Show last 100 messages
+  var show=_chatMessages.slice(-100);
+  show.forEach(function(m){
+    var msgDate=m.ts?m.ts.split(' ')[0]:'';
+    if(msgDate&&msgDate!==lastDate){
+      lastDate=msgDate;
+      html+='<div class="chat-date-sep">'+msgDate+'</div>';
+    }
+    var isMine=m.from===myUser;
+    html+='<div class="chat-msg '+(isMine?'mine':'theirs')+'">';
+    if(!isMine)html+='<div class="chat-msg-sender">'+escHtml(_chatSenderName(m.from))+'</div>';
+    html+='<div>'+escHtml(m.text)+'</div>';
+    html+='<div class="chat-msg-time">'+(m.ts?m.ts.split(' ')[1]:'')+'</div>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+  // Auto-scroll to bottom
+  el.scrollTop=el.scrollHeight;
+}
+function sendChat(){
+  if(!currentUser||_chatSending)return;
+  var input=document.getElementById('chatInput');
+  var text=input.value.trim();
+  if(!text)return;
+  _chatSending=true;
+  input.value='';
+  var now=new Date();
+  var ts=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+  var msg={id:uid(),from:currentUser.username,text:text,ts:ts};
+  // Optimistic: show immediately
+  _chatMessages.push(msg);
+  renderChatMessages();
+  // Push to GitHub
+  _chatPush(msg);
+}
+function _chatPush(msg){
+  // Fetch current, append, push
+  fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
+  .then(function(r){
+    if(r.status===404){
+      // Archivo no existe, crear con este primer mensaje
+      _chatSha=null;
+      var content=JSON.stringify({messages:[msg]});
+      return fetch(GH_API+'/'+_CHAT_FILE,{
+        method:'PUT',
+        headers:GH_HEADERS,
+        cache:'no-store',
+        body:JSON.stringify({message:'chat init',content:content,sha:null})
+      }).then(function(r){
+        if(!r.ok)throw new Error('Create failed: '+r.status);
+        return r.json();
+      }).then(function(res){
+        if(res&&res.content)_chatSha=res.content.sha;
+      });
+    }
+    if(!r.ok)throw new Error(r.status);
+    return r.json();
+  })
+  .then(function(data){
+    if(!data||!data.messages)return; // Ya se creó arriba (caso 404)
+    var msgs=data.messages||[];
+    // Capturar SHA
+    if(data.sha)_chatSha=data.sha;
+    // Agregar mensaje solo si no existe
+    if(!msgs.find(function(m){return m.id===msg.id;})){
+      msgs.push(msg);
+    }
+    // Trim old messages
+    if(msgs.length>_CHAT_MAX)msgs=msgs.slice(-_CHAT_MAX);
+    // Update local cache
+    _chatMessages=msgs;
+    // Push to GitHub
+    var content=JSON.stringify({messages:msgs});
+    return fetch(GH_API+'/'+_CHAT_FILE,{
+      method:'PUT',
+      headers:GH_HEADERS,
+      cache:'no-store',
+      body:JSON.stringify({message:'chat: '+msg.from,content:content,sha:_chatSha})
+    }).then(function(r){
+      if(r.status===409){
+        // Conflict - get SHA and retry once
+        return fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
+        .then(function(r2){
+          if(r2.status===404)throw new Error('conflict but file gone');
+          return r2.json();
+        })
+        .then(function(existing){
+          _chatSha=existing.sha;
+          var allMsgs=JSON.parse(atob(existing.content)).messages||[];
+          // Merge: add our msg if not already there
+          if(!allMsgs.find(function(m){return m.id===msg.id;})){
+            allMsgs.push(msg);
+          }
+          if(allMsgs.length>_CHAT_MAX)allMsgs=allMsgs.slice(-_CHAT_MAX);
+          _chatMessages=allMsgs;
+          var content2=JSON.stringify({messages:allMsgs});
+          return fetch(GH_API+'/'+_CHAT_FILE,{
+            method:'PUT',
+            headers:GH_HEADERS,
+            body:JSON.stringify({message:'chat: '+msg.from,content:content2,sha:_chatSha})
+          });
+        });
+      }
+      if(!r.ok)throw new Error('Push failed: '+r.status);
+      return r.json();
+    })
+    .then(function(res){
+      if(res&&res.content)_chatSha=res.content.sha;
+    });
+  })
+  .catch(function(e){
+    console.warn('[chat] Push error',e);
+    toast('Error al enviar mensaje');
+  })
+  .finally(function(){_chatSending=false;});
+}
+
 // ===== DOWNLOAD REPORTS =====
 function triggerDownload(html,filename){
   const blob=new Blob([html],{type:'text/html;charset=utf-8'});
@@ -2885,7 +3242,7 @@ document.addEventListener('click',e=>{
 
 // Show/hide cierre+notif buttons on login
 function showTurnoButtons(){
-  const show=!!currentUser;
+  const show=!!currentUser&&!isReadOnly();
   document.getElementById('cierreBtn').style.display=show?'':'none';
   if(show&&currentUser){
     const sk=currentUser.shiftKey||'ADMIN';
@@ -2897,7 +3254,7 @@ function showTurnoButtons(){
       txt.textContent='Pase de Turno '+lbl;
     }
   }
-  document.getElementById('notifWrap').style.display=show?'':'none';
+  document.getElementById('notifWrap').style.display=!!currentUser?'':'none';
 }
 // Post-login helpers (called after enterApp succeeds)
 function forceSync(){
@@ -2920,7 +3277,6 @@ function forceSync(){
 async function _postLogin(){
   showTurnoButtons();
   populateOperatorSelect();
-  _updateClaveBtn();
   if(currentUser){
     console.log('[sync] _postLogin: sincronizando desde GitHub...');
     await syncFromGitHub();
@@ -3077,7 +3433,7 @@ var _passFileSHA=null;
 async function ghFetchPasswords(){
   try{
     const path='data/passwords.json';
-    const resp=await fetch(GH_API+'/'+path+'?ref='+GH_CONFIG.branch,{headers:GH_HEADERS});
+    const resp=await fetch(GH_API+'/'+path+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'});
     if(resp.status===404){_passOverrides={};_passFileSHA=null;return;}
     if(!resp.ok)return;
     const data=await resp.json();
@@ -3229,7 +3585,6 @@ doLogin=function(){
 (async function(){
   console.log('[init] Iniciando carga...');
   await ghFetchPasswords();
-  await ghFetchClaves();
   loadStoreLocal();
   // ALWAYS sync from GitHub FIRST to get latest data from any browser
   if(GH_CONFIG.token){
@@ -3254,5 +3609,23 @@ doLogin=function(){
 })();
 
 </script>
+
+<!-- Internal Chat -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" title="Chat Interno">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <h4>Chat Interno</h4>
+    <span class="chat-online" id="chatOnline"></span>
+    <button class="btn-icon" onclick="toggleChat()" style="margin-left:4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="chat-users-bar" id="chatUsersBar"></div>
+  <div class="chat-msgs" id="chatMsgs"></div>
+  <div class="chat-input-bar">
+    <input type="text" id="chatInput" placeholder="Escribir mensaje..." maxlength="500" onkeydown="if(event.key==='Enter')sendChat()">
+    <button onclick="sendChat()" title="Enviar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </div>
+</div>
 </body>
 </html>
