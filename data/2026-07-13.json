@@ -500,7 +500,9 @@
       "pollOk": true,
       "bkpOk": true,
       "procOk": true,
-      "readBy": {}
+      "readBy": {
+        "TARDE": true
+      }
     },
     {
       "id": "mrjge5ktu2kn2",
@@ -512,7 +514,9 @@
       "pollOk": true,
       "bkpOk": true,
       "procOk": true,
-      "readBy": {}
+      "readBy": {
+        "TARDE": true
+      }
     }
   ],
   "audit": [
@@ -537,7 +541,9 @@
       "desc": "Anibal Rivero: todo realizado, queda pendiente afip 72 hs, a la espera del envio del archivo co...",
       "timestamp": "2026-07-13 13:45:24",
       "shift": "MANANA",
-      "readBy": {}
+      "readBy": {
+        "TARDE": true
+      }
     },
     {
       "id": "mrj3vhmjpo4t5",
