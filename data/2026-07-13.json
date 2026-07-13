@@ -385,24 +385,24 @@
       "user": "ARIVERO"
     },
     {
-      "id": "mrjg8hizckd9o",
+      "id": "mrjgbqxc7fb4f",
       "server": "Perú X30",
       "region": "PERU",
       "phase": "BEGINNING",
       "date": "2026-07-13",
-      "time": "",
-      "note": "SIN AC",
+      "time": "12:00",
+      "note": null,
       "shift": "MANANA",
       "user": "ARIVERO"
     },
     {
-      "id": "mrjg8hizuckbc",
+      "id": "mrjgbqxc0vsj6",
       "server": "Perú X30",
       "region": "PERU",
       "phase": "ENDING",
       "date": "2026-07-13",
-      "time": "",
-      "note": "SIN AC",
+      "time": "12:52",
+      "note": null,
       "shift": "MANANA",
       "user": "ARIVERO"
     }
