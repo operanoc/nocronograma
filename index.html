@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Bitácora NOC — bitacoranoc.com</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -900,17 +903,19 @@ async function ghPushDay(dateKey,dayData){
 // Fetch a single day file from GitHub
 async function ghFetchDay(dateKey){
   const path=GH_CONFIG.dataDir+'/'+dateKey+'.json';
-  const resp=await fetch(GH_API+'/'+path+'?ref='+GH_CONFIG.branch,{headers:GH_HEADERS});
+  const resp=await fetch(GH_API+'/'+path+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'});
   if(resp.status===404)return null;
   if(!resp.ok)throw new Error('GitHub API '+resp.status);
   const data=await resp.json();
   _ghSHAs[dateKey]=data.sha;
-  return JSON.parse(decodeURIComponent(escape(atob(data.content))));
+  var b64=(data.content||'').replace(/\s/g,'');
+  return JSON.parse(decodeURIComponent(escape(atob(b64))));
 }
 
 // Fetch all day files from the data/ directory
 async function ghFetchAll(){
-  const resp=await fetch(GH_API+'/'+GH_CONFIG.dataDir+'?ref='+GH_CONFIG.branch,{headers:GH_HEADERS});
+  const _cb='_t='+Date.now();
+  const resp=await fetch(GH_API+'/'+GH_CONFIG.dataDir+'?ref='+GH_CONFIG.branch+'&'+_cb,{headers:GH_HEADERS,cache:'no-store'});
   if(resp.status===404)return{};
   if(!resp.ok)throw new Error('GitHub API '+resp.status);
   const files=await resp.json();
@@ -935,30 +940,22 @@ function loadStoreLocal(){
 }
 async function syncFromGitHub(){
   if(!GH_CONFIG.token)return;
+  console.log('[sync] syncFromGitHub iniciando...');
   setSyncStatus('saving');
   try{
     const ghData=await ghFetchAll();
+    console.log('[sync] ghFetchAll devolvió',Object.keys(ghData).length,'días');
     if(Object.keys(ghData).length>0){
-      // Merge GitHub data into store
-      for(const[k,v]of Object.entries(ghData)){
-        store[k]=v;
-      }
-      // Also merge any INITIAL_DATA days not in GitHub
+      for(const[k,v]of Object.entries(ghData)){store[k]=v;}
       for(const[k,v]of Object.entries(INITIAL_DATA)){if(!store[k])store[k]=JSON.parse(JSON.stringify(v));}
       try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}
-      render();
-    }else{
-      // Repo data dir is empty, push only non-empty store entries
-      const toPush=Object.entries(store).filter(([k,v])=>v&&!v._stub&&(v.pollings&&v.pollings.length>0||v.backups&&v.backups.length>0||v.handovers&&v.handovers.length>0));
-      if(toPush.length){
-        const promises=toPush.map(([k,v])=>ghPushDay(k,v));
-        await Promise.all(promises);
-      }
     }
     setSyncStatus('ok');
+    render();
   }catch(e){
-    console.warn('GitHub sync failed',e);
+    console.error('[sync] GitHub sync failed',e);
     setSyncStatus('error','Error al sincronizar con GitHub');
+    render();
   }
 }
 
@@ -2754,13 +2751,15 @@ function forceSync(){
     toast('Error al sincronizar con GitHub');
   });
 }
-function _postLogin(){
+async function _postLogin(){
   showTurnoButtons();
   populateOperatorSelect();
   if(currentUser){
+    console.log('[sync] _postLogin: sincronizando desde GitHub...');
+    await syncFromGitHub();
     const day=getDay(currentDate);
     renderNovedades(day);updateNotifBadge(day);renderTimeline(day);
-    syncFromGitHub();
+    console.log('[sync] _postLogin completado. Pollings en fecha actual:',day.pollings?day.pollings.length:0);
   }
 }
 
@@ -3061,28 +3060,29 @@ doLogin=function(){
 
 // On load, fetch password overrides from GitHub, sync data, then render
 (async function(){
+  console.log('[init] Iniciando carga...');
   await ghFetchPasswords();
   loadStoreLocal();
-  checkSession();
-  // Always sync from GitHub BEFORE first render to ensure cross-browser consistency
+  // ALWAYS sync from GitHub FIRST to get latest data from any browser
   if(GH_CONFIG.token){
     try{
       setSyncStatus('saving');
       const ghData=await ghFetchAll();
+      console.log('[init] ghFetchAll devolvió',Object.keys(ghData).length,'días');
       if(Object.keys(ghData).length>0){
-        for(const[k,v]of Object.entries(ghData)){
-          store[k]=v;
-        }
+        for(const[k,v]of Object.entries(ghData)){store[k]=v;}
         for(const[k,v]of Object.entries(INITIAL_DATA)){if(!store[k])store[k]=JSON.parse(JSON.stringify(v));}
         try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}
       }
       setSyncStatus('ok');
     }catch(e){
-      console.warn('Init sync failed',e);
+      console.error('[init] Init sync failed',e);
       setSyncStatus('error','Error al sincronizar');
     }
   }
+  checkSession();
   render();
+  console.log('[init] Carga completada. Store tiene',Object.keys(store).length,'claves, currentDate=',currentDate,', pollings=',(store[currentDate]&&store[currentDate].pollings||[]).length);
 })();
 
 </script>
