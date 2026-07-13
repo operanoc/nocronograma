@@ -2775,7 +2775,10 @@ enterApp=function(username,forceShift){
 const __origCheckSession=checkSession;
 checkSession=function(){
   __origCheckSession();
-  // enterApp is called inside __origCheckSession, so _postLogin ran already
+  // checkSession restores the session but does NOT call enterApp,
+  // so _postLogin (which triggers syncFromGitHub) never runs.
+  // We must call it explicitly to sync data from GitHub.
+  if(currentUser) _postLogin();
 };
 
 const __origRender=render;
