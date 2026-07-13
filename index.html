@@ -515,6 +515,8 @@ html.dark .notif-item.unread{background:#082f49}
 .chat-conv-tab .tab-badge{min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:var(--red-500);color:#fff;font-size:9px;font-weight:700;display:none;align-items:center;justify-content:center;margin-left:2px}
 .chat-conv-tab .tab-badge.visible{display:inline-flex}
 .chat-conv-tab .tab-shift{font-size:9px;color:#065f46}
+.chat-conv-tab .tab-close{font-size:14px;line-height:1;color:var(--gray-400);cursor:pointer;margin-left:2px;padding:0 2px;border-radius:4px;transition:color .15s,background .15s}
+.chat-conv-tab .tab-close:hover{color:var(--red-500);background:var(--red-50)}
 .chat-conv-tab-add{padding:6px 8px;color:var(--gray-400);cursor:pointer;border:none;background:none;font-size:16px;line-height:1;border-radius:6px;flex-shrink:0;transition:color .15s,background .15s}
 .chat-conv-tab-add:hover{color:var(--emerald-600);background:var(--gray-100)}
 .chat-msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
@@ -3004,9 +3006,10 @@ function _renderConvTabs(){
     var isOnShift=onShift.has(u);
     var name=usr?(usr.name||u):u;
     html+='<div class="chat-conv-tab'+(isActive?' active':'')+'" onclick="_chatSwitchConv(\''+u+'\')">';
-    html+=escHtml(name);
+    html+='<span class="tab-name">'+escHtml(name)+'</span>';
     if(isOnShift)html+='<span class="tab-shift">\u2705</span>';
     if(unread>0)html+='<span class="tab-badge visible">'+unread+'</span>';
+    html+='<span class="tab-close" onclick="event.stopPropagation();_chatCloseConv(\''+u+'\')" title="Cerrar conversaci\u00f3n">&times;</span>';
     html+='</div>';
   });
   // Boton + para nueva conversacion
@@ -3022,6 +3025,20 @@ function _chatSwitchConv(u){
   _renderConvTabs();
   renderChatMessages();
   document.getElementById('chatInput').focus();
+}
+function _chatCloseConv(u){
+  _chatConvUnread[u]=0;
+  _chatUpdateFabBadge();
+  var convos=_chatMyConversations();
+  if(_chatActiveUser===u){
+    // Cerrar la activa: ir a la primera otra, o a vista vacia
+    var other=null;
+    for(var i=0;i<convos.length;i++){if(convos[i]!==u){other=convos[i];break;}}
+    _chatActiveUser=other;
+    if(!other)_chatSelectMode=false;
+  }
+  _renderConvTabs();
+  renderChatMessages();
 }
 function _chatShowNewConv(){
   _chatSelectMode=true;
