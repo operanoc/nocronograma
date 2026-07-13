@@ -621,13 +621,13 @@ html.dark .notif-item.unread{background:#082f49}
       Dashboard Admin
     </h2>
     <div class="dash-controls">
-      <select id="dashPeriod" onchange="renderDashboard()">
+      <select id="dashPeriod" onchange="_dashCalSelected=null;renderDashSidebar();renderDashboard()">
         <option value="week">Semanal</option>
         <option value="month" selected>Mensual</option>
         <option value="year">Anual</option>
         <option value="all">Historico</option>
       </select>
-      <button class="btn-dash-active" onclick="renderDashboard()">Actualizar</button>
+      <button class="btn-dash-active" onclick="_dashCalSelected=null;renderDashSidebar();renderDashboard()">Actualizar</button>
       <div style="position:relative" id="exportBtnWrap">
         <button onclick="toggleExportMenu()" style="background:var(--sky-600);color:#fff;border-color:var(--sky-600);font-weight:600;display:flex;align-items:center;gap:4px">Exportar <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button>
         <div class="export-dropdown" id="exportDropdown">
@@ -1848,9 +1848,28 @@ function openDashboard(){
   document.getElementById('dashOverlay').classList.add('show');
   var now=new Date();_dashCalMonth=now.getMonth();_dashCalYear=now.getFullYear();
   _dashCalSelected=null;
+  // Fetch list of available days from GitHub for calendar dots
+  _loadDashCalendarDays();
   renderDashSidebar();
   renderDashboard();
 }
+async function _loadDashCalendarDays(){
+  if(_dashCalDaysLoaded)return;
+  try{
+    const resp=await fetch(GH_API+'/'+GH_CONFIG.dataDir+'?ref='+GH_CONFIG.branch,{headers:GH_HEADERS});
+    if(!resp.ok)return;
+    const files=await resp.json();
+    files.forEach(function(f){
+      if(f.name.endsWith('.json')&&f.name!=='passwords.json'){
+        var dk=f.name.replace('.json','');
+        if(!store[dk])store[dk]={_stub:true}; // mark as having data without loading full content
+      }
+    });
+    _dashCalDaysLoaded=true;
+    renderDashSidebar();
+  }catch(e){}
+}
+var _dashCalDaysLoaded=false;
 function closeDashboard(){
   document.getElementById('dashOverlay').classList.remove('show');
 }
@@ -1893,6 +1912,10 @@ function renderDashSidebar(){
   h+='</div>';
   // Legend
   h+='<div class="dash-sidebar-legend"><div><span class="dot" style="background:var(--emerald-600)"></span> Con datos</div><div><span class="dot" style="background:var(--red-500)"></span> Con errores</div></div>';
+  // Clear selection button
+  if(_dashCalSelected){
+    h+='<button onclick="_dashCalSelected=null;renderDashSidebar();renderDashboard()" style="width:100%;margin-top:10px;padding:8px;border-radius:var(--radius);border:1px solid var(--emerald-600);background:rgba(168,85,247,.08);color:var(--emerald-600);font-size:11px;cursor:pointer;font-weight:600">Ver per\u00edodo completo</button>';
+  }
   // Actions
 
   sb.innerHTML=h;
@@ -1905,11 +1928,20 @@ function _dashCalNav(dir){
 }
 function _dashCalClick(y,m,d){
   var dt=new Date(y,m,d);
-  _dashCalSelected=dt.toISOString().split('T')[0];
+  var ds=dt.toISOString().split('T')[0];
+  // Toggle selection off if clicking the same day
+  if(_dashCalSelected===ds){_dashCalSelected=null;}
+  else{_dashCalSelected=ds;}
   renderDashSidebar();
+  renderDashboard();
 }
 
 function getDateRange(){
+  // If a specific day is selected in the calendar, use that single day
+  if(_dashCalSelected){
+    const d=_dashCalSelected;
+    return{period:'day',from:new Date(d+'T00:00:00'),to:new Date(d+'T23:59:59'),label:d};
+  }
   const period=document.getElementById('dashPeriod').value;
   const now=new Date();now.setHours(12,0,0,0);
   let from,to;
@@ -1927,7 +1959,7 @@ function getDateRange(){
   }else{
     from=null;to=null;
   }
-  return{period,from,to};
+  return{period,from,to,label:null};
 }
 function fmtDate(d){if(typeof d==='string')return d;return d.toISOString().split('T')[0];}
 function isInRange(dateStr,from,to){
@@ -1936,7 +1968,7 @@ function isInRange(dateStr,from,to){
   return d>=from&&d<=to;
 }
 function getDaysInRange(from,to){
-  return Object.entries(store).filter(([k])=>isInRange(k,from,to));
+  return Object.entries(store).filter(([k,v])=>!v._stub&&isInRange(k,from,to));
 }
 
 function calcDurSecs(s,e){
@@ -1952,9 +1984,27 @@ function fmtSecs(s){
   return sc+'s';
 }
 
-function renderDashboard(){
+function renderDashboard(){_renderDashboard();}
+async function _renderDashboard(){
   const body=document.getElementById('dashContent');
-  const{period,from,to}=getDateRange();
+  const{period,from,to,label}=getDateRange();
+  // For "all" (historico), fetch all data from GitHub first
+  if(period==='all'){
+    body.innerHTML='<div style="text-align:center;padding:40px;color:var(--gray-500)"><svg class="spin" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;margin-bottom:8px"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg><br>Cargando datos historicos desde GitHub...</div>';
+    try{
+      const allData=await ghFetchAll();
+      Object.assign(store,allData);
+    }catch(e){console.warn('Failed to fetch all',e);}
+  }
+  // If a single day is selected and not in store, try fetching it
+  if(_dashCalSelected&&!store[_dashCalSelected]){
+    body.innerHTML='<div style="text-align:center;padding:40px;color:var(--gray-500)">Cargando datos del d\u00eda...</div>';
+    try{
+      const d=await ghFetchDay(_dashCalSelected);
+      if(d)store[_dashCalSelected]=d;
+    }catch(e){}
+  }
+
   const days=getDaysInRange(from,to);
   const totalDays=days.length;
 
@@ -2033,9 +2083,10 @@ function renderDashboard(){
   const procPct=totalProcs>0?Math.round(okProcs/totalProcs*100):0;
 
   // Period label
-  const periodLabels={week:'Semanal',month:'Mensual',year:'Anual',all:'Historico'};
+  const periodLabels={week:'Semanal',month:'Mensual',year:'Anual',all:'Historico',day:'D\u00eda'};
   let rangeLabel=periodLabels[period];
-  if(from&&to)rangeLabel+=' ('+fmtDate(from)+' al '+fmtDate(to)+')';
+  if(label){rangeLabel=label;}
+  else if(from&&to){rangeLabel+=' ('+fmtDate(from)+' al '+fmtDate(to)+')';}
 
   // Top 5 slowest servers
   const serverAvgs=Object.entries(serverDurs).map(([s,durs])=>({server:s,avg:Math.round(durs.reduce((a,b)=>a+b,0)/durs.length),count:durs.length})).sort((a,b)=>b.avg-a.avg);
