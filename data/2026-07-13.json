@@ -417,7 +417,8 @@
       "job": "BKPDIARIOU",
       "duration": "2:00",
       "status": "ok",
-      "shift": "MANANA"
+      "shift": "MANANA",
+      "user": "OPERAADMIN"
     }
   ],
   "processes": [
