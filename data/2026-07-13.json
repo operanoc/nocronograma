@@ -535,7 +535,8 @@
       "timestamp": "2026-07-13 07:54:58",
       "shift": "NOCHE",
       "readBy": {
-        "MANANA": true
+        "MANANA": true,
+        "TARDE": true
       }
     }
   ]
