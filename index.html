@@ -948,9 +948,12 @@ async function syncFromGitHub(){
       try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}
       render();
     }else{
-      // Repo data dir is empty, push current store
-      const promises=Object.entries(store).map(([k,v])=>ghPushDay(k,v));
-      await Promise.all(promises);
+      // Repo data dir is empty, push only non-empty store entries
+      const toPush=Object.entries(store).filter(([k,v])=>v&&!v._stub&&(v.pollings&&v.pollings.length>0||v.backups&&v.backups.length>0||v.handovers&&v.handovers.length>0));
+      if(toPush.length){
+        const promises=toPush.map(([k,v])=>ghPushDay(k,v));
+        await Promise.all(promises);
+      }
     }
     setSyncStatus('ok');
   }catch(e){
@@ -967,7 +970,8 @@ function saveStore(){
   _saveTimer=setTimeout(async()=>{
     setSyncStatus('saving');
     const dayData=store[currentDate];
-    if(dayData){
+    // Only push to GitHub if the day has actual content (avoid pushing empty days)
+    if(dayData&&(dayData.pollings&&dayData.pollings.length>0||dayData.backups&&dayData.backups.length>0||dayData.processes&&dayData.processes.length>0||dayData.handovers&&dayData.handovers.length>0||dayData.timeline&&dayData.timeline.length>0)){
       try{
         await ghPushDay(currentDate,dayData);
         setSyncStatus('ok');
@@ -975,11 +979,13 @@ function saveStore(){
         console.warn('GitHub save error',e);
         setSyncStatus('error','Error al guardar en GitHub');
       }
+    }else{
+      setSyncStatus('ok');
     }
     _saveTimer=null;
   },500);
 }
-function getDay(d){if(!store[d]){const dt=new Date(d+'T12:00:00');const dow=dt.getDay();store[d]={date:d,dayType:(dow===0||dow===6)?'FIN_DE_SEMANA':'DIARIA',pollings:[],backups:[],processes:[],notes:''};saveStore();}return store[d];}
+function getDay(d){if(!store[d]){const dt=new Date(d+'T12:00:00');const dow=dt.getDay();store[d]={date:d,dayType:(dow===0||dow===6)?'FIN_DE_SEMANA':'DIARIA',pollings:[],backups:[],processes:[],notes:''};try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}}return store[d];}
 function isAdmin(){return currentUser&&currentUser.role==='admin';}
 function _canEdit(entryShift){
   if(isAdmin()) return true;
@@ -1967,8 +1973,11 @@ function isInRange(dateStr,from,to){
   const d=new Date(dateStr+'T12:00:00');
   return d>=from&&d<=to;
 }
+function _hasContent(day){
+  return (day.pollings&&day.pollings.length>0)||(day.backups&&day.backups.length>0)||(day.processes&&day.processes.length>0)||(day.handovers&&day.handovers.length>0)||(day.timeline&&day.timeline.length>0);
+}
 function getDaysInRange(from,to){
-  return Object.entries(store).filter(([k,v])=>!v._stub&&isInRange(k,from,to));
+  return Object.entries(store).filter(([k,v])=>!v._stub&&_hasContent(v)&&isInRange(k,from,to));
 }
 
 function calcDurSecs(s,e){
@@ -1986,6 +1995,7 @@ function fmtSecs(s){
 
 function renderDashboard(){_renderDashboard();}
 async function _renderDashboard(){
+  try{
   const body=document.getElementById('dashContent');
   const{period,from,to,label}=getDateRange();
   // For "all" (historico), fetch all data from GitHub first
@@ -1996,12 +2006,12 @@ async function _renderDashboard(){
       Object.assign(store,allData);
     }catch(e){console.warn('Failed to fetch all',e);}
   }
-  // If a single day is selected and not in store, try fetching it
-  if(_dashCalSelected&&!store[_dashCalSelected]){
+  // If a single day is selected and not in store (or is a stub), try fetching it
+  if(_dashCalSelected&&(!store[_dashCalSelected]||store[_dashCalSelected]._stub)){
     body.innerHTML='<div style="text-align:center;padding:40px;color:var(--gray-500)">Cargando datos del d\u00eda...</div>';
     try{
       const d=await ghFetchDay(_dashCalSelected);
-      if(d)store[_dashCalSelected]=d;
+      if(d){store[_dashCalSelected]=d;delete store[_dashCalSelected]._stub;}
     }catch(e){}
   }
 
@@ -2020,7 +2030,7 @@ async function _renderDashboard(){
 
   days.forEach(([dateStr,day])=>{
     let dayPollBeg=0,dayPollEnd=0;
-    day.pollings.forEach(p=>{
+    (day.pollings||[]).forEach(p=>{
       totalPollings++;
       if(p.phase==='BEGINNING')dayPollBeg++;
       if(p.phase==='ENDING')dayPollEnd++;
@@ -2038,13 +2048,13 @@ async function _renderDashboard(){
     });
     completedPollings+=Math.min(dayPollBeg,dayPollEnd);
 
-    day.backups.forEach(b=>{
+    (day.backups||[]).forEach(b=>{
       totalBkps++;
       if(b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'))){
         failedBkps++;
       }else if(b.status&&b.status!==''){
         okBkps++;
-      }else if(b.iniTime&&b.endTime){
+      }else if(b.startTime&&b.endTime){
         okBkps++;
       }
       if(b.name)bkpNames[b.name]=(bkpNames[b.name]||0)+1;
@@ -2055,7 +2065,7 @@ async function _renderDashboard(){
       }
     });
 
-    day.processes.forEach(p=>{
+    (day.processes||[]).forEach(p=>{
       totalProcs++;
       const u=(p.status||'').toUpperCase();
       if(u==='OK')okProcs++;
@@ -2068,10 +2078,10 @@ async function _renderDashboard(){
       date:dateStr,
       pollCompleted:Math.min(dayPollBeg,dayPollEnd),
       pollTotal:Math.max(dayPollBeg,dayPollEnd),
-      bkpOk:day.backups.filter(b=>!(b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP')))).length,
-      bkpFail:day.backups.filter(b=>b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'))).length,
-      procOk:day.processes.filter(p=>{const u=(p.status||'').toUpperCase();return u==='OK';}).length,
-      procTotal:day.processes.length
+      bkpOk:(day.backups||[]).filter(b=>!(b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP')))).length,
+      bkpFail:(day.backups||[]).filter(b=>b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'))).length,
+      procOk:(day.processes||[]).filter(p=>{const u=(p.status||'').toUpperCase();return u==='OK';}).length,
+      procTotal:(day.processes||[]).length
     });
   });
 
@@ -2194,6 +2204,11 @@ async function _renderDashboard(){
   h+='</div>';
 
   body.innerHTML=h;
+  }catch(err){
+    console.error('Dashboard error:',err);
+    var bd2=document.getElementById('dashContent');
+    if(bd2)bd2.innerHTML='<div style="text-align:center;padding:40px;color:var(--gray-500)">Error al cargar el dashboard: '+escHtml(err.message)+'</div>';
+  }
 }
 
 
