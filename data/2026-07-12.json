@@ -495,10 +495,11 @@
       "iniTime": "02:36",
       "endDate": "2026-07-12",
       "endTime": "09:55",
-      "job": null,
+      "job": "SEMANAL",
       "duration": "7:19",
-      "status": null,
-      "shift": "NOCHE"
+      "status": "ok",
+      "shift": "NOCHE",
+      "user": "OPERAADMIN"
     },
     {
       "name": "Merlot",
