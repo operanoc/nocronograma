@@ -404,7 +404,7 @@
     },
     {
       "name": "AFIP 72",
-      "status": "OK",
+      "status": "Error",
       "shift": "MANANA"
     }
   ],
