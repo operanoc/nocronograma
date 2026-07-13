@@ -876,13 +876,16 @@ var _CLAVE_USERS=['DDIPINO','ARIVERO','STORREZ','HNUNEZ','OBALDOMIR'];
 function _canUseClave(){return currentUser&&_CLAVE_USERS.indexOf(currentUser.username)>=0;}
 async function ghFetchClaves(){
   try{
+    console.log('[claves] Obteniendo claves desde GitHub...');
     var resp=await fetch(GH_API+'/data/claves.json?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'});
-    if(resp.status===404){_clavesData=null;return;}
-    if(!resp.ok)return;
+    console.log('[claves] Response status:',resp.status);
+    if(resp.status===404){console.warn('[claves] Archivo no encontrado (404)');_clavesData=null;return;}
+    if(!resp.ok){console.warn('[claves] Response no ok:',resp.status);return;}
     var data=await resp.json();
     _clavesSHA=data.sha;
     _clavesData=JSON.parse(decodeURIComponent(escape(atob((data.content||'').replace(/\s/g,'')))));
-  }catch(e){console.warn('Failed to fetch claves',e);}
+    console.log('[claves] Cargadas. Hojas:',Object.keys(_clavesData),'. Disponibles:',_countClavesDisponibles());
+  }catch(e){console.error('[claves] Error:',e);}
 }
 async function ghPushClaves(){
   if(!_clavesData)return;
@@ -913,15 +916,24 @@ function _countClavesDisponibles(){
   for(var s in _clavesData){for(var i=0;i<_clavesData[s].length;i++){if(!_clavesData[s][i].usada)c++;}}
   return c;
 }
-function openClavePanel(){
-  if(!_canUseClave()){toast('No tenes permiso');return;}
-  if(!_clavesData){toast('Claves no cargadas');return;}
-  _clavePanelSheet=Object.keys(_clavesData)[0]||'';
-  _claveFilter='all';
-  _renderClavePanel();
+async function openClavePanel(){
+  if(!_canUseClave()){toast('No tenes permiso para usar claves');return;}
+  // Mostrar panel inmediatamente con estado de carga
   document.getElementById('claveOverlay').classList.add('show');
   document.getElementById('clavePanel').style.display='block';
   requestAnimationFrame(function(){document.getElementById('clavePanel').classList.add('show');});
+  // Si no hay datos, reintentar la carga
+  if(!_clavesData){
+    document.getElementById('clavePanelBody').innerHTML='<div style="text-align:center;padding:40px 0"><svg class="spin-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg><p style="color:var(--gray-400);margin-top:12px;font-size:13px">Cargando claves...</p></div>';
+    await ghFetchClaves();
+  }
+  if(!_clavesData){
+    document.getElementById('clavePanelBody').innerHTML='<div style="text-align:center;padding:40px 0"><p style="color:var(--red-500);font-size:14px;font-weight:600">No se pudieron cargar las claves</p><p style="color:var(--gray-400);font-size:12px;margin-top:8px">Verificá tu conexión e intentá de nuevo</p><button class="btn" style="margin-top:16px;background:var(--gray-200);color:var(--gray-800)" onclick="openClavePanel()">Reintentar</button></div>';
+    return;
+  }
+  _clavePanelSheet=Object.keys(_clavesData)[0]||'';
+  _claveFilter='all';
+  _renderClavePanel();
 }
 function closeClavePanel(){
   document.getElementById('clavePanel').classList.remove('show');
