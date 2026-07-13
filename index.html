@@ -787,7 +787,6 @@ html.dark .notif-item.unread{background:#082f49}
   </div>
 
   <div class="stats">
-    <div class="stat-card" id="statCardServers"><div class="stat-value" id="statServers">0</div><div class="stat-label">Servidores</div></div>
     <div class="stat-card" id="statCardPollings"><div class="stat-value stat-emerald" id="statPollings">0/0</div><div class="stat-label">Pollings OK</div></div>
     <div class="stat-card" id="statCardBackups"><div class="stat-value stat-sky" id="statBackups">0</div><div class="stat-label">Backups</div></div>
     <div class="stat-card" id="statCardProcesses"><div class="stat-value stat-violet" id="statProcesses">—</div><div class="stat-label">Procesos OK</div></div>
@@ -1109,10 +1108,8 @@ function render(){
   document.getElementById('dayLabel').textContent=DAYN[d.getDay()];
   document.getElementById('typeSelect').value=day.dayType;
   const tb=document.getElementById('typeBadge');tb.className='badge '+TB[day.dayType];tb.textContent=TL[day.dayType];
-  const servers=[...new Set(day.pollings.map(p=>p.server))].length;
   const endings=day.pollings.filter(p=>p.phase==='ENDING').length;
   const total=day.pollings.length;
-  document.getElementById('statServers').textContent=servers;
   document.getElementById('statPollings').textContent=total>0?(endings+'/'+Math.floor(total/2)):'0/0';
   document.getElementById('statBackups').textContent=day.backups.length;
   const okP=day.processes.filter(p=>p.status==='OK').length;
@@ -1123,7 +1120,6 @@ function render(){
   var _now=new Date();
   var _hrsIntoDay=(_now.getHours()+(_now.getMinutes()/60));
   var _showIdle=currentDate===_now.getFullYear()+'-'+String(_now.getMonth()+1).padStart(2,'0')+'-'+String(_now.getDate()).padStart(2,'0')&&_hrsIntoDay>=_idleHrs&&!_hasData;
-  document.getElementById('statCardServers').classList.toggle('stat-idle',_showIdle);
   document.getElementById('statCardPollings').classList.toggle('stat-idle',_showIdle);
   document.getElementById('statCardBackups').classList.toggle('stat-idle',_showIdle);
   document.getElementById('statCardProcesses').classList.toggle('stat-idle',_showIdle);
