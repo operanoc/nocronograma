@@ -1,16 +1,645 @@
 {
   "date": "2026-07-12",
   "dayType": "FIN_DE_SEMANA",
-  "pollings": [],
-  "backups": [],
+  "pollings": [
+    {
+      "id": "1783908514970efd9f",
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "01:24",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "id": "1783908514970dc458",
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "01:27",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "id": "1783908514970c48ac",
+      "server": "Argentina P1",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "01:37",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "id": "1783908514970eab85",
+      "server": "Argentina P1",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "02:09",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "id": "1783908514970fb33b",
+      "server": "Perú D1",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "07:13",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "id": "1783908514970453e9",
+      "server": "Perú D1",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "08:11",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "id": "17839085149705ce43",
+      "server": "Perú D3",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "00:07",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "id": "17839085149705092d",
+      "server": "Perú D3",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "00:14",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "id": "1783908514970ceb22",
+      "server": "Panamá D1",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "07:13",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "id": "1783908514970ff9ab",
+      "server": "Panamá D1",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "08:11",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "id": "1783908514970245e1",
+      "server": "Perú Aserviban MT",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "10:20",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149704469d",
+      "server": "Perú Aserviban MT",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "11:34",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "1783908514970b4342",
+      "server": "Perú OC",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "12:09",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149702f621",
+      "server": "Perú OC",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "13:15",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "1783908514970af5bd",
+      "server": "Perú X30 (a partir 12hs)",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "13:31",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "1783908514970677b6",
+      "server": "Perú X30 (a partir 12hs)",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "14:39",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149709f545",
+      "server": "Chile MT",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "10:21",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "1783908514970882f3",
+      "server": "Chile MT",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "10:47",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149704ce55",
+      "server": "Chile OP",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "11:14",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149700c5ba",
+      "server": "Chile OP",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "11:26",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "1783908514970128c3",
+      "server": "Chile Vigo",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "11:28",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "178390851497068bab",
+      "server": "Chile Vigo",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "11:52",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "1783908514970440c9",
+      "server": "Chile OC",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "12:06",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149709d94b",
+      "server": "Chile OC",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "12:33",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149702bbd1",
+      "server": "Chile Cencosud",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "12:47",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "1783908514970baf3c",
+      "server": "Chile Cencosud",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "13:11",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "1783908514970d9d43",
+      "server": "Panamá MT",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "10:20",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "178390851497041dff",
+      "server": "Panamá MT",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "10:48",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149703b671",
+      "server": "Panamá OC",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "11:15",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149707eb9d",
+      "server": "Panamá OC",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "11:43",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "1783908514970c030e",
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "12:04",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149704a0b7",
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "12:30",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "1783908514970c6f9d",
+      "server": "Panamá Mas Me Dan",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "12:43",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "178390851497044bcd",
+      "server": "Panamá Mas Me Dan",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "13:10",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149706a21a",
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "10:21",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149707b8e4",
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "10:29",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "178390851497023fa3",
+      "server": "México - GDE - M2",
+      "region": "MEXICO",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "10:38",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "178390851497072f00",
+      "server": "México - GDE - M2",
+      "region": "MEXICO",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "10:45",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "178390851497076f2a",
+      "server": "Chile CencoPay",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "13:40",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "17839085149707de03",
+      "server": "Chile CencoPay",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "14:02",
+      "note": null,
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "178390851497056e47",
+      "server": "Perú D2",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-12",
+      "time": "21:31",
+      "note": null,
+      "shift": "TARDE",
+      "user": "HNUNEZ"
+    },
+    {
+      "id": "1783908514970ed6e0",
+      "server": "Perú D2",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-12",
+      "time": "21:41",
+      "note": null,
+      "shift": "TARDE",
+      "user": "HNUNEZ"
+    }
+  ],
+  "backups": [
+    {
+      "name": "Regional",
+      "iniDate": "2026-07-12",
+      "iniTime": "02:50",
+      "endDate": "",
+      "endTime": "",
+      "job": "OP.21",
+      "duration": "",
+      "status": "",
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "name": "Pinot",
+      "iniDate": "2026-07-12",
+      "iniTime": "18:00",
+      "endDate": "2026-07-12",
+      "endTime": "18:27",
+      "job": "BKPMIMIX",
+      "duration": "0:27",
+      "status": "OK",
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "name": "Pinot",
+      "iniDate": "2026-07-12",
+      "iniTime": "02:36",
+      "endDate": "",
+      "endTime": "",
+      "job": "SEMANAL",
+      "duration": "",
+      "status": "",
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "name": "Merlot",
+      "iniDate": "2026-07-12",
+      "iniTime": "02:39",
+      "endDate": "",
+      "endTime": "",
+      "job": "SEMANAL",
+      "duration": "",
+      "status": "",
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "name": "Semillón",
+      "iniDate": "2026-07-12",
+      "iniTime": "02:31",
+      "endDate": "2026-07-12",
+      "endTime": "04:30",
+      "job": "SEMANAL",
+      "duration": "1:59",
+      "status": "OK",
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "name": "REGDRS",
+      "iniDate": "2026-07-12",
+      "iniTime": "02:56",
+      "endDate": "",
+      "endTime": "",
+      "job": "SEMANAL",
+      "duration": "",
+      "status": "",
+      "shift": "NOCHE",
+      "user": "GCASTELLANI"
+    },
+    {
+      "id": "17839085149708f659",
+      "name": "Pinot",
+      "iniDate": "2026-07-12",
+      "iniTime": "17:00",
+      "endDate": "2026-07-12",
+      "endTime": "17:29",
+      "job": "BKPMIMIX",
+      "duration": "0:29",
+      "status": "OK",
+      "shift": "MAÑANA",
+      "user": "DDIPINO"
+    }
+  ],
   "processes": [],
   "notes": "",
+  "timeline": [],
+  "handovers": [
+    {
+      "id": "17839085149704663b",
+      "operator": "Gustavo Castellani",
+      "shift": "NOCHE",
+      "shiftLabel": "Noche",
+      "timestamp": "2026-07-12 08:30:00",
+      "text": "BACK-UP PINOT OK\nPOLLING $ OK\nPOLLING 1 OK\nTERMINALES OK\nPOLLING D3 PERU OK\nPOLLING D1 PANAMA\nPOLLING D1 PERU\nSEMANAL PINOT CORRIENDO\nSEMANAL MERLOT CORRIENDO\nSEMANAL SEMILLON OK\nOP.21 REGIONAL CORRIENDO\nSEMANAL REGDRS CORRIENDO",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
+    },
+    {
+      "id": "178390851497089b89",
+      "operator": "Daniel Di Pino",
+      "shift": "MAÑANA",
+      "shiftLabel": "Mañana",
+      "timestamp": "2026-07-12 18:30:00",
+      "text": "REGIONAL: QUEDAN EN EJECUCIÓN CHILE CENCOPAY Y PERU X30, EL RESTO OK.",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
+    },
+    {
+      "id": "1783908514970cbe3f",
+      "operator": "Humberto Nuñez",
+      "shift": "TARDE",
+      "shiftLabel": "Tarde",
+      "timestamp": "2026-07-12 22:30:00",
+      "text": "PERU D2 OK. CHILE CENCOPAY Y PERU X30 COMPLETADOS.",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
+    }
+  ],
   "audit": [
     {
-      "type": "password_change",
-      "user": "ARIVERO",
-      "timestamp": "12/7/2026, 11:55:41",
-      "detail": "Cambio de contraseña propio (self-service)"
+      "type": "cierre",
+      "user": "GCASTELLANI",
+      "timestamp": "2026-07-12 08:30:00",
+      "detail": "Pase de turno - Noche"
+    },
+    {
+      "type": "cierre",
+      "user": "DDIPINO",
+      "timestamp": "2026-07-12 18:30:00",
+      "detail": "Pase de turno - Mañana"
+    },
+    {
+      "type": "cierre",
+      "user": "HNUNEZ",
+      "timestamp": "2026-07-12 22:30:00",
+      "detail": "Pase de turno - Tarde"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "1783908514970c165f",
+      "type": "handover",
+      "title": "Pase de Turno - Noche",
+      "desc": "Gustavo Castellani: SEMANALES CORRIENDO, RESTO OK",
+      "timestamp": "2026-07-12 08:30:00",
+      "shift": "NOCHE",
+      "readBy": {}
+    },
+    {
+      "id": "1783908514970dc18a",
+      "type": "handover",
+      "title": "Pase de Turno - Mañana",
+      "desc": "Daniel Di Pino: QUEDAN EN EJECUCIÓN CHILE CENCOPAY Y PERU X30",
+      "timestamp": "2026-07-12 18:30:00",
+      "shift": "MAÑANA",
+      "readBy": {}
+    },
+    {
+      "id": "1783908514970d8c14",
+      "type": "handover",
+      "title": "Pase de Turno - Tarde",
+      "desc": "Humberto Nuñez: PERU D2 OK, CHILE CENCOPAY Y PERU X30 COMPLETADOS",
+      "timestamp": "2026-07-12 22:30:00",
+      "shift": "TARDE",
+      "readBy": {}
     }
   ]
 }
