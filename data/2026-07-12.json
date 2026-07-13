@@ -504,13 +504,12 @@
       "name": "Merlot",
       "iniDate": "2026-07-12",
       "iniTime": "02:39",
-      "endDate": "",
-      "endTime": "",
-      "job": "SEMANAL",
-      "duration": "",
-      "status": "",
-      "shift": "NOCHE",
-      "user": "GCASTELLANI"
+      "endDate": "2026-07-12",
+      "endTime": "08:40",
+      "job": null,
+      "duration": "6:01",
+      "status": null,
+      "shift": "NOCHE"
     },
     {
       "name": "Semillón",
