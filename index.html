@@ -2807,6 +2807,10 @@ function _chatMyName(){
   if(!currentUser)return '';
   return currentUser.name||currentUser.username;
 }
+function _chatDecode(ghData){
+  var b64=(ghData.content||'').replace(/\s/g,'');
+  return JSON.parse(decodeURIComponent(escape(atob(b64))));
+}
 function toggleChat(){
   var panel=document.getElementById('chatPanel');
   _chatOpen=!_chatOpen;
@@ -2815,7 +2819,7 @@ function toggleChat(){
     _chatUnread=0;
     document.getElementById('chatFab').classList.remove('has-unread');
     _renderChatUsers();
-    renderChatMessages();
+    _chatPoll(); // Siempre refrescar al abrir
     document.getElementById('chatInput').focus();
   }else{
     panel.classList.remove('show');
@@ -2833,48 +2837,30 @@ function _chatPoll(){
   if(!currentUser)return;
   fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
   .then(function(r){
-    if(r.status===404){
-      // Archivo no existe todavía, inicializar vacío
-      _chatSha=null;
-      if(!_chatMessages.length)renderChatMessages();
-      return null;
-    }
+    if(r.status===404){_chatSha=null;return null;}
     if(!r.ok)throw new Error(r.status);
     return r.json();
   })
-  .then(function(data){
-    if(!data)return;
-    // Capturar SHA del archivo
-    if(data.sha)_chatSha=data.sha;
-    // Decodificar content base64
-    var parsed=_chatDecode(data);
+  .then(function(ghData){
+    if(!ghData)return;
+    _chatSha=ghData.sha;
+    var parsed=_chatDecode(ghData);
     var msgs=parsed.messages||[];
-    // Merge: mantener mensajes locales optimistas que no estén en server aún
-    var serverIds=new Set(msgs.map(function(m){return m.id;}));
-    var localOnly=_chatMessages.filter(function(m){return !serverIds.has(m.id);});
-    if(localOnly.length){
-      localOnly.forEach(function(m){msgs.push(m);});
-      msgs.sort(function(a,b){return new Date(a.ts)-new Date(b.ts);});
-    }
-    // Detectar mensajes nuevos para contador unread
+    // Detectar mensajes nuevos para unread
     if(!_chatOpen&&msgs.length){
-      var prevLastId=_chatLastId;
-      var newLastId=msgs[msgs.length-1].id;
-      if(prevLastId&&prevLastId!==newLastId){
+      var prevLast=_chatLastId;
+      var newLast=msgs[msgs.length-1].id;
+      if(prevLast&&prevLast!==newLast){
         msgs.forEach(function(m){
           if(m.from!==currentUser.username){
-            var prevIdx=_chatMessages.findIndex(function(pm){return pm.id===m.id;});
-            if(prevIdx===-1){
-              _chatUnread++;
-            }
+            var had=_chatMessages.some(function(pm){return pm.id===m.id;});
+            if(!had)_chatUnread++;
           }
         });
         if(_chatUnread>0)document.getElementById('chatFab').classList.add('has-unread');
       }
-      _chatLastId=newLastId;
-    } else if(msgs.length){
-      _chatLastId=msgs[msgs.length-1].id;
     }
+    if(msgs.length)_chatLastId=msgs[msgs.length-1].id;
     _chatMessages=msgs;
     renderChatMessages();
     _updateChatOnline(msgs);
@@ -2908,32 +2894,24 @@ function _renderChatUsers(){
     if(usr.role==='admin'||usr.role==='readonly')admins.push(u);
     else ops.push(u);
   });
-  var allUsers=admins.concat(ops);
-  // Generar opciones del select con optgroups
   var html='<label>Para:</label><select class="chat-user-select" id="chatUserSelect">';
-  // Optgroup: Admins
   html+='<optgroup label="Admins">';
   admins.forEach(function(u){
     var usr=USERS[u];
     var isMe=currentUser&&currentUser.username===u;
-    var cls=isMe?'is-me':'';
     var label=(usr.name||u)+(isMe?' (Vos)':'');
-    html+='<option value="'+u+'" class="'+cls+'">'+escHtml(label)+'</option>';
+    html+='<option value="'+u+'" class="'+(isMe?'is-me':'')+'">'+escHtml(label)+'</option>';
   });
-  html+='</optgroup>';
-  // Optgroup: Operadores (con indicador de turno)
-  html+='<optgroup label="Operadores">';
+  html+='</optgroup><optgroup label="Operadores">';
   ops.forEach(function(u){
     var usr=USERS[u];
     var isMe=currentUser&&currentUser.username===u;
     var isOnShift=onShift.has(u);
-    var cls=isMe?'is-me':isOnShift?'on-shift':'';
     var tag=isOnShift?' \u2705 ':'';
     var label=(usr.name||u)+(isMe?' (Vos)':'')+tag;
-    html+='<option value="'+u+'" class="'+cls+'">'+escHtml(label)+'</option>';
+    html+='<option value="'+u+'" class="'+(isMe?'is-me':isOnShift?'on-shift':'')+'">'+escHtml(label)+'</option>';
   });
   html+='</optgroup></select>';
-  // Tag del turno actual
   var shiftLabel=info.shift==='MANANA'?'\ud83c\udf05 MA\u00d1ANA':info.shift==='TARDE'?'\u26c5 TARDE':'\ud83c\udf19 NOCHE';
   html+='<span class="chat-shift-tag active">'+shiftLabel+'</span>';
   el.innerHTML=html;
@@ -2942,17 +2920,11 @@ function _updateChatOnline(msgs){
   var now=Date.now();
   var recent={};
   msgs.forEach(function(m){
-    var age=now-new Date(m.ts).getTime();
-    if(age<120000){
-      recent[m.from]=true;
-    }
+    if(now-new Date(m.ts).getTime()<120000)recent[m.from]=true;
   });
-  // Always include current user
   if(currentUser)recent[currentUser.username]=true;
-  var count=Object.keys(recent).length;
   var el=document.getElementById('chatOnline');
-  if(el)el.textContent=count+' en linea';
-  // Actualizar lista de usuarios
+  if(el)el.textContent=Object.keys(recent).length+' en linea';
   _renderChatUsers();
 }
 function renderChatMessages(){
@@ -2964,14 +2936,10 @@ function renderChatMessages(){
   var html='';
   var lastDate='';
   var myUser=currentUser?currentUser.username:'';
-  // Show last 100 messages
   var show=_chatMessages.slice(-100);
   show.forEach(function(m){
     var msgDate=m.ts?m.ts.split(' ')[0]:'';
-    if(msgDate&&msgDate!==lastDate){
-      lastDate=msgDate;
-      html+='<div class="chat-date-sep">'+msgDate+'</div>';
-    }
+    if(msgDate&&msgDate!==lastDate){lastDate=msgDate;html+='<div class="chat-date-sep">'+msgDate+'</div>';}
     var isMine=m.from===myUser;
     html+='<div class="chat-msg '+(isMine?'mine':'theirs')+'">';
     if(!isMine)html+='<div class="chat-msg-sender">'+escHtml(_chatSenderName(m.from))+'</div>';
@@ -2980,7 +2948,6 @@ function renderChatMessages(){
     html+='</div>';
   });
   el.innerHTML=html;
-  // Auto-scroll to bottom
   el.scrollTop=el.scrollHeight;
 }
 function sendChat(){
@@ -2993,82 +2960,69 @@ function sendChat(){
   var now=new Date();
   var ts=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
   var msg={id:uid(),from:currentUser.username,text:text,ts:ts};
-  // Optimistic: show immediately
   _chatMessages.push(msg);
   renderChatMessages();
-  // Push to GitHub
   _chatPush(msg);
 }
-function _chatDecode(data){
-  var b64=(data.content||'').replace(/\s/g,'');
-  return JSON.parse(decodeURIComponent(escape(atob(b64))));
-}
 function _chatPush(msg){
-  // Fetch current, append, push
+  // Paso 1: fetch actual
   fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
   .then(function(r){
     if(r.status===404){
+      // Crear archivo nuevo con TODOS los mensajes locales
       _chatSha=null;
-      var content=utf8ToBase64(JSON.stringify({messages:[msg]}));
-      return fetch(GH_API+'/'+_CHAT_FILE,{
-        method:'PUT',headers:GH_HEADERS,cache:'no-store',
-        body:JSON.stringify({message:'chat init',content:content,sha:null})
-      }).then(function(r){
-        if(!r.ok)throw new Error('Create failed: '+r.status);
-        return r.json();
-      }).then(function(res){
-        if(res&&res.content)_chatSha=res.content.sha;
-        return null; // signal: creado, no seguir
-      });
+      var content=utf8ToBase64(JSON.stringify({messages:_chatMessages}));
+      return {sha:null,content:content,fresh:true};
     }
-    if(!r.ok)throw new Error(r.status);
-    return r.json();
-  })
-  .then(function(ghData){
-    if(!ghData)return; // Archivo recien creado (404 case)
-    // Decodificar base64
-    var parsed=_chatDecode(ghData);
-    if(ghData.sha)_chatSha=ghData.sha;
-    var msgs=parsed.messages||[];
-    // Merge con mensajes locales (no perder optimistas)
-    _chatMessages.forEach(function(m){
-      if(!msgs.find(function(x){return x.id===m.id;}))msgs.push(m);
+    if(!r.ok)throw new Error('Fetch '+r.status);
+    return r.json().then(function(ghData){
+      var parsed=_chatDecode(ghData);
+      // Merge server + local
+      var msgs=parsed.messages||[];
+      _chatMessages.forEach(function(m){
+        if(!msgs.find(function(x){return x.id===m.id;}))msgs.push(m);
+      });
+      if(msgs.length>_CHAT_MAX)msgs=msgs.slice(-_CHAT_MAX);
+      _chatMessages=msgs;
+      return {sha:ghData.sha,content:utf8ToBase64(JSON.stringify({messages:msgs})),fresh:false};
     });
-    if(msgs.length>_CHAT_MAX)msgs=msgs.slice(-_CHAT_MAX);
-    _chatMessages=msgs;
-    // Push actualizado
-    var content=utf8ToBase64(JSON.stringify({messages:msgs}));
+  })
+  // Paso 2: PUT
+  .then(function(payload){
     return fetch(GH_API+'/'+_CHAT_FILE,{
       method:'PUT',headers:GH_HEADERS,cache:'no-store',
-      body:JSON.stringify({message:'chat: '+msg.from,content:content,sha:_chatSha})
+      body:JSON.stringify({message:'chat: '+msg.from,content:payload.content,sha:payload.sha})
     }).then(function(r){
       if(r.status===409){
+        // Conflict: re-fetch, merge, re-push
         return fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
-        .then(function(r2){
-          if(r2.status===404)throw new Error('conflict but file gone');
-          return r2.json();
-        })
-        .then(function(existing){
-          _chatSha=existing.sha;
-          var allMsgs=_chatDecode(existing).messages||[];
+        .then(function(r2){return r2.json();})
+        .then(function(ghData){
+          var parsed=_chatDecode(ghData);
+          var msgs=parsed.messages||[];
           _chatMessages.forEach(function(m){
-            if(!allMsgs.find(function(x){return x.id===m.id;}))allMsgs.push(m);
+            if(!msgs.find(function(x){return x.id===m.id;}))msgs.push(m);
           });
-          if(allMsgs.length>_CHAT_MAX)allMsgs=allMsgs.slice(-_CHAT_MAX);
-          _chatMessages=allMsgs;
-          var content2=utf8ToBase64(JSON.stringify({messages:allMsgs}));
+          if(msgs.length>_CHAT_MAX)msgs=msgs.slice(-_CHAT_MAX);
+          _chatMessages=msgs;
+          var c=utf8ToBase64(JSON.stringify({messages:msgs}));
           return fetch(GH_API+'/'+_CHAT_FILE,{
             method:'PUT',headers:GH_HEADERS,
-            body:JSON.stringify({message:'chat: '+msg.from,content:content2,sha:_chatSha})
+            body:JSON.stringify({message:'chat: '+msg.from,content:c,sha:ghData.sha})
+          }).then(function(r3){
+            if(!r3.ok)throw new Error('Retry failed: '+r3.status);
+            return r3.json();
           });
         });
       }
       if(!r.ok)throw new Error('Push failed: '+r.status);
       return r.json();
-    })
-    .then(function(res){
-      if(res&&res.content)_chatSha=res.content.sha;
     });
+  })
+  .then(function(res){
+    if(res&&res.content)_chatSha=res.content.sha;
+    // Refrescar desde servidor despues de push
+    setTimeout(function(){_chatPoll();},1000);
   })
   .catch(function(e){
     console.warn('[chat] Push error',e);
