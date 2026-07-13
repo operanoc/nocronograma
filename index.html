@@ -1024,8 +1024,11 @@ function saveStore(){
 }
 function getDay(d){if(!store[d]){const dt=new Date(d+'T12:00:00');const dow=dt.getDay();store[d]={date:d,dayType:(dow===0||dow===6)?'FIN_DE_SEMANA':'DIARIA',pollings:[],backups:[],processes:[],notes:''};try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}}return store[d];}
 function isAdmin(){return currentUser&&currentUser.role==='admin';}
+function isFullAdmin(){return isAdmin();}
+function isReadOnly(){return currentUser&&currentUser.role==='readonly';}
 function _canEdit(entryShift){
   if(isAdmin()) return true;
+  if(isReadOnly()) return false;
   var sk=currentUser?currentUser.shiftKey:'';
   // If entry has no shift (legacy data), check if ANY handover exists on this day
   if(!entryShift){
@@ -1114,6 +1117,16 @@ function render(){
   document.getElementById('statBackups').textContent=day.backups.length;
   const okP=day.processes.filter(p=>p.status==='OK').length;
   document.getElementById('statProcesses').textContent=day.processes.length>0?(okP+'/'+day.processes.length):'\u2014';
+  // Hide edit controls for readonly users
+  if(isReadOnly()){
+    document.querySelector('.quick-bar').style.display='none';
+    document.getElementById('tlAddBar').style.display='none';
+    document.getElementById('typeSelect').disabled=true;
+  }else{
+    document.querySelector('.quick-bar').style.display='';
+    document.getElementById('tlAddBar').style.display='';
+    document.getElementById('typeSelect').disabled=false;
+  }
   // Idle warning: check if day has no data after X hours into the shift
   var _hasData=day.pollings.length>0||day.backups.length>0||day.processes.length>0;
   var _idleHrs=2; // hours threshold
@@ -1667,7 +1680,7 @@ const USERS={
   ARIVERO:{pass:'Atos.123$',role:'operator',name:'Anibal Rivero'},
   OBALDOMIR:{pass:'Atos.123$',role:'operator',name:'Omar Baldomir'},
   OPERAADMIN:{pass:'nocadmin',role:'admin'},
-  OPERAWU:{pass:'0p3r4ci0n35',role:'admin'},
+  OPERAWU:{pass:'0p3r4ci0n35',role:'readonly'},
   NOCPRUEBA:{pass:'pruebanoc',role:'admin'},
   ADMILOSN:{pass:'admilosn',role:'admin'}
 };
@@ -1786,7 +1799,7 @@ function enterApp(username,forceShift){
   document.getElementById('userNameDisplay').textContent=username;
   var badge=document.getElementById('userShiftBadge');
   var lbl=SHIFT_LABELS?SHIFT_LABELS[shiftKey]||shiftKey:shiftKey;
-  badge.textContent=user.role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
+  badge.textContent=user.role==='readonly'?'LECTURA':user.role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
   badge.className='shift-badge '+getShiftCssClass(shiftKey);
 
   var opEl=document.getElementById('userBarOperator');
@@ -1798,9 +1811,16 @@ function enterApp(username,forceShift){
     opEl.style.display='none';
   }
 
-  if(user.role==='admin'){
+  if(user.role==='admin'||user.role==='readonly'){
     document.getElementById('adminMenuWrap').style.display='';
-    startLivePoll();
+    if(isReadOnly()){
+      // Hide password reset button for readonly
+      var menuItems=document.querySelectorAll('#adminMenu .menu-item');
+      menuItems.forEach(function(btn){
+        if(btn.textContent.includes('contrase'))btn.style.display='none';
+      });
+    }
+    if(!isReadOnly())startLivePoll();
   }else{
     document.getElementById('adminMenuWrap').style.display='none';
     stopLivePoll();
@@ -1878,7 +1898,7 @@ function checkSession(){
     document.getElementById('userNameDisplay').textContent=u;
     var badge=document.getElementById('userShiftBadge');
     var lbl=SHIFT_LABELS?SHIFT_LABELS[savedShiftKey]||savedShiftKey:savedShiftKey;
-    badge.textContent=USERS[u].role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
+    badge.textContent=USERS[u].role==='readonly'?'LECTURA':USERS[u].role==='admin'?'ADMIN':'TURNO '+lbl.toUpperCase();
     badge.className='shift-badge '+getShiftCssClass(savedShiftKey);
     var opEl=document.getElementById('userBarOperator');
     if(confirmedOperator){
@@ -1888,9 +1908,13 @@ function checkSession(){
     }else{
       opEl.style.display='none';
     }
-    if(USERS[u].role==='admin'){
+    if(USERS[u].role==='admin'||USERS[u].role==='readonly'){
       document.getElementById('adminMenuWrap').style.display='';
-      startLivePoll();
+      if(USERS[u].role==='readonly'){
+        var menuItems=document.querySelectorAll('#adminMenu .menu-item');
+        menuItems.forEach(function(btn){if(btn.textContent.includes('contrase'))btn.style.display='none';});
+      }
+      if(USERS[u].role==='admin')startLivePoll();
     }else{
       document.getElementById('adminMenuWrap').style.display='none';
       stopLivePoll();
@@ -1904,7 +1928,7 @@ checkSession();
 // ===== ADMIN DASHBOARD =====
 var _dashCalMonth,_dashCalYear,_dashCalSelected=null;
 function openDashboard(){
-  if(!currentUser||currentUser.role!=='admin')return;
+  if(!currentUser||(currentUser.role!=='admin'&&currentUser.role!=='readonly'))return;
   document.getElementById('dashOverlay').classList.add('show');
   var now=new Date();_dashCalMonth=now.getMonth();_dashCalYear=now.getFullYear();
   _dashCalSelected=null;
@@ -2838,7 +2862,7 @@ document.addEventListener('click',e=>{
 
 // Show/hide cierre+notif buttons on login
 function showTurnoButtons(){
-  const show=!!currentUser;
+  const show=!!currentUser&&!isReadOnly();
   document.getElementById('cierreBtn').style.display=show?'':'none';
   if(show&&currentUser){
     const sk=currentUser.shiftKey||'ADMIN';
@@ -2850,7 +2874,7 @@ function showTurnoButtons(){
       txt.textContent='Pase de Turno '+lbl;
     }
   }
-  document.getElementById('notifWrap').style.display=show?'':'none';
+  document.getElementById('notifWrap').style.display=!!currentUser?'':'none';
 }
 // Post-login helpers (called after enterApp succeeds)
 function forceSync(){
