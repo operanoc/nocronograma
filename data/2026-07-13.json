@@ -448,11 +448,6 @@
       "shift": "MANANA"
     },
     {
-      "name": "AFIP 72",
-      "status": "Error",
-      "shift": "MANANA"
-    },
-    {
       "name": "AFIP 48",
       "status": "OK",
       "shift": "MANANA",
