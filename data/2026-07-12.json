@@ -13,6 +13,17 @@
       "duration": null,
       "status": null,
       "shift": "NOCHE"
+    },
+    {
+      "name": "Pinot",
+      "iniDate": "2026-07-12",
+      "iniTime": "02:03",
+      "endDate": "2026-07-12",
+      "endTime": null,
+      "job": null,
+      "duration": null,
+      "status": null,
+      "shift": "NOCHE"
     }
   ],
   "processes": [],
