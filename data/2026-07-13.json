@@ -489,6 +489,18 @@
       "bkpOk": true,
       "procOk": true,
       "readBy": {}
+    },
+    {
+      "id": "mrjge5ktu2kn2",
+      "operator": "Anibal Rivero",
+      "shift": "MANANA",
+      "shiftLabel": "Mañana",
+      "timestamp": "2026-07-13 13:45:24",
+      "text": "todo realizado, queda pendiente afip 72 hs, a la espera del envio del archivo corrijo por laura zabeo",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
     }
   ],
   "audit": [
@@ -497,9 +509,24 @@
       "user": "GCASTELLANI",
       "timestamp": "2026-07-13 07:54:58",
       "detail": "Pase de turno - Noche"
+    },
+    {
+      "type": "cierre",
+      "user": "ARIVERO",
+      "timestamp": "2026-07-13 13:45:24",
+      "detail": "Pase de turno - Mañana"
     }
   ],
   "notifications": [
+    {
+      "id": "mrjge5kt2pvgc",
+      "type": "handover",
+      "title": "Pase de Turno - Mañana",
+      "desc": "Anibal Rivero: todo realizado, queda pendiente afip 72 hs, a la espera del envio del archivo co...",
+      "timestamp": "2026-07-13 13:45:24",
+      "shift": "MANANA",
+      "readBy": {}
+    },
     {
       "id": "mrj3vhmjpo4t5",
       "type": "handover",
