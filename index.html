@@ -2846,21 +2846,33 @@ function _chatPoll(){
     if(!data)return;
     // Capturar SHA del archivo
     if(data.sha)_chatSha=data.sha;
-    var msgs=data.messages||[];
+    // Decodificar content base64 como hace ghFetchDay
+    var b64=(data.content||'').replace(/\s/g,'');
+    var parsed=JSON.parse(decodeURIComponent(escape(atob(b64))));
+    var msgs=parsed.messages||[];
+    // Merge: mantener mensajes locales optimistas que no estén en server aún
+    var serverIds=new Set(msgs.map(function(m){return m.id;}));
+    var localOnly=_chatMessages.filter(function(m){return !serverIds.has(m.id);});
+    if(localOnly.length){
+      localOnly.forEach(function(m){msgs.push(m);});
+      msgs.sort(function(a,b){return new Date(a.ts)-new Date(b.ts);});
+    }
     // Detectar mensajes nuevos para contador unread
     if(!_chatOpen&&msgs.length){
       var prevLastId=_chatLastId;
-      _chatLastId=msgs[msgs.length-1].id;
-      msgs.forEach(function(m){
-        if(prevLastId&&m.id!==prevLastId&&m.from!==currentUser.username){
-          // Verificar si el mensaje es posterior al ultimo que ya vi
-          var prevIdx=_chatMessages.findIndex(function(pm){return pm.id===m.id;});
-          if(prevIdx===-1){
-            _chatUnread++;
+      var newLastId=msgs[msgs.length-1].id;
+      if(prevLastId&&prevLastId!==newLastId){
+        msgs.forEach(function(m){
+          if(m.from!==currentUser.username){
+            var prevIdx=_chatMessages.findIndex(function(pm){return pm.id===m.id;});
+            if(prevIdx===-1){
+              _chatUnread++;
+            }
           }
-        }
-      });
-      if(_chatUnread>0)document.getElementById('chatFab').classList.add('has-unread');
+        });
+        if(_chatUnread>0)document.getElementById('chatFab').classList.add('has-unread');
+      }
+      _chatLastId=newLastId;
     } else if(msgs.length){
       _chatLastId=msgs[msgs.length-1].id;
     }
@@ -2868,7 +2880,7 @@ function _chatPoll(){
     renderChatMessages();
     _updateChatOnline(msgs);
   })
-  .catch(function(e){});
+  .catch(function(e){console.warn('[chat] Poll error',e);});
 }
 function _getShiftOperators(){
   var shift=detectShiftKey();
