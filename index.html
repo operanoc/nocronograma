@@ -1548,6 +1548,7 @@ function savePolling(old){
   var _sk=currentUser?currentUser.shiftKey:'';
   if(beg)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'BEGINNING',date:currentDate,time:beg,note:null,shift:_sk});
   if(end)day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:end,note:null,shift:_sk});
+  if(!beg&&!end){day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'BEGINNING',date:currentDate,time:'',note:'SIN AC',shift:_sk});day.pollings.push({id:uid(),server:srv,region:getRegion(srv),phase:'ENDING',date:currentDate,time:'',note:'SIN AC',shift:_sk});}
   saveStore();closeModal();render();toast('Guardado');
 }
 function deletePolling(s){_adminGate(function(){var day=getDay(currentDate);var es=day.pollings.filter(function(p){return p.server===s;});var srvShift=es.length?(es[0].shift||null):null;if(!_canEdit(srvShift)){toast('No podes eliminar entries de otro turno');return;}if(!confirm('Eliminar '+s+'?'))return;day.pollings=day.pollings.filter(function(p){return p.server!==s;});saveStore();render();toast('Eliminado');});}
