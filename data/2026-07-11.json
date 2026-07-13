@@ -634,7 +634,9 @@
       "desc": "Daniel Di Pino: TODO REALIZADO OK",
       "timestamp": "2026-07-11 18:30:00",
       "shift": "MAÑANA",
-      "readBy": {}
+      "readBy": {
+        "ADMIN": true
+      }
     },
     {
       "id": "178390650541988494",
