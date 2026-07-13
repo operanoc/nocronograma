@@ -2365,8 +2365,14 @@ function openCierreModal(){
   const skLabel=SHIFT_LABELS[sk]||sk;
   const auto=getCurrentOperator()||currentUser.username;
   document.getElementById('modalTitle').textContent='PASE DE TURNO (OBLIGATORIO) - '+skLabel;
+  var opField='';
+  if(currentUser.role==='admin'){
+    opField='<div class="form-group"><label>Operador</label><select id="cierreOp">'+buildOpOptions(auto)+'</select></div>';
+  }else{
+    opField='<div class="form-group"><label>Operador</label><input type="text" id="cierreOp" value="'+escHtml(auto)+'" readonly style="width:100%;font-size:13px;border:1px solid var(--gray-300);border-radius:6px;padding:8px;background:rgba(30,37,69,.6);color:var(--sky-600);font-weight:600"></div>';
+  }
   document.getElementById('modalBody').innerHTML=
-    '<div class="form-group"><label>Operador</label><select id="cierreOp">'+buildOpOptions(auto)+'</select></div>'+
+    opField+
     '<div class="form-group"><label>Novedades (obligatorio)</label><textarea id="cierreText" rows="4" placeholder="Detalle de novedades del turno, incidencias, tareas pendientes..." style="width:100%;font-size:13px;border:1px solid var(--gray-300);border-radius:6px;padding:8px;resize:vertical;min-height:80px"></textarea></div>'+
     '<div class="cierre-checks">'+
     '<label class="cierre-check"><input type="checkbox" id="cierrePollOk" checked> Pollings completados</label>'+
@@ -2440,12 +2446,15 @@ function renderNovedades(day){
   const sec=document.getElementById('novedadesSection');
   const body=document.getElementById('novedadesBody');
   const badge=document.getElementById('nvBadge');
-  const hovers=(day.handovers||[]);
+  const mySk=currentUser?currentUser.shiftKey:'';
+  const isAdmin=currentUser&&currentUser.role==='admin';
+  // For operators: only show handovers from their own shift
+  const hovers=(day.handovers||[]).filter(h=>isAdmin||h.shift===mySk);
   if(!hovers.length){sec.style.display='none';return;}
   sec.style.display='';
-  // Count unread
-  const mySk=currentUser?currentUser.shiftKey:'';
-  const unread=hovers.filter(h=>h.shift!==mySk&&!(h.readBy&&h.readBy[mySk])).length;
+  // Count unread (from other shifts, only relevant for display)
+  const allHovers=day.handovers||[];
+  const unread=allHovers.filter(h=>h.shift!==mySk&&!(h.readBy&&h.readBy[mySk])).length;
   if(unread>0){badge.style.display='';badge.textContent=unread;}else{badge.style.display='none';}
   let html='';
   const sorted=[...hovers].reverse();
