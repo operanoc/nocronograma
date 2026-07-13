@@ -2946,18 +2946,13 @@ function _chatPoll(){
     var msgs=parsed.messages||[];
     if(msgs.length)_chatLastId=msgs[msgs.length-1].id;
     _chatMessages=msgs;
-    // Calcular unread por conversacion
+    // Calcular unread por conversacion (solo mensajes NUEVOS no vistos)
     var me=currentUser.username;
-    var prevUnread={};
-    Object.assign(prevUnread,_chatConvUnread);
     _chatConvUnread={};
     msgs.forEach(function(m){
-      if(m.from!==me&&m.to===me){
+      if(m.from!==me&&m.to===me&&!_chatLastSeenIds[m.id]){
         var partner=m.from;
-        // Si no es la conversacion activa, o el chat esta cerrado, contar como no leido
-        if(!_chatOpen||partner!==_chatActiveUser){
-          _chatConvUnread[partner]=(_chatConvUnread[partner]||0)+1;
-        }
+        _chatConvUnread[partner]=(_chatConvUnread[partner]||0)+1;
       }
     });
     // Detectar mensajes nuevos para sonido
@@ -2965,6 +2960,7 @@ function _chatPoll(){
     msgs.forEach(function(m){
       if(m.from!==me&&m.to===me&&!_chatLastSeenIds[m.id])newMsgCount++;
     });
+    // Actualizar IDs vistos
     _chatLastSeenIds={};
     msgs.forEach(function(m){_chatLastSeenIds[m.id]=true;});
     if(newMsgCount>0)_chatPlayNotif();
