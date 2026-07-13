@@ -2781,6 +2781,7 @@ function markAllRead(){
 var _chatMessages=[];
 var _chatPollTimer=null;
 var _chatLastId=null;
+var _chatSha=null;
 var _chatOpen=false;
 var _chatUnread=0;
 var _chatSending=false;
@@ -2821,19 +2822,40 @@ function stopChatPoll(){
 function _chatPoll(){
   if(!currentUser)return;
   fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
-  .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
-  .then(function(data){
-    var msgs=data.messages||[];
-    _chatMessages=msgs;
-    if(msgs.length)_chatLastId=msgs[msgs.length-1].id;
-    renderChatMessages();
-    if(!_chatOpen){
-      var last=msgs[msgs.length-1];
-      if(last&&last.from!==currentUser.username&&last.id!==_chatLastId){
-        _chatUnread++;
-        document.getElementById('chatFab').classList.add('has-unread');
-      }
+  .then(function(r){
+    if(r.status===404){
+      // Archivo no existe todavía, inicializar vacío
+      _chatSha=null;
+      if(!_chatMessages.length)renderChatMessages();
+      return null;
     }
+    if(!r.ok)throw new Error(r.status);
+    return r.json();
+  })
+  .then(function(data){
+    if(!data)return;
+    // Capturar SHA del archivo
+    if(data.sha)_chatSha=data.sha;
+    var msgs=data.messages||[];
+    // Detectar mensajes nuevos para contador unread
+    if(!_chatOpen&&msgs.length){
+      var prevLastId=_chatLastId;
+      _chatLastId=msgs[msgs.length-1].id;
+      msgs.forEach(function(m){
+        if(prevLastId&&m.id!==prevLastId&&m.from!==currentUser.username){
+          // Verificar si el mensaje es posterior al ultimo que ya vi
+          var prevIdx=_chatMessages.findIndex(function(pm){return pm.id===m.id;});
+          if(prevIdx===-1){
+            _chatUnread++;
+          }
+        }
+      });
+      if(_chatUnread>0)document.getElementById('chatFab').classList.add('has-unread');
+    } else if(msgs.length){
+      _chatLastId=msgs[msgs.length-1].id;
+    }
+    _chatMessages=msgs;
+    renderChatMessages();
     _updateChatOnline(msgs);
   })
   .catch(function(e){});
@@ -2902,15 +2924,33 @@ function _chatPush(msg){
   fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
   .then(function(r){
     if(r.status===404){
-      // File doesn't exist yet, create it
-      return {messages:[msg]};
+      // Archivo no existe, crear con este primer mensaje
+      _chatSha=null;
+      var content=JSON.stringify({messages:[msg]});
+      return fetch(GH_API+'/'+_CHAT_FILE,{
+        method:'PUT',
+        headers:GH_HEADERS,
+        cache:'no-store',
+        body:JSON.stringify({message:'chat init',content:content,sha:null})
+      }).then(function(r){
+        if(!r.ok)throw new Error('Create failed: '+r.status);
+        return r.json();
+      }).then(function(res){
+        if(res&&res.content)_chatSha=res.content.sha;
+      });
     }
     if(!r.ok)throw new Error(r.status);
     return r.json();
   })
   .then(function(data){
+    if(!data||!data.messages)return; // Ya se creó arriba (caso 404)
     var msgs=data.messages||[];
-    msgs.push(msg);
+    // Capturar SHA
+    if(data.sha)_chatSha=data.sha;
+    // Agregar mensaje solo si no existe
+    if(!msgs.find(function(m){return m.id===msg.id;})){
+      msgs.push(msg);
+    }
     // Trim old messages
     if(msgs.length>_CHAT_MAX)msgs=msgs.slice(-_CHAT_MAX);
     // Update local cache
@@ -2921,15 +2961,18 @@ function _chatPush(msg){
       method:'PUT',
       headers:GH_HEADERS,
       cache:'no-store',
-      body:JSON.stringify({message:'chat: '+msg.from,content:content,sha:_chatSha||null})
+      body:JSON.stringify({message:'chat: '+msg.from,content:content,sha:_chatSha})
     }).then(function(r){
       if(r.status===409){
         // Conflict - get SHA and retry once
         return fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
-        .then(function(r2){return r2.json();})
+        .then(function(r2){
+          if(r2.status===404)throw new Error('conflict but file gone');
+          return r2.json();
+        })
         .then(function(existing){
           _chatSha=existing.sha;
-          var allMsgs=existing.messages||[];
+          var allMsgs=JSON.parse(atob(existing.content)).messages||[];
           // Merge: add our msg if not already there
           if(!allMsgs.find(function(m){return m.id===msg.id;})){
             allMsgs.push(msg);
@@ -2944,6 +2987,7 @@ function _chatPush(msg){
           });
         });
       }
+      if(!r.ok)throw new Error('Push failed: '+r.status);
       return r.json();
     })
     .then(function(res){
