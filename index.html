@@ -497,8 +497,6 @@ html.dark .notif-item.unread{background:#082f49}
 /* Admin hamburger menu */
 .admin-menu{position:fixed;top:0;left:0;bottom:0;width:240px;background:var(--white);border-right:1px solid var(--gray-200);box-shadow:4px 0 20px rgba(0,0,0,.1);z-index:200;overflow:hidden;padding:16px 0;transform:translateX(-100%);transition:transform .2s ease;display:flex;flex-direction:column}
 .admin-menu.show{transform:translateX(0)}
-#clavePanel.show{right:0}
-#claveOverlay.show{display:block}
 .admin-menu .menu-header{padding:0 16px 12px;border-bottom:1px solid var(--gray-200);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
 .admin-menu .menu-header span{font-size:14px;font-weight:700;color:var(--gray-800)}
 .admin-menu .menu-header button{background:none;border:none;cursor:pointer;color:var(--gray-400);padding:4px;border-radius:4px;display:flex;align-items:center;transition:color .1s}
@@ -665,7 +663,7 @@ html.dark .notif-item.unread{background:#082f49}
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
       Bitácora NOC
     </h1>
-    <div class="header-actions"><span id="claveBtn" onclick="openClavePanel()" style="display:none;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;border:1px solid #FBBF24;background:rgba(251,191,36,.1);color:#FBBF24;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s" title="Claves AS400"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Claves <span id="claveCount" style="font-size:10px;opacity:.8"></span></span><span id="syncIndicator" onclick="forceSync()" style="display:inline-flex;align-items:center;cursor:pointer;" title="Sin sincronizar - click para sincronizar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>
+    <div class="header-actions"><span id="claveBtn" onclick="openClaveModal()" style="display:none;align-items:center;gap:4px;padding:5px 10px;border-radius:8px;border:1px solid #FBBF24;background:rgba(251,191,36,.1);color:#FBBF24;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s" title="Claves AS400"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Claves <span id="claveCount" style="font-size:10px;opacity:.8"></span></span><span id="syncIndicator" onclick="forceSync()" style="display:inline-flex;align-items:center;cursor:pointer;" title="Sin sincronizar - click para sincronizar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>
 
       <button class="btn-cierre" id="cierreBtn" onclick="openCierreModal()" title="Pase de Turno" style="display:none">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -700,10 +698,12 @@ html.dark .notif-item.unread{background:#082f49}
 
 <!-- Admin side menu (outside header because position:fixed) -->
 <div class="admin-overlay" id="adminOverlay" onclick="closeAdminMenu()"></div>
-<!-- Panel de Claves AS400 -->
-<div class="admin-overlay" id="claveOverlay" onclick="closeClavePanel()" style="z-index:200"></div>
-<div id="clavePanel" style="display:none;position:fixed;top:0;right:-420px;width:400px;max-width:90vw;height:100vh;background:var(--white);border-left:1px solid var(--gray-200);z-index:201;transition:right .25s ease;padding:16px;overflow-y:auto;box-shadow:-4px 0 20px rgba(0,0,0,.3)">
-  <div id="clavePanelBody"></div>
+<!-- Modal de Claves AS400 -->
+<div class="modal-overlay" id="claveModal" onclick="if(event.target===this)closeClaveModal()">
+  <div class="modal" style="max-width:550px;max-height:85vh;display:flex;flex-direction:column">
+    <div class="modal-header"><h3>Claves AS400</h3><button class="btn-icon" onclick="closeClaveModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div id="claveModalBody" style="overflow-y:auto;flex:1;padding:16px"></div>
+  </div>
 </div>
 <div class="admin-menu" id="adminMenu">
   <div class="menu-header"><span>Admin</span><button onclick="closeAdminMenu()" title="Cerrar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
@@ -916,55 +916,44 @@ function _countClavesDisponibles(){
   for(var s in _clavesData){for(var i=0;i<_clavesData[s].length;i++){if(!_clavesData[s][i].usada)c++;}}
   return c;
 }
-async function openClavePanel(){
+async function openClaveModal(){
   if(!_canUseClave()){toast('No tenes permiso para usar claves');return;}
-  // Mostrar panel inmediatamente con estado de carga
-  document.getElementById('claveOverlay').classList.add('show');
-  document.getElementById('clavePanel').style.display='block';
-  requestAnimationFrame(function(){document.getElementById('clavePanel').classList.add('show');});
-  // Si no hay datos, reintentar la carga
+  document.getElementById('claveModal').classList.add('show');
   if(!_clavesData){
-    document.getElementById('clavePanelBody').innerHTML='<div style="text-align:center;padding:40px 0"><svg class="spin-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg><p style="color:var(--gray-400);margin-top:12px;font-size:13px">Cargando claves...</p></div>';
+    document.getElementById('claveModalBody').innerHTML='<div style="text-align:center;padding:40px 0"><svg class="spin-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg><p style="color:var(--gray-400);margin-top:12px;font-size:13px">Cargando claves...</p></div>';
     await ghFetchClaves();
   }
   if(!_clavesData){
-    document.getElementById('clavePanelBody').innerHTML='<div style="text-align:center;padding:40px 0"><p style="color:var(--red-500);font-size:14px;font-weight:600">No se pudieron cargar las claves</p><p style="color:var(--gray-400);font-size:12px;margin-top:8px">Verificá tu conexión e intentá de nuevo</p><button class="btn" style="margin-top:16px;background:var(--gray-200);color:var(--gray-800)" onclick="openClavePanel()">Reintentar</button></div>';
+    document.getElementById('claveModalBody').innerHTML='<div style="text-align:center;padding:40px 0"><p style="color:var(--red-500);font-size:14px;font-weight:600">No se pudieron cargar las claves</p><p style="color:var(--gray-400);font-size:12px;margin-top:8px">Verific\u00e1 tu conexi\u00f3n</p><button class="btn" style="margin-top:16px;background:var(--gray-200);color:var(--gray-800)" onclick="openClaveModal()">Reintentar</button></div>';
     return;
   }
   _clavePanelSheet=Object.keys(_clavesData)[0]||'';
   _claveFilter='all';
-  _renderClavePanel();
+  _renderClaveModal();
 }
-function closeClavePanel(){
-  document.getElementById('clavePanel').classList.remove('show');
-  setTimeout(function(){document.getElementById('claveOverlay').classList.remove('show');document.getElementById('clavePanel').style.display='none';},250);
-}
+function closeClaveModal(){document.getElementById('claveModal').classList.remove('show');}
 var _clavePanelSheet='';
 var _claveFilter='all';
-function _renderClavePanel(){
+function _renderClaveModal(){
   var sheets=Object.keys(_clavesData);
   var totalDisp=_countClavesDisponibles();
-  var h='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><h3 style="font-size:16px;font-weight:700;margin-bottom:2px">Claves AS400</h3><p style="font-size:12px;color:var(--gray-400)">Disponibles: <strong style="color:#FBBF24">'+totalDisp+'</strong></p></div><button class="btn-icon" onclick="closeClavePanel()" title="Cerrar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
-  // Tabs: Todas / Disponibles / Usadas
+  var h='<p style="font-size:12px;color:var(--gray-400);margin-bottom:12px">Disponibles: <strong style="color:#FBBF24">'+totalDisp+'</strong></p>';
   h+='<div style="display:flex;gap:4px;margin-bottom:10px">';
   var tabs=[{k:'all',l:'Todas'},{k:'avail',l:'Disponibles'},{k:'used',l:'Usadas'}];
-  for(var t=0;t<tabs.length;t++){h+='<button class="btn btn-sm" style="background:'+( _claveFilter===tabs[t].k?'rgba(251,191,36,.2)':'transparent')+';color:'+( _claveFilter===tabs[t].k?'#FBBF24':'var(--gray-400)')+';border:1px solid '+( _claveFilter===tabs[t].k?'#FBBF24':'var(--gray-200)')+'" onclick="_claveFilter=\''+tabs[t].k+'\';_renderClavePanel()">'+tabs[t].l+'</button>';}
+  for(var t=0;t<tabs.length;t++){h+='<button class="btn btn-sm" style="background:'+(_claveFilter===tabs[t].k?'rgba(251,191,36,.2)':'transparent')+';color:'+(_claveFilter===tabs[t].k?'#FBBF24':'var(--gray-400)')+';border:1px solid '+(_claveFilter===tabs[t].k?'#FBBF24':'var(--gray-200)')+'" onclick="_claveFilter=\''+tabs[t].k+'\';_renderClaveModal()">'+tabs[t].l+'</button>';}
   h+='</div>';
-  // Sheet tabs
   h+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">';
   for(var si=0;si<sheets.length;si++){
     var s=sheets[si];var isA=_clavePanelSheet===s;
-    h+='<button class="btn btn-sm" style="background:'+(isA?'rgba(251,191,36,.15)':'transparent')+';color:'+(isA?'#FBBF24':'var(--gray-400)')+';border:1px solid '+(isA?'#FBBF24':'var(--gray-200)')+'" onclick="_clavePanelSheet=\''+s.replace(/'/g,"\\'")+'\';_renderClavePanel()">'+s+'</button>';
+    h+='<button class="btn btn-sm" style="background:'+(isA?'rgba(251,191,36,.15)':'transparent')+';color:'+(isA?'#FBBF24':'var(--gray-400)')+';border:1px solid '+(isA?'#FBBF24':'var(--gray-200)')+'" onclick="_clavePanelSheet=\''+s.replace(/'/g,"\\'")+'\';_renderClaveModal()">'+s+'</button>';
   }
   h+='</div>';
-  // Use clave box
   h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding:10px;background:var(--gray-50);border-radius:8px;border:1px solid var(--gray-200)">';
   h+='<input type="text" id="claveUseInput" placeholder="Clave" style="flex:1;min-width:120px;padding:6px 10px;font-size:13px" onkeydown="if(event.key===\'Enter\')useClave()">';
   h+='<input type="text" id="claveUseMotivo" placeholder="Motivo" style="flex:2;min-width:150px;padding:6px 10px;font-size:13px" onkeydown="if(event.key===\'Enter\')useClave()">';
   h+='<button class="btn" style="background:#FBBF24;color:#000;font-weight:600;padding:6px 14px" onclick="useClave()">Usar</button>';
   h+='</div>';
   h+='<div id="claveUseError" style="color:var(--red-600);font-size:11px;margin-bottom:8px;min-height:14px"></div>';
-  // List
   var arr=_clavesData[_clavePanelSheet]||[];
   h+='<div style="max-height:50vh;overflow-y:auto">';
   for(var i=0;i<arr.length;i++){
@@ -989,7 +978,7 @@ function _renderClavePanel(){
     h+='</div>';
   }
   h+='</div>';
-  document.getElementById('clavePanelBody').innerHTML=h;
+  document.getElementById('claveModalBody').innerHTML=h;
 }
 async function useClave(){
   var input=document.getElementById('claveUseInput').value;
@@ -1007,7 +996,7 @@ async function useClave(){
   found.entry.comentario=motivo;
   await ghPushClaves();
   _updateClaveBtn();
-  _renderClavePanel();
+  _renderClaveModal();
   toast('Clave '+found.entry.clave+' registrada');
 }
 function _updateClaveBtn(){
