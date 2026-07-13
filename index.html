@@ -660,7 +660,7 @@ html.dark .notif-item.unread{background:#082f49}
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
       Bitácora NOC
     </h1>
-    <div class="header-actions"><span id="syncIndicator" style="display:inline-flex;align-items:center;cursor:default;" title="Sin sincronizar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>
+    <div class="header-actions"><span id="syncIndicator" onclick="forceSync()" style="display:inline-flex;align-items:center;cursor:pointer;" title="Sin sincronizar - click para sincronizar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>
 
       <button class="btn-cierre" id="cierreBtn" onclick="openCierreModal()" title="Pase de Turno" style="display:none">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -2737,6 +2737,23 @@ function showTurnoButtons(){
   document.getElementById('notifWrap').style.display=show?'':'none';
 }
 // Post-login helpers (called after enterApp succeeds)
+function forceSync(){
+  setSyncStatus('saving');
+  ghFetchAll().then(function(ghData){
+    if(Object.keys(ghData).length>0){
+      for(const[k,v]of Object.entries(ghData)){store[k]=v;}
+      for(const[k,v]of Object.entries(INITIAL_DATA)){if(!store[k])store[k]=JSON.parse(JSON.stringify(v));}
+      try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}
+    }
+    setSyncStatus('ok');
+    render();
+    toast('Sincronizaci\u00f3n completada');
+  }).catch(function(e){
+    console.warn('Force sync failed',e);
+    setSyncStatus('error','Error al sincronizar');
+    toast('Error al sincronizar con GitHub');
+  });
+}
 function _postLogin(){
   showTurnoButtons();
   populateOperatorSelect();
@@ -3042,10 +3059,30 @@ doLogin=function(){
   enterApp(u);
 };
 
-// On load, fetch password overrides from GitHub
+// On load, fetch password overrides from GitHub, sync data, then render
 (async function(){
   await ghFetchPasswords();
-  loadStoreLocal();checkSession();render();
+  loadStoreLocal();
+  checkSession();
+  // Always sync from GitHub BEFORE first render to ensure cross-browser consistency
+  if(GH_CONFIG.token){
+    try{
+      setSyncStatus('saving');
+      const ghData=await ghFetchAll();
+      if(Object.keys(ghData).length>0){
+        for(const[k,v]of Object.entries(ghData)){
+          store[k]=v;
+        }
+        for(const[k,v]of Object.entries(INITIAL_DATA)){if(!store[k])store[k]=JSON.parse(JSON.stringify(v));}
+        try{localStorage.setItem('bitacora_v2',JSON.stringify(store));}catch(e){}
+      }
+      setSyncStatus('ok');
+    }catch(e){
+      console.warn('Init sync failed',e);
+      setSyncStatus('error','Error al sincronizar');
+    }
+  }
+  render();
 })();
 
 </script>
