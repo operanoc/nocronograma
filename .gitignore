@@ -1,6 +1,11 @@
+.env
 skills/
 node_modules/
 tool-results/
 upload/
 download/
 scripts/
+*.log
+nocronograma/
+login-bg-opt.jpg
+login-bg-web.jpg

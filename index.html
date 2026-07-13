@@ -863,151 +863,6 @@ function refreshGHHeaders(){
 let GH_HEADERS={};
 refreshGHHeaders();
 
-// ===== CLAVES DE BORRADO DE POLLING =====
-var _clavesData=null;
-var _clavesSHA=null;
-var _CLAVE_USERS=['DDIPINO','ARIVERO','STORREZ','HNUNEZ','OBALDOMIR'];
-function _canUseClave(){return currentUser&&_CLAVE_USERS.indexOf(currentUser.username)>=0;}
-async function ghFetchClaves(){
-  try{
-    console.log('[claves] Obteniendo claves desde GitHub...');
-    var resp=await fetch(GH_API+'/data/claves.json?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'});
-    console.log('[claves] Response status:',resp.status);
-    if(resp.status===404){console.warn('[claves] Archivo no encontrado (404)');_clavesData=null;return;}
-    if(!resp.ok){console.warn('[claves] Response no ok:',resp.status);return;}
-    var data=await resp.json();
-    _clavesSHA=data.sha;
-    _clavesData=JSON.parse(decodeURIComponent(escape(atob((data.content||'').replace(/\s/g,'')))));
-    console.log('[claves] Cargadas. Hojas:',Object.keys(_clavesData),'. Disponibles:',_countClavesDisponibles());
-  }catch(e){console.error('[claves] Error:',e);}
-}
-async function ghPushClaves(){
-  if(!_clavesData)return;
-  try{
-    var content=utf8ToBase64(JSON.stringify(_clavesData,null,2));
-    var body={message:'claves: actualizar registro',content:content,branch:GH_CONFIG.branch};
-    if(_clavesSHA)body.sha=_clavesSHA;
-    var resp=await fetch(GH_API+'/data/claves.json',{method:'PUT',headers:GH_HEADERS,body:JSON.stringify(body)});
-    if(!resp.ok){console.warn('Failed to push claves',await resp.text());return;}
-    var data=await resp.json();
-    _clavesSHA=data.content.sha;
-  }catch(e){console.warn('Failed to push claves',e);}
-}
-function _findClave(keyInput){
-  if(!_clavesData)return null;
-  var k=keyInput.trim().toLowerCase();
-  for(var sheet in _clavesData){
-    var arr=_clavesData[sheet];
-    for(var i=0;i<arr.length;i++){
-      if(!arr[i].usada&&arr[i].clave.toLowerCase()===k){return {sheet:sheet,index:i,entry:arr[i]};}
-    }
-  }
-  return null;
-}
-function _countClavesDisponibles(){
-  if(!_clavesData)return 0;
-  var c=0;
-  for(var s in _clavesData){for(var i=0;i<_clavesData[s].length;i++){if(!_clavesData[s][i].usada)c++;}}
-  return c;
-}
-async function openClaveModal(){
-  if(!_canUseClave()){toast('No tenes permiso para usar claves');return;}
-  document.getElementById('claveModal').classList.add('show');
-  if(!_clavesData){
-    document.getElementById('claveModalBody').innerHTML='<div style="text-align:center;padding:40px 0"><svg class="spin-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2"><path d="M21 12a9 9 0 11-6.219-8.56"/></svg><p style="color:var(--gray-400);margin-top:12px;font-size:13px">Cargando claves...</p></div>';
-    await ghFetchClaves();
-  }
-  if(!_clavesData){
-    document.getElementById('claveModalBody').innerHTML='<div style="text-align:center;padding:40px 0"><p style="color:var(--red-500);font-size:14px;font-weight:600">No se pudieron cargar las claves</p><p style="color:var(--gray-400);font-size:12px;margin-top:8px">Verific\u00e1 tu conexi\u00f3n</p><button class="btn" style="margin-top:16px;background:var(--gray-200);color:var(--gray-800)" onclick="openClaveModal()">Reintentar</button></div>';
-    return;
-  }
-  _clavePanelSheet=Object.keys(_clavesData)[0]||'';
-  _claveFilter='all';
-  _renderClaveModal();
-}
-function closeClaveModal(){document.getElementById('claveModal').classList.remove('show');}
-var _clavePanelSheet='';
-var _claveFilter='all';
-function _renderClaveModal(){
-  var sheets=Object.keys(_clavesData);
-  var totalDisp=_countClavesDisponibles();
-  var h='<p style="font-size:12px;color:var(--gray-400);margin-bottom:12px">Disponibles: <strong style="color:#FBBF24">'+totalDisp+'</strong></p>';
-  h+='<div style="display:flex;gap:4px;margin-bottom:10px">';
-  var tabs=[{k:'all',l:'Todas'},{k:'avail',l:'Disponibles'},{k:'used',l:'Usadas'}];
-  for(var t=0;t<tabs.length;t++){h+='<button class="btn btn-sm" style="background:'+(_claveFilter===tabs[t].k?'rgba(251,191,36,.2)':'transparent')+';color:'+(_claveFilter===tabs[t].k?'#FBBF24':'var(--gray-400)')+';border:1px solid '+(_claveFilter===tabs[t].k?'#FBBF24':'var(--gray-200)')+'" onclick="_claveFilter=\''+tabs[t].k+'\';_renderClaveModal()">'+tabs[t].l+'</button>';}
-  h+='</div>';
-  h+='<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">';
-  for(var si=0;si<sheets.length;si++){
-    var s=sheets[si];var isA=_clavePanelSheet===s;
-    h+='<button class="btn btn-sm" style="background:'+(isA?'rgba(251,191,36,.15)':'transparent')+';color:'+(isA?'#FBBF24':'var(--gray-400)')+';border:1px solid '+(isA?'#FBBF24':'var(--gray-200)')+'" onclick="_clavePanelSheet=\''+s.replace(/'/g,"\\'")+'\';_renderClaveModal()">'+s+'</button>';
-  }
-  h+='</div>';
-  h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding:10px;background:var(--gray-50);border-radius:8px;border:1px solid var(--gray-200)">';
-  h+='<input type="text" id="claveUseInput" placeholder="Clave" style="flex:1;min-width:120px;padding:6px 10px;font-size:13px" onkeydown="if(event.key===\'Enter\')useClave()">';
-  h+='<input type="text" id="claveUseMotivo" placeholder="Motivo" style="flex:2;min-width:150px;padding:6px 10px;font-size:13px" onkeydown="if(event.key===\'Enter\')useClave()">';
-  h+='<button class="btn" style="background:#FBBF24;color:#000;font-weight:600;padding:6px 14px" onclick="useClave()">Usar</button>';
-  h+='</div>';
-  h+='<div id="claveUseError" style="color:var(--red-600);font-size:11px;margin-bottom:8px;min-height:14px"></div>';
-  var arr=_clavesData[_clavePanelSheet]||[];
-  h+='<div style="max-height:50vh;overflow-y:auto">';
-  for(var i=0;i<arr.length;i++){
-    var e=arr[i];
-    if(_claveFilter==='avail'&&e.usada)continue;
-    if(_claveFilter==='used'&&!e.usada)continue;
-    var bg=e.usada?'var(--gray-50)':'transparent';
-    var op=e.usada?'0.5':'1';
-    h+='<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:'+bg+';opacity:'+op+';border-bottom:1px solid var(--gray-100)">';
-    h+='<div style="min-width:80px"><span style="font-family:monospace;font-size:13px;font-weight:600;color:'+(e.usada?'var(--gray-400)':'#FBBF24')+'">'+escHtml(e.clave)+'</span></div>';
-    h+='<div style="flex:1;font-size:11px;color:var(--gray-400)">'+escHtml(e.label)+'</div>';
-    if(e.usada){
-      h+='<div style="text-align:right;font-size:10px;color:var(--gray-400)">';
-      h+='<span style="background:var(--gray-200);padding:1px 6px;border-radius:4px;font-size:9px">USADA</span> ';
-      if(e.usado_por)h+=escHtml(e.usado_por)+' ';
-      if(e.fecha_uso)h+='<br>'+escHtml(e.fecha_uso)+' ';
-      if(e.comentario)h+='<br><em style="color:var(--gray-400)">'+escHtml(e.comentario)+'</em>';
-      h+='</div>';
-    }else{
-      h+='<span style="background:rgba(251,191,36,.15);color:#FBBF24;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:600">DISPONIBLE</span>';
-    }
-    h+='</div>';
-  }
-  h+='</div>';
-  document.getElementById('claveModalBody').innerHTML=h;
-}
-async function useClave(){
-  var input=document.getElementById('claveUseInput').value;
-  var motivo=document.getElementById('claveUseMotivo').value;
-  var errEl=document.getElementById('claveUseError');
-  if(!input.trim()){errEl.textContent='Ingres\u00e1 la clave';return;}
-  var found=_findClave(input);
-  if(!found){errEl.textContent='Clave inv\u00e1lida o ya usada';return;}
-  var userName=currentUser?currentUser.name||currentUser.username:'';
-  var now=new Date();
-  var fechaStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  found.entry.usada=true;
-  found.entry.usado_por=userName;
-  found.entry.fecha_uso=fechaStr;
-  found.entry.comentario=motivo;
-  await ghPushClaves();
-  _updateClaveBtn();
-  _renderClaveModal();
-  toast('Clave '+found.entry.clave+' registrada');
-}
-function _updateClaveBtn(){
-  var btn=document.getElementById('claveBtn');
-  var cnt=document.getElementById('claveCount');
-  if(!btn)return;
-  if(_canUseClave()&&_clavesData){
-    btn.style.display='inline-flex';
-    cnt.textContent='('+_countClavesDisponibles()+')';
-  }else if(_canUseClave()){
-    btn.style.display='inline-flex';
-    cnt.textContent='(?)';
-  }else{
-    btn.style.display='none';
-  }
-}
-
 let currentDate=(function(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})(),activeTab='pollings',calMonth,calYear,store={};
 const SEARCH=document.getElementById('searchInput');
 
@@ -1990,7 +1845,6 @@ function checkSession(){
     }else{
       document.getElementById('adminMenuWrap').style.display='none';
     }
-    _updateClaveBtn();
   }
 }
 document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
@@ -2899,7 +2753,6 @@ function forceSync(){
 async function _postLogin(){
   showTurnoButtons();
   populateOperatorSelect();
-  _updateClaveBtn();
   if(currentUser){
     console.log('[sync] _postLogin: sincronizando desde GitHub...');
     await syncFromGitHub();
@@ -3208,7 +3061,6 @@ doLogin=function(){
 (async function(){
   console.log('[init] Iniciando carga...');
   await ghFetchPasswords();
-  await ghFetchClaves();
   loadStoreLocal();
   // ALWAYS sync from GitHub FIRST to get latest data from any browser
   if(GH_CONFIG.token){
