@@ -2846,9 +2846,8 @@ function _chatPoll(){
     if(!data)return;
     // Capturar SHA del archivo
     if(data.sha)_chatSha=data.sha;
-    // Decodificar content base64 como hace ghFetchDay
-    var b64=(data.content||'').replace(/\s/g,'');
-    var parsed=JSON.parse(decodeURIComponent(escape(atob(b64))));
+    // Decodificar content base64
+    var parsed=_chatDecode(data);
     var msgs=parsed.messages||[];
     // Merge: mantener mensajes locales optimistas que no estén en server aún
     var serverIds=new Set(msgs.map(function(m){return m.id;}));
@@ -3000,52 +2999,50 @@ function sendChat(){
   // Push to GitHub
   _chatPush(msg);
 }
+function _chatDecode(data){
+  var b64=(data.content||'').replace(/\s/g,'');
+  return JSON.parse(decodeURIComponent(escape(atob(b64))));
+}
 function _chatPush(msg){
   // Fetch current, append, push
   fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
   .then(function(r){
     if(r.status===404){
-      // Archivo no existe, crear con este primer mensaje
       _chatSha=null;
       var content=utf8ToBase64(JSON.stringify({messages:[msg]}));
       return fetch(GH_API+'/'+_CHAT_FILE,{
-        method:'PUT',
-        headers:GH_HEADERS,
-        cache:'no-store',
+        method:'PUT',headers:GH_HEADERS,cache:'no-store',
         body:JSON.stringify({message:'chat init',content:content,sha:null})
       }).then(function(r){
         if(!r.ok)throw new Error('Create failed: '+r.status);
         return r.json();
       }).then(function(res){
         if(res&&res.content)_chatSha=res.content.sha;
+        return null; // signal: creado, no seguir
       });
     }
     if(!r.ok)throw new Error(r.status);
     return r.json();
   })
-  .then(function(data){
-    if(!data||!data.messages)return; // Ya se creó arriba (caso 404)
-    var msgs=data.messages||[];
-    // Capturar SHA
-    if(data.sha)_chatSha=data.sha;
-    // Agregar mensaje solo si no existe
-    if(!msgs.find(function(m){return m.id===msg.id;})){
-      msgs.push(msg);
-    }
-    // Trim old messages
+  .then(function(ghData){
+    if(!ghData)return; // Archivo recien creado (404 case)
+    // Decodificar base64
+    var parsed=_chatDecode(ghData);
+    if(ghData.sha)_chatSha=ghData.sha;
+    var msgs=parsed.messages||[];
+    // Merge con mensajes locales (no perder optimistas)
+    _chatMessages.forEach(function(m){
+      if(!msgs.find(function(x){return x.id===m.id;}))msgs.push(m);
+    });
     if(msgs.length>_CHAT_MAX)msgs=msgs.slice(-_CHAT_MAX);
-    // Update local cache
     _chatMessages=msgs;
-    // Push to GitHub
+    // Push actualizado
     var content=utf8ToBase64(JSON.stringify({messages:msgs}));
     return fetch(GH_API+'/'+_CHAT_FILE,{
-      method:'PUT',
-      headers:GH_HEADERS,
-      cache:'no-store',
+      method:'PUT',headers:GH_HEADERS,cache:'no-store',
       body:JSON.stringify({message:'chat: '+msg.from,content:content,sha:_chatSha})
     }).then(function(r){
       if(r.status===409){
-        // Conflict - get SHA and retry once
         return fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
         .then(function(r2){
           if(r2.status===404)throw new Error('conflict but file gone');
@@ -3053,17 +3050,15 @@ function _chatPush(msg){
         })
         .then(function(existing){
           _chatSha=existing.sha;
-          var allMsgs=JSON.parse(atob(existing.content)).messages||[];
-          // Merge: add our msg if not already there
-          if(!allMsgs.find(function(m){return m.id===msg.id;})){
-            allMsgs.push(msg);
-          }
+          var allMsgs=_chatDecode(existing).messages||[];
+          _chatMessages.forEach(function(m){
+            if(!allMsgs.find(function(x){return x.id===m.id;}))allMsgs.push(m);
+          });
           if(allMsgs.length>_CHAT_MAX)allMsgs=allMsgs.slice(-_CHAT_MAX);
           _chatMessages=allMsgs;
           var content2=utf8ToBase64(JSON.stringify({messages:allMsgs}));
           return fetch(GH_API+'/'+_CHAT_FILE,{
-            method:'PUT',
-            headers:GH_HEADERS,
+            method:'PUT',headers:GH_HEADERS,
             body:JSON.stringify({message:'chat: '+msg.from,content:content2,sha:_chatSha})
           });
         });
