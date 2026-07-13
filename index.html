@@ -495,6 +495,35 @@ html.dark .notif-item.unread{background:#082f49}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}.spin-icon{animation:spin 1s linear infinite;}
 @keyframes livePulse{0%,100%{opacity:1}50%{opacity:.4}}.live-dot{width:8px;height:8px;border-radius:50%;background:#00E5B8;display:inline-block;animation:livePulse 1.5s ease-in-out infinite;margin-right:5px;flex-shrink:0;}.live-badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:#00E5B8;letter-spacing:.5px;padding:3px 10px;border-radius:99px;background:rgba(0,229,184,.1);border:1px solid rgba(0,229,184,.3);user-select:none;}
 
+/* ===== INTERNAL CHAT ===== */
+.chat-fab{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:var(--emerald-600);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2);z-index:250;display:none;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s}
+.chat-fab:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.chat-fab.has-unread::after{content:'';position:absolute;top:2px;right:2px;width:14px;height:14px;background:var(--red-500);border-radius:50%;border:2px solid var(--white);animation:livePulse 1.5s ease-in-out infinite}
+.chat-panel{position:fixed;bottom:88px;right:24px;width:380px;max-width:calc(100vw - 32px);height:480px;max-height:calc(100vh - 120px);background:var(--white);border:1px solid var(--gray-200);border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.15);z-index:250;display:none;flex-direction:column;overflow:hidden;animation:chatSlideIn .2s ease}
+@keyframes chatSlideIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.chat-panel.show{display:flex}
+.chat-head{padding:12px 16px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.chat-head h4{font-size:14px;font-weight:700;color:var(--gray-800);margin:0;flex:1}
+.chat-head .chat-online{font-size:10px;color:var(--emerald-600);font-weight:600;display:flex;align-items:center;gap:4px}
+.chat-head .chat-online::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--emerald-600)}
+.chat-msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.chat-msgs::-webkit-scrollbar{width:4px}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:2px}
+.chat-msg{max-width:80%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.45;word-break:break-word;position:relative}
+.chat-msg.mine{align-self:flex-end;background:var(--emerald-600);color:#fff;border-bottom-right-radius:4px}
+.chat-msg.theirs{align-self:flex-start;background:var(--gray-100);color:var(--gray-800);border-bottom-left-radius:4px}
+.chat-msg-sender{font-size:10px;font-weight:700;margin-bottom:2px;opacity:.7}
+.chat-msg-time{font-size:9px;opacity:.5;margin-top:3px;text-align:right}
+.chat-msg.mine .chat-msg-time{text-align:right}
+.chat-input-bar{padding:10px 12px;border-top:1px solid var(--gray-100);display:flex;gap:8px;flex-shrink:0}
+.chat-input-bar input{flex:1;padding:8px 12px;border:1px solid var(--gray-200);border-radius:99px;font-size:13px;outline:none;transition:border-color .15s}
+.chat-input-bar input:focus{border-color:var(--emerald-600)}
+.chat-input-bar button{width:36px;height:36px;border-radius:50%;background:var(--emerald-600);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.chat-input-bar button:hover{background:var(--emerald-800)}
+.chat-empty{text-align:center;padding:40px 16px;color:var(--gray-400);font-size:13px}
+.chat-date-sep{text-align:center;font-size:10px;color:var(--gray-400);padding:4px 0}
+@media(max-width:640px){.chat-panel{right:8px;bottom:80px;width:calc(100vw - 16px);height:calc(100vh - 100px);max-height:none;border-radius:12px}.chat-fab{bottom:16px;right:16px;width:48px;height:48px}}
+
 /* Admin hamburger menu */
 .admin-menu{position:fixed;top:0;left:0;bottom:0;width:240px;background:var(--white);border-right:1px solid var(--gray-200);box-shadow:4px 0 20px rgba(0,0,0,.1);z-index:200;overflow:hidden;padding:16px 0;transform:translateX(-100%);transition:transform .2s ease;display:flex;flex-direction:column}
 .admin-menu.show{transform:translateX(0)}
@@ -1823,6 +1852,8 @@ function enterApp(username,forceShift){
       });
     }
     if(!isReadOnly())startLivePoll();
+    document.getElementById('chatFab').style.display='flex';
+    startChatPoll();
   }else{
     document.getElementById('adminMenuWrap').style.display='none';
     stopLivePoll();
@@ -1873,6 +1904,10 @@ function doLogout(){
   currentUser=null;
   confirmedOperator=null;
   stopLivePoll();
+  stopChatPoll();
+  document.getElementById('chatFab').style.display='none';
+  document.getElementById('chatPanel').classList.remove('show');
+  _chatOpen=false;
   sessionStorage.removeItem('bitacora_user');
   sessionStorage.removeItem('bitacora_operator');
   sessionStorage.removeItem('bitacora_shiftKey');
@@ -1921,6 +1956,8 @@ function checkSession(){
       document.getElementById('adminMenuWrap').style.display='none';
       stopLivePoll();
     }
+    document.getElementById('chatFab').style.display='flex';
+    startChatPoll();
   }
 }
 document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
@@ -2740,6 +2777,186 @@ function markAllRead(){
   (day.handovers||[]).forEach(h=>{if(!h.readBy)h.readBy={};h.readBy[mySk]=true;});
   saveStore();renderNotifPanel(day);renderNovedades(day);toast('Notificaciones marcadas como leidas');
 }
+// ===== INTERNAL CHAT =====
+var _chatMessages=[];
+var _chatPollTimer=null;
+var _chatLastId=null;
+var _chatOpen=false;
+var _chatUnread=0;
+var _chatSending=false;
+var _CHAT_FILE='data/chat.json';
+var _CHAT_POLL=8000;
+var _CHAT_MAX=300;
+
+function _chatSenderName(u){
+  if(!u)return '???';
+  var usr=USERS[u];
+  return usr?(usr.name||u):u;
+}
+function _chatMyName(){
+  if(!currentUser)return '';
+  return currentUser.name||currentUser.username;
+}
+function toggleChat(){
+  var panel=document.getElementById('chatPanel');
+  _chatOpen=!_chatOpen;
+  if(_chatOpen){
+    panel.classList.add('show');
+    _chatUnread=0;
+    document.getElementById('chatFab').classList.remove('has-unread');
+    renderChatMessages();
+    document.getElementById('chatInput').focus();
+  }else{
+    panel.classList.remove('show');
+  }
+}
+function startChatPoll(){
+  if(_chatPollTimer)return;
+  _chatPoll();
+  _chatPollTimer=setInterval(_chatPoll,_CHAT_POLL);
+}
+function stopChatPoll(){
+  if(_chatPollTimer){clearInterval(_chatPollTimer);_chatPollTimer=null;}
+}
+function _chatPoll(){
+  if(!currentUser)return;
+  fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
+  .then(function(r){if(!r.ok)throw new Error(r.status);return r.json();})
+  .then(function(data){
+    var msgs=data.messages||[];
+    _chatMessages=msgs;
+    if(msgs.length)_chatLastId=msgs[msgs.length-1].id;
+    renderChatMessages();
+    if(!_chatOpen){
+      var last=msgs[msgs.length-1];
+      if(last&&last.from!==currentUser.username&&last.id!==_chatLastId){
+        _chatUnread++;
+        document.getElementById('chatFab').classList.add('has-unread');
+      }
+    }
+    _updateChatOnline(msgs);
+  })
+  .catch(function(e){});
+}
+function _updateChatOnline(msgs){
+  var now=Date.now();
+  var recent={};
+  msgs.forEach(function(m){
+    var age=now-new Date(m.ts).getTime();
+    if(age<120000){
+      recent[m.from]=true;
+    }
+  });
+  // Always include current user
+  if(currentUser)recent[currentUser.username]=true;
+  var count=Object.keys(recent).length;
+  var el=document.getElementById('chatOnline');
+  if(el)el.textContent=count+' en linea';
+}
+function renderChatMessages(){
+  var el=document.getElementById('chatMsgs');
+  if(!_chatMessages.length){
+    el.innerHTML='<div class="chat-empty">No hay mensajes a\u00fan. Escribí algo para empezar.</div>';
+    return;
+  }
+  var html='';
+  var lastDate='';
+  var myUser=currentUser?currentUser.username:'';
+  // Show last 100 messages
+  var show=_chatMessages.slice(-100);
+  show.forEach(function(m){
+    var msgDate=m.ts?m.ts.split(' ')[0]:'';
+    if(msgDate&&msgDate!==lastDate){
+      lastDate=msgDate;
+      html+='<div class="chat-date-sep">'+msgDate+'</div>';
+    }
+    var isMine=m.from===myUser;
+    html+='<div class="chat-msg '+(isMine?'mine':'theirs')+'">';
+    if(!isMine)html+='<div class="chat-msg-sender">'+escHtml(_chatSenderName(m.from))+'</div>';
+    html+='<div>'+escHtml(m.text)+'</div>';
+    html+='<div class="chat-msg-time">'+(m.ts?m.ts.split(' ')[1]:'')+'</div>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+  // Auto-scroll to bottom
+  el.scrollTop=el.scrollHeight;
+}
+function sendChat(){
+  if(!currentUser||_chatSending)return;
+  var input=document.getElementById('chatInput');
+  var text=input.value.trim();
+  if(!text)return;
+  _chatSending=true;
+  input.value='';
+  var now=new Date();
+  var ts=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+  var msg={id:uid(),from:currentUser.username,text:text,ts:ts};
+  // Optimistic: show immediately
+  _chatMessages.push(msg);
+  renderChatMessages();
+  // Push to GitHub
+  _chatPush(msg);
+}
+function _chatPush(msg){
+  // Fetch current, append, push
+  fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
+  .then(function(r){
+    if(r.status===404){
+      // File doesn't exist yet, create it
+      return {messages:[msg]};
+    }
+    if(!r.ok)throw new Error(r.status);
+    return r.json();
+  })
+  .then(function(data){
+    var msgs=data.messages||[];
+    msgs.push(msg);
+    // Trim old messages
+    if(msgs.length>_CHAT_MAX)msgs=msgs.slice(-_CHAT_MAX);
+    // Update local cache
+    _chatMessages=msgs;
+    // Push to GitHub
+    var content=JSON.stringify({messages:msgs});
+    return fetch(GH_API+'/'+_CHAT_FILE,{
+      method:'PUT',
+      headers:GH_HEADERS,
+      cache:'no-store',
+      body:JSON.stringify({message:'chat: '+msg.from,content:content,sha:_chatSha||null})
+    }).then(function(r){
+      if(r.status===409){
+        // Conflict - get SHA and retry once
+        return fetch(GH_API+'/'+_CHAT_FILE+'?ref='+GH_CONFIG.branch+'&_t='+Date.now(),{headers:GH_HEADERS,cache:'no-store'})
+        .then(function(r2){return r2.json();})
+        .then(function(existing){
+          _chatSha=existing.sha;
+          var allMsgs=existing.messages||[];
+          // Merge: add our msg if not already there
+          if(!allMsgs.find(function(m){return m.id===msg.id;})){
+            allMsgs.push(msg);
+          }
+          if(allMsgs.length>_CHAT_MAX)allMsgs=allMsgs.slice(-_CHAT_MAX);
+          _chatMessages=allMsgs;
+          var content2=JSON.stringify({messages:allMsgs});
+          return fetch(GH_API+'/'+_CHAT_FILE,{
+            method:'PUT',
+            headers:GH_HEADERS,
+            body:JSON.stringify({message:'chat: '+msg.from,content:content2,sha:_chatSha})
+          });
+        });
+      }
+      return r.json();
+    })
+    .then(function(res){
+      if(res&&res.content)_chatSha=res.content.sha;
+    });
+  })
+  .catch(function(e){
+    console.warn('[chat] Push error',e);
+    toast('Error al enviar mensaje');
+  })
+  .finally(function(){_chatSending=false;});
+}
+
 // ===== DOWNLOAD REPORTS =====
 function triggerDownload(html,filename){
   const blob=new Blob([html],{type:'text/html;charset=utf-8'});
@@ -3292,5 +3509,22 @@ doLogin=function(){
 })();
 
 </script>
+
+<!-- Internal Chat -->
+<button class="chat-fab" id="chatFab" onclick="toggleChat()" title="Chat Interno">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <h4>Chat Interno</h4>
+    <span class="chat-online" id="chatOnline"></span>
+    <button class="btn-icon" onclick="toggleChat()" style="margin-left:4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+  <div class="chat-msgs" id="chatMsgs"></div>
+  <div class="chat-input-bar">
+    <input type="text" id="chatInput" placeholder="Escribir mensaje..." maxlength="500" onkeydown="if(event.key==='Enter')sendChat()">
+    <button onclick="sendChat()" title="Enviar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+  </div>
+</div>
 </body>
 </html>
