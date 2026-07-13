@@ -2506,8 +2506,8 @@ function renderNovedades(day){
   const badge=document.getElementById('nvBadge');
   const mySk=currentUser?currentUser.shiftKey:'';
   const isAdmin=currentUser&&currentUser.role==='admin';
-  // For operators: only show handovers from their own shift
-  const hovers=(day.handovers||[]).filter(h=>isAdmin||h.shift===mySk);
+  // Show ALL handovers so every shift can read what the previous shift left
+  const hovers=(day.handovers||[]);
   if(!hovers.length){sec.style.display='none';return;}
   sec.style.display='';
   // Count unread (from other shifts, only relevant for display)
