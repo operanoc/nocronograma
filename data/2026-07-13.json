@@ -464,6 +464,12 @@
       "status": "OK",
       "shift": "TARDE",
       "user": "FGODOY"
+    },
+    {
+      "name": "AFIP 72",
+      "status": "OK",
+      "shift": "TARDE",
+      "user": "FGODOY"
     }
   ],
   "notes": "",
