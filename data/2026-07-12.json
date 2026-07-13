@@ -614,12 +614,12 @@
   ],
   "notifications": [
     {
-      "id": "1783908514970c165f",
+      "id": "1783908514970d8c14",
       "type": "handover",
-      "title": "Pase de Turno - Noche",
-      "desc": "Gustavo Castellani: SEMANALES CORRIENDO, RESTO OK",
-      "timestamp": "2026-07-12 08:30:00",
-      "shift": "NOCHE",
+      "title": "Pase de Turno - Tarde",
+      "desc": "Humberto Nuñez: PERU D2 OK, CHILE CENCOPAY Y PERU X30 COMPLETADOS",
+      "timestamp": "2026-07-12 22:30:00",
+      "shift": "TARDE",
       "readBy": {}
     },
     {
@@ -632,13 +632,15 @@
       "readBy": {}
     },
     {
-      "id": "1783908514970d8c14",
+      "id": "1783908514970c165f",
       "type": "handover",
-      "title": "Pase de Turno - Tarde",
-      "desc": "Humberto Nuñez: PERU D2 OK, CHILE CENCOPAY Y PERU X30 COMPLETADOS",
-      "timestamp": "2026-07-12 22:30:00",
-      "shift": "TARDE",
-      "readBy": {}
+      "title": "Pase de Turno - Noche",
+      "desc": "Gustavo Castellani: SEMANALES CORRIENDO, RESTO OK",
+      "timestamp": "2026-07-12 08:30:00",
+      "shift": "NOCHE",
+      "readBy": {
+        "ADMIN": true
+      }
     }
   ]
 }
