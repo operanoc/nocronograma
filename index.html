@@ -2080,6 +2080,7 @@ async function _renderDashboard(){
   let dailyStats=[];
   let bkpDurations=[];
   let bkpNames={};
+  let bkpDetail={};
   let procNames={};
 
   days.forEach(([dateStr,day])=>{
@@ -2104,18 +2105,30 @@ async function _renderDashboard(){
 
     (day.backups||[]).forEach(b=>{
       totalBkps++;
-      if(b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'))){
+      var bFail=b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'));
+      if(bFail){
         failedBkps++;
       }else if(b.status&&b.status!==''){
         okBkps++;
-      }else if(b.startTime&&b.endTime){
+      }else if(b.iniTime&&b.endTime){
         okBkps++;
       }
-      if(b.name)bkpNames[b.name]=(bkpNames[b.name]||0)+1;
-      if(b.duration){
-        const parts=b.duration.split(':').map(Number);
-        const secs=(parts[0]||0)*3600+(parts[1]||0)*60;
-        if(secs>0)bkpDurations.push(secs);
+      // Detailed BKP stats
+      if(b.name){
+        bkpNames[b.name]=(bkpNames[b.name]||0)+1;
+        if(!bkpDetail[b.name])bkpDetail[b.name]={count:0,ok:0,fail:0,durs:[],jobs:{}};
+        bkpDetail[b.name].count++;
+        if(bFail){bkpDetail[b.name].fail++;}
+        else{bkpDetail[b.name].ok++;}
+        if(b.duration){
+          var parts=b.duration.split(':').map(Number);
+          var secs=(parts[0]||0)*3600+(parts[1]||0)*60;
+          if(secs>0){
+            bkpDurations.push(secs);
+            bkpDetail[b.name].durs.push(secs);
+          }
+        }
+        if(b.job){bkpDetail[b.name].jobs[b.job]=(bkpDetail[b.name].jobs[b.job]||0)+1;}
       }
     });
 
@@ -2134,6 +2147,7 @@ async function _renderDashboard(){
       pollTotal:Math.max(dayPollBeg,dayPollEnd),
       bkpOk:(day.backups||[]).filter(b=>!(b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP')))).length,
       bkpFail:(day.backups||[]).filter(b=>b.status&&(b.status.toUpperCase().includes('FAIL')||b.status.toUpperCase().includes('SUSP'))).length,
+      bkpTotal:(day.backups||[]).length,
       procOk:(day.processes||[]).filter(p=>{const u=(p.status||'').toUpperCase();return u==='OK';}).length,
       procTotal:(day.processes||[]).length
     });
@@ -2214,13 +2228,13 @@ async function _renderDashboard(){
   // Daily breakdown table
   h+='<div class="dash-section"><div class="dash-section-header"><h3>Desglose por dia - '+rangeLabel+'</h3></div>';
   if(dailyStats.length){
-    h+='<div style="overflow-x:auto"><table class="dash-table"><thead><tr><th>Fecha</th><th class="num">Pollings OK</th><th class="num">Pollings Total</th><th class="num">BKP OK</th><th class="num">BKP Fail</th><th class="num">Proc OK</th><th class="num">Proc Total</th><th>Completitud</th></tr></thead><tbody>';
+    h+='<div style="overflow-x:auto"><table class="dash-table"><thead><tr><th>Fecha</th><th class="num">Pollings OK</th><th class="num">Pollings Total</th><th class="num">BKP OK</th><th class="num">BKP Total</th><th class="num">BKP Fail</th><th class="num">Proc OK</th><th class="num">Proc Total</th><th>Completitud</th></tr></thead><tbody>';
     dailyStats.forEach(d=>{
-      const total=d.pollTotal+d.bkpOk+d.bkpFail+d.procTotal;
+      const total=d.pollTotal+d.bkpTotal+d.procTotal;
       const done=d.pollCompleted+d.bkpOk+d.procOk;
       const pct=total>0?Math.round(done/total*100):0;
       const cls=pct>=90?'ok-cell':pct>=70?'warn-cell':'fail-cell';
-      h+='<tr><td>'+d.date+'</td><td class="num '+(d.pollCompleted>=d.pollTotal?'ok-cell':'')+'">'+d.pollCompleted+'</td><td class="num">'+d.pollTotal+'</td><td class="num ok-cell">'+d.bkpOk+'</td><td class="num '+(d.bkpFail>0?'fail-cell':'')+'">'+d.bkpFail+'</td><td class="num ok-cell">'+d.procOk+'</td><td class="num">'+d.procTotal+'</td><td><div style="display:flex;align-items:center;gap:6px"><div class="dash-pct-bar"><div class="dash-pct-fill '+(pct>=90?'ok-fill':pct>=70?'warn-fill':'fail-fill')+'" style="width:'+pct+'%"></div></div><span class="num '+cls+'" style="min-width:36px">'+pct+'%</span></div></td></tr>';
+      h+='<tr><td>'+d.date+'</td><td class="num '+(d.pollCompleted>=d.pollTotal?'ok-cell':'')+'">'+d.pollCompleted+'</td><td class="num">'+d.pollTotal+'</td><td class="num ok-cell">'+d.bkpOk+'</td><td class="num">'+d.bkpTotal+'</td><td class="num '+(d.bkpFail>0?'fail-cell':'')+'">'+d.bkpFail+'</td><td class="num ok-cell">'+d.procOk+'</td><td class="num">'+d.procTotal+'</td><td><div style="display:flex;align-items:center;gap:6px"><div class="dash-pct-bar"><div class="dash-pct-fill '+(pct>=90?'ok-fill':pct>=70?'warn-fill':'fail-fill')+'" style="width:'+pct+'%"></div></div><span class="num '+cls+'" style="min-width:36px">'+pct+'%</span></div></td></tr>';
     });
     h+='</tbody></table></div>';
   }else{
@@ -2243,17 +2257,51 @@ async function _renderDashboard(){
   }
   h+='</div>';
 
-  // Backup detail table
-  h+='<div class="dash-section"><div class="dash-section-header"><h3>Detalle de Backups por nombre - '+rangeLabel+'</h3></div>';
-  const bkpEntries=Object.entries(bkpNames).sort((a,b)=>b[1]-a[1]);
+  // Backup detail section - comprehensive
+  h+='<div class="dash-section"><div class="dash-section-header"><h3>Analisis de Backups - '+rangeLabel+'</h3></div>';
+  var bkpEntries=Object.entries(bkpDetail).sort((a,b)=>b[1].count-a[1].count);
   if(bkpEntries.length){
-    h+='<div style="overflow-x:auto"><table class="dash-table"><thead><tr><th>Backup</th><th class="num">Ejecuciones</th></tr></thead><tbody>';
-    bkpEntries.forEach(([name,count])=>{
-      h+='<tr><td>'+name+'</td><td class="num">'+count+'</td></tr>';
+    // Summary KPIs row
+    var avgBkpSec=bkpDurations.length?Math.round(bkpDurations.reduce((a,b)=>a+b,0)/bkpDurations.length):0;
+    var minBkpSec=bkpDurations.length?Math.min(...bkpDurations):0;
+    var maxBkpSec=bkpDurations.length?Math.max(...bkpDurations):0;
+    var bkpNoDur=totalBkps-bkpDurations.length;
+    h+='<div class="dash-summary" style="margin-bottom:16px">';
+    h+='<div class="dash-stat dash-ok"><div class="dash-val">'+okBkps+'</div><div class="dash-lbl">Completados</div></div>';
+    h+='<div class="dash-stat dash-fail"><div class="dash-val">'+failedBkps+'</div><div class="dash-lbl">Fallidos</div></div>';
+    h+='<div class="dash-stat dash-info"><div class="dash-val">'+fmtSecs(avgBkpSec)+'</div><div class="dash-lbl">Duracion promedio</div></div>';
+    h+='<div class="dash-stat dash-info"><div class="dash-val">'+fmtSecs(minBkpSec)+'</div><div class="dash-lbl">Duracion minima</div></div>';
+    h+='<div class="dash-stat '+(maxBkpSec>7200?'dash-fail':maxBkpSec>3600?'dash-warn':'dash-info')+'"><div class="dash-val">'+fmtSecs(maxBkpSec)+'</div><div class="dash-lbl">Duracion maxima</div></div>';
+    h+='</div>';
+
+    // Detailed table
+    h+='<div style="overflow-x:auto"><table class="dash-table"><thead><tr><th>Backup</th><th class="num">Ejecuciones</th><th class="num">OK</th><th class="num">Fallidos</th><th class="num">% Exito</th><th class="num">Dur. Prom.</th><th class="num">Dur. Min</th><th class="num">Dur. Max</th><th>JOB mas usado</th></tr></thead><tbody>';
+    bkpEntries.forEach(function(entry){
+      var name=entry[0],d=entry[1];
+      var pct=d.count>0?Math.round(d.ok/d.count*100):0;
+      var avgD=d.durs.length?Math.round(d.durs.reduce(function(a,b){return a+b;},0)/d.durs.length):0;
+      var minD=d.durs.length?Math.min.apply(null,d.durs):0;
+      var maxD=d.durs.length?Math.max.apply(null,d.durs):0;
+      var topJob=Object.entries(d.jobs).sort(function(a,b){return b[1]-a[1];})[0];
+      var pctCls=pct>=95?'ok-cell':pct>=80?'warn-cell':'fail-cell';
+      h+='<tr><td><strong>'+escHtml(name)+'</strong></td><td class="num">'+d.count+'</td><td class="num ok-cell">'+d.ok+'</td><td class="num '+(d.fail>0?'fail-cell':'')+'">'+d.fail+'</td><td class="num '+pctCls+'">'+pct+'%</td><td class="num">'+fmtSecs(avgD)+'</td><td class="num">'+fmtSecs(minD)+'</td><td class="num '+(maxD>7200?'fail-cell':maxD>3600?'warn-cell':'')+'">'+fmtSecs(maxD)+'</td><td style="font-size:11px;color:var(--gray-600)">'+(topJob?escHtml(topJob[0])+' ('+topJob[1]+')':'—')+'</td></tr>';
     });
     h+='</tbody></table></div>';
+
+    // Slowest backups bar chart
+    var bkpAvgList=bkpEntries.map(function(entry){var n=entry[0],d=entry[1];return{name:n,avg:d.durs.length?Math.round(d.durs.reduce(function(a,b){return a+b;},0)/d.durs.length):0,count:d.count};}).filter(function(x){return x.avg>0;}).sort(function(a,b){return b.avg-a.avg;}).slice(0,8);
+    if(bkpAvgList.length){
+      h+='<h4 style="margin:16px 0 8px;font-size:13px;color:var(--gray-700)">Backups mas lentos (promedio)</h4>';
+      h+='<div class="dash-bar-chart">';
+      var maxBkpAvg=bkpAvgList[0].avg;
+      bkpAvgList.forEach(function(s){
+        var p=Math.round(s.avg/maxBkpAvg*100);
+        h+='<div class="dash-bar-row"><span class="dash-bar-label" title="'+escHtml(s.name)+'">'+escHtml(s.name)+'</span><div class="dash-bar-track"><div class="dash-bar-fill" style="width:'+p+'%;background:#dc2626"></div></div><span class="dash-bar-val">'+fmtSecs(s.avg)+'</span></div>';
+      });
+      h+='</div>';
+    }
   }else{
-    h+='<div class="dash-empty">No hay datos de backups</div>';
+    h+='<div class="dash-empty">No hay datos de backups para el periodo</div>';
   }
   h+='</div>';
 
