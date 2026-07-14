@@ -331,11 +331,10 @@
       "user": "OPERAADMIN"
     },
     {
-      "id": "mrkv28c0dd47y",
       "name": "AFIP 72",
-      "status": "",
-      "shift": "",
-      "user": "import"
+      "status": "OK",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     },
     {
       "id": "mrkv28c0siyzk",
