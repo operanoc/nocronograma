@@ -199,6 +199,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "mrkjb47roiac2",
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-14",
+      "time": "",
+      "note": "SIN AC",
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrkjb47sqj9xb",
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-14",
+      "time": "",
+      "note": "SIN AC",
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
