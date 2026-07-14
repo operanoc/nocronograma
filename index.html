@@ -578,10 +578,11 @@ html.dark .notif-item.unread{background:#082f49}
 .ai-head .ai-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px rgba(74,222,128,.5);animation:pulse-dot 2s ease-in-out infinite}
 .ai-head .ai-dot.offline{background:rgba(255,255,255,.4);box-shadow:none;animation:none}
 .ai-head .ai-user-tag{font-size:10px;font-weight:600;color:rgba(255,255,255,.8);background:rgba(255,255,255,.15);padding:2px 8px;border-radius:99px;backdrop-filter:blur(4px)}
-.ai-close-btn{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;font-size:18px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;transition:background .15s}
-.ai-close-btn:hover{background:rgba(255,255,255,.35)}
-.ai-clear-btn{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);color:rgba(255,255,255,.75);font-size:14px;cursor:pointer;padding:0;border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
-.ai-clear-btn:hover{background:rgba(255,255,255,.35);color:#fff}
+.ai-close-btn{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.25);color:#fff;font-size:20px;font-weight:700;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;transition:background .15s;backdrop-filter:blur(4px)}
+.ai-close-btn:hover{background:rgba(255,255,255,.4)}
+.ai-clear-btn{height:30px;border-radius:8px;background:rgba(255,255,255,.25);color:#fff;font-size:12px;font-weight:600;cursor:pointer;padding:0 12px;border:none;display:flex;align-items:center;gap:6px;flex-shrink:0;transition:all .15s;backdrop-filter:blur(4px);white-space:nowrap}
+.ai-clear-btn:hover{background:rgba(255,255,255,.4)}
+.ai-clear-btn svg{flex-shrink:0}
 .ai-msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,rgba(99,102,241,.02) 0%,transparent 30%)}
 .ai-msgs::-webkit-scrollbar{width:4px}
 .ai-msgs::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:2px}
@@ -622,6 +623,7 @@ html.dark .notif-item.unread{background:#082f49}
   .ai-fab:active{transform:scale(.95)}
   .ai-panel{left:0;bottom:0;right:0;width:100%;height:100%;max-height:100dvh;border-radius:0;border:none;padding-bottom:env(safe-area-inset-bottom)}
   .ai-close-btn{width:36px;height:36px;font-size:22px}
+  .ai-clear-btn{height:36px;font-size:13px;padding:0 14px}
   .ai-msgs{padding:10px 12px;gap:6px}
   .ai-msg{max-width:85%;font-size:14px;padding:10px 14px}
   .ai-input-bar{padding:8px 10px;gap:6px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
@@ -959,7 +961,7 @@ html.dark .notif-item.unread{background:#082f49}
 <div class="ai-panel" id="aiPanel">
   <div class="ai-head">
     <h4><div class="ai-dot" id="aiDot"></div> NOCito <span class="ai-user-tag" id="aiUserTag"></span></h4>
-    <button class="ai-clear-btn" onclick="aiClearChat()" title="Limpiar conversaci\u00f3n"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>
+    <button class="ai-clear-btn" onclick="aiClearChat()" title="Limpiar conversaci\u00f3n"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Limpiar</button>
     <button class="ai-close-btn" onclick="toggleAIChat()" title="Cerrar">\u00d7</button>
   </div>
   <div class="ai-msgs" id="aiMsgs">
