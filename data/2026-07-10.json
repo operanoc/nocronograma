@@ -337,11 +337,10 @@
       "user": "OPERAADMIN"
     },
     {
-      "id": "mrkv28c0siyzk",
       "name": "AFIP 24",
-      "status": "",
-      "shift": "",
-      "user": "import"
+      "status": "OK",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     },
     {
       "id": "mrkv28c0ay5gj",
