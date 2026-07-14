@@ -424,7 +424,9 @@
       "pollOk": true,
       "bkpOk": true,
       "procOk": true,
-      "readBy": {}
+      "readBy": {
+        "ADMIN": true
+      }
     }
   ],
   "audit": [
@@ -448,7 +450,9 @@
       "bkpOk": true,
       "procOk": true,
       "timestamp": "2026-07-14 08:33:56",
-      "readBy": {}
+      "readBy": {
+        "ADMIN": true
+      }
     }
   ]
 }
