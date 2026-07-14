@@ -963,9 +963,14 @@ html.dark .notif-item.unread{background:#082f49}
     <button class="ai-close-btn" onclick="toggleAIChat()" title="Cerrar">\u00d7</button>
   </div>
   <div class="ai-msgs" id="aiMsgs">
-    <div class="ai-welcome" id="aiWelcome">
-      <h3>\u00bfEn qu\u00e9 puedo ayudarte?</h3>
-      <p>Tengo acceso a <b>todos</b> los datos de la bit\u00e1cora. Preguntame sobre cualquier fecha, tendencias, an\u00e1lisis o comparaciones.</p>
+    <div class="ai-welcome" id="aiWelcome" style="padding:16px 16px 4px">
+      <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:6px">
+        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16.01"/><line x1="16" y1="16" x2="16" y2="16.01"/></svg></div>
+        <div style="text-align:left">
+          <div style="font-size:14px;font-weight:700;color:var(--gray-800)" id="aiWelcomeUser">Hola</div>
+          <div style="font-size:11px;color:var(--gray-400)">Asistente de operaciones NOC</div>
+        </div>
+      </div>
     </div>
     <div class="ai-suggestions" id="aiSuggestions">
       <button class="ai-sug-btn" onclick="aiSendSuggestion(this)">\u00bfCu\u00e1ntos pollings hay hoy?</button>
@@ -4530,15 +4535,16 @@ function toggleAIChat(){
 
 function _aiUpdateUserTag(){
   var tag=document.getElementById('aiUserTag');
-  if(!tag)return;
+  var welUser=document.getElementById('aiWelcomeUser');
   if(currentUser){
     var name=currentUser.username||'';
     var shift=currentUser.shiftKey||'';
     var label=name+(shift?' ('+shift+')':'');
-    tag.textContent=label;
-    tag.style.display='';
+    if(tag){tag.textContent=label;tag.style.display='';}
+    if(welUser)welUser.textContent='Hola, '+name;
   }else{
-    tag.style.display='none';
+    if(tag)tag.style.display='none';
+    if(welUser)welUser.textContent='Hola';
   }
 }
 
