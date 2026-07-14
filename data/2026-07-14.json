@@ -254,6 +254,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "mrkkjm9ftqgdb",
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "date": "2026-07-14",
+      "time": "01:21",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrkkjm9f31x94",
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "date": "2026-07-14",
+      "time": "03:18",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
     }
   ],
   "backups": [],
