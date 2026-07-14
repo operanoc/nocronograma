@@ -81,6 +81,13 @@
     }
   ],
   "backups": [],
-  "processes": [],
+  "processes": [
+    {
+      "name": "Tarjeta Naranja",
+      "status": "OK",
+      "shift": "MANANA",
+      "user": "STORREZ"
+    }
+  ],
   "notes": ""
 }
