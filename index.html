@@ -1686,20 +1686,23 @@ function _extractDateFromFilename(fileName){
       return y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     }
   }
-  // Pattern: 20250115 or 15012025
-  m=fileName.match(/(\d{2})(\d{2})(\d{4})/);
-  if(m){
-    var dd=parseInt(m[1]),mm=parseInt(m[2]),yy=parseInt(m[3]);
-    if(mm>=1&&mm<=12&&dd>=1&&dd<=31&&yy>=2020&&yy<=2030){
-      return yy+'-'+String(mm).padStart(2,'0')+'-'+String(dd).padStart(2,'0');
-    }
-  }
   // Pattern: 15-01-2025 or 15/01/2025
   m=fileName.match(/(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})/);
   if(m){
     var dd2=parseInt(m[1]),mm2=parseInt(m[2]),yy2=parseInt(m[3]);
     if(dd2>=1&&dd2<=31&&mm2>=1&&mm2<=12&&yy2>=2020&&yy2<=2030){
       return yy2+'-'+String(mm2).padStart(2,'0')+'-'+String(dd2).padStart(2,'0');
+    }
+  }
+  // Pattern: "10 JULIO 2026" o "10 de Julio de 2026" (mes en texto espanol)
+  m=fileName.match(/(\d{1,2})\s*(?:de\s*)?([A-Za-z\u00e1\u00e9\u00ed\u00f3\u00fa\u00c1\u00c9\u00cd\u00d3\u00da\u00f1\u00d1]+)\s*(?:de\s*)?(\d{4})/i);
+  if(m){
+    var dayNum=parseInt(m[1]);
+    var monthName=m[2];
+    var yearNum=parseInt(m[3]);
+    var mIdx=MN_ES.findIndex(function(n){return n.toLowerCase()===monthName.toLowerCase();});
+    if(mIdx>=0&&dayNum>=1&&dayNum<=31&&yearNum>=2020&&yearNum<=2030){
+      return yearNum+'-'+String(mIdx+1).padStart(2,'0')+'-'+String(dayNum).padStart(2,'0');
     }
   }
   return null;
@@ -1739,7 +1742,14 @@ function handleHistoricImport(input){
         var wb=XLSX.read(data,{type:'array'});
         var parsed=parseXLSXWorkbook(wb);
         if(!parsed.pollings.length&&!parsed.backups.length&&!parsed.processes.length){
-          results.push({fileName:file.name,dateKey:null,parsed:null,error:'Sin datos reconocibles'});
+          // Generar info de debug: hojas y primeras filas
+          var debugInfo='Sin datos reconocibles. Hojas: '+wb.SheetNames.join(', ');
+          wb.SheetNames.forEach(function(sn){
+            var sr=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1});
+            var preview=sr.slice(0,4).map(function(row){return (row||[]).map(function(c){return String(c||'').substring(0,30);}).join(' | ');}).join('; ');
+            debugInfo+=' \\n['+sn+']: '+preview;
+          });
+          results.push({fileName:file.name,dateKey:null,parsed:null,error:debugInfo});
           pending--;if(pending===0)_showHistoricResults(results);
           return;
         }
@@ -1778,7 +1788,8 @@ function _showHistoricResults(results){
     eh+='<div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:12px 16px;font-size:12px;color:#991B1B">';
     eh+='<div style="font-weight:700;margin-bottom:8px">No se pudieron importar los archivos</div>';
     errors.forEach(function(r){
-      eh+='<div style="margin-bottom:4px"><b>'+escHtml(r.fileName)+'</b>: '+escHtml(r.error)+'</div>';
+      var errMsg=escHtml(r.error).replace(/\\\\n/g,'<br>');
+      eh+='<div style="margin-bottom:6px"><b>'+escHtml(r.fileName)+'</b>: '+errMsg+'</div>';
     });
     eh+='<div style="margin-top:10px;padding-top:8px;border-top:1px solid #FECACA;color:#7F1D1D">';
     eh+='<div style="font-weight:600;margin-bottom:4px">Formatos aceptados:</div>';
