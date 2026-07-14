@@ -416,6 +416,12 @@
       "status": "OK",
       "shift": "ADMIN",
       "user": "OPERAADMIN"
+    },
+    {
+      "name": "Cierre AFIP",
+      "status": "OK",
+      "shift": "TARDE",
+      "user": "FGODOY"
     }
   ],
   "notes": "",
