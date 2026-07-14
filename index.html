@@ -843,7 +843,7 @@ html.dark .notif-item.unread{background:#082f49}
   <hr style="border:none;border-top:1px solid var(--gray-200);margin:8px 0">
   <button class="menu-item" onclick="document.getElementById('historicImportInput').click();closeAdminMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Importar hist\u00f3ricos (XLSX)</button>
   <hr style="border:none;border-top:1px solid var(--gray-200);margin:8px 0">
-  <button class="menu-item" onclick="openAIConfigModal();closeAdminMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg> Configurar Asistente IA</button>
+  <button class="menu-item" onclick="openAIConfigModal();closeAdminMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg> Configurar NOCito</button>
 </div>
 <input type="file" id="xlsxImportInput" accept=".xlsx,.xls" style="display:none" onchange="handleXLSXImport(this)">
 <input type="file" id="historicImportInput" accept=".xlsx,.xls" multiple style="display:none" onchange="handleHistoricImport(this)">
@@ -953,12 +953,12 @@ html.dark .notif-item.unread{background:#082f49}
 <div class="toast" id="toast"></div>
 
 <!-- AI Chat Agent -->
-<button class="ai-fab" id="aiFab" onclick="toggleAIChat()" title="Asistente IA">
+<button class="ai-fab" id="aiFab" onclick="toggleAIChat()" title="NOCito">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16.01"/><line x1="16" y1="16" x2="16" y2="16.01"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
 </button>
 <div class="ai-panel" id="aiPanel">
   <div class="ai-head">
-    <h4><div class="ai-dot" id="aiDot"></div> Asistente IA <span class="ai-user-tag" id="aiUserTag"></span></h4>
+    <h4><div class="ai-dot" id="aiDot"></div> NOCito <span class="ai-user-tag" id="aiUserTag"></span></h4>
     <button class="ai-clear-btn" onclick="aiClearChat()" title="Limpiar conversaci\u00f3n">Limpiar</button>
     <button class="ai-close-btn" onclick="toggleAIChat()" title="Cerrar">\u00d7</button>
   </div>
@@ -1011,7 +1011,7 @@ html.dark .notif-item.unread{background:#082f49}
 <!-- AI Config Modal -->
 <div class="modal-overlay" id="aiConfigModal" style="z-index:300" onclick="if(event.target===this)closeAIConfigModal()">
   <div class="modal" style="max-width:480px">
-    <div class="modal-header"><h3>Configurar Asistente IA</h3><button class="btn-icon" onclick="closeAIConfigModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="modal-header"><h3>Configurar NOCito</h3><button class="btn-icon" onclick="closeAIConfigModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
     <div class="modal-body">
       <p style="color:var(--gray-500);font-size:12px;margin-bottom:6px;line-height:1.5">Usamos <b>Groq</b> (gratis y rapido). Solo necesit\u00e1s tu API Key.</p>
       <p style="color:var(--sky-600);font-size:11px;margin-bottom:14px;line-height:1.4">
@@ -4458,7 +4458,7 @@ const _gkParts=[103,115,107,95,67,122,115,79,99,85,75,99,114,102,76,112,78,117,8
 function _decodeGK(){return _gkParts.map(function(c){return String.fromCharCode(c);}).join('');}
 
 // Default system prompt with NOC context
-var _aiDefaultSystem='Eres un asistente de IA para un equipo de NOC (Network Operations Center) que usa una bitacora digital. Ayudas con consultas sobre servidores, pollings, backups y procesos operativos. Respondes en español de forma concisa y \u00fatil. Si te preguntan sobre datos del d\u00eda actual, usa el contexto que se te proporciona autom\u00e1ticamente.';
+var _aiDefaultSystem='Te llamás NOCito. Sos un asistente de IA para un equipo de NOC (Network Operations Center) que usa una bitacora digital. Eres simpático, usás lenguaje casual argentino, y ayudás con consultas sobre servidores, pollings, backups y procesos operativos. Respondé en español de forma concisa y \u00fatil. Si te preguntan sobre datos del d\u00eda actual, usa el contexto que se te proporciona autom\u00e1ticamente.';
 
 function _aiGetConfig(){
   try{
@@ -4726,7 +4726,7 @@ async function aiSend(){
     _aiAddMsg('assistant',reply);
   }catch(err){
     console.error('[AI Chat]',err);
-    _aiAddMsg('assistant','Error: '+err.message+'\n\nVerific\u00e1 la configuraci\u00f3n de la API en el men\u00fa Admin > Configurar Asistente IA.');
+    _aiAddMsg('assistant','Error: '+err.message+'\n\nVerific\u00e1 la configuraci\u00f3n de la API en el men\u00fa Admin > Configurar NOCito.');
   }finally{
     _aiSending=false;
     document.getElementById('aiSendBtn').disabled=false;
