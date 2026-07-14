@@ -349,11 +349,10 @@
       "user": "OPERAADMIN"
     },
     {
-      "id": "mrkv28c0xtv2v",
       "name": "CIERRE AFIP",
-      "status": "",
-      "shift": "",
-      "user": "import"
+      "status": "OK",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     }
   ],
   "notes": ""
