@@ -1456,56 +1456,108 @@ function handleXLSXImport(input){
 }
 function parseXLSXWorkbook(wb){
   var result={pollings:[],backups:[],processes:[]};
-  // Try to find sheets by name (match export format or common names)
   var sheetNames=wb.SheetNames;
   var pollSheet=null,bkpSheet=null,procSheet=null;
+  // 1) Buscar hojas por nombre
   sheetNames.forEach(function(n){
     var u=n.toUpperCase();
     if(u.indexOf('POLLING')>=0)pollSheet=n;
     else if(u.indexOf('BACKUP')>=0||u.indexOf('BKP')>=0)bkpSheet=n;
     else if(u.indexOf('PROCESO')>=0)procSheet=n;
   });
-  // If no named sheets found, try by column headers
+  // 2) Si no encontro por nombre, buscar por encabezados de columna
   if(!pollSheet&&!bkpSheet&&!procSheet){
     sheetNames.forEach(function(n){
       var ws=wb.Sheets[n];
       var json=XLSX.utils.sheet_to_json(ws,{header:1});
       if(json.length<2)return;
-      var hdr=json[0].map(function(h){return String(h||'').toUpperCase();});
-      if(hdr.indexOf('SERVIDOR')>=0&&hdr.indexOf('FASE')>=0)pollSheet=n;
-      else if(hdr.indexOf('NOMBRE')>=0&&(hdr.indexOf('HORA INICIO')>=0||hdr.indexOf('ESTADO')>=0)){
-        if(hdr.indexOf('JOB')>=0)bkpSheet=n;
-        else procSheet=n;
+      // Buscar fila de encabezado (puede no ser la primera)
+      var hdrRow=-1;
+      for(var hi=0;hi<Math.min(json.length,6);hi++){
+        if(!json[hi])continue;
+        var cells=json[hi].map(function(h){return String(h||'').toUpperCase().trim();});
+        if(cells.indexOf('SERVIDOR')>=0||cells.indexOf('SERVER')>=0){hdrRow=hi;break;}
+        if(cells.indexOf('NOMBRE')>=0&&(cells.indexOf('ESTADO')>=0||cells.indexOf('HORA')>=0||cells.indexOf('JOB')>=0)){hdrRow=hi;break;}
+      }
+      if(hdrRow<0)return;
+      var hdr=json[hdrRow].map(function(h){return String(h||'').toUpperCase().trim();});
+      if((hdr.indexOf('SERVIDOR')>=0||hdr.indexOf('SERVER')>=0)&&(hdr.indexOf('FASE')>=0||hdr.indexOf('PHASE')>=0||hdr.indexOf('ESTADO')>=0)){
+        if(!pollSheet)pollSheet=n;
+      }else if(hdr.indexOf('NOMBRE')>=0&&hdr.indexOf('JOB')>=0){
+        if(!bkpSheet)bkpSheet=n;
+      }else if(hdr.indexOf('NOMBRE')>=0&&hdr.indexOf('ESTADO')>=0){
+        if(!procSheet)procSheet=n;
+      }else if(hdr.indexOf('NOMBRE')>=0&&hdr.indexOf('HORA INICIO')>=0){
+        if(!bkpSheet)bkpSheet=n;
       }
     });
   }
-  // Parse Pollings sheet
+  // 3) Si todavia no encontro nada, intentar con la primera hoja que tenga datos
+  if(!pollSheet&&!bkpSheet&&!procSheet&&sheetNames.length>0){
+    // Usar la primera hoja como fallback
+    var firstWs=wb.Sheets[sheetNames[0]];
+    var firstRows=XLSX.utils.sheet_to_json(firstWs,{header:1});
+    if(firstRows.length>=2){
+      // Buscar encabezado en cualquier fila
+      var hRow=-1;
+      for(var fi=0;fi<Math.min(firstRows.length,8);fi++){
+        if(!firstRows[fi])continue;
+        var fc=firstRows[fi].map(function(h){return String(h||'').toUpperCase().trim();});
+        if(fc.join(',').indexOf('SERVIDOR')>=0||fc.join(',').indexOf('SERVER')>=0||fc.join(',').indexOf('POLLING')>=0){
+          hRow=fi;break;
+        }
+        if(fc.join(',').indexOf('BACKUP')>=0||fc.join(',').indexOf('BKP')>=0){hRow=fi;break;}
+        if(fc.join(',').indexOf('PROCESO')>=0){hRow=fi;break;}
+      }
+      if(hRow>=0){
+        var hCells=firstRows[hRow].map(function(h){return String(h||'').toUpperCase().trim();});
+        if(hCells.indexOf('SERVIDOR')>=0||hCells.indexOf('SERVER')>=0)pollSheet=sheetNames[0];
+        else if(hCells.indexOf('BACKUP')>=0||hCells.indexOf('BKP')>=0)bkpSheet=sheetNames[0];
+        else if(hCells.indexOf('PROCESO')>=0)procSheet=sheetNames[0];
+      }
+    }
+  }
+  // Parsear hoja de Pollings
   if(pollSheet){
     var ws=wb.Sheets[pollSheet];
     var rows=XLSX.utils.sheet_to_json(ws,{header:1});
-    for(var i=0;i<rows.length;i++){
+    var dataStart=0;
+    // Encontrar fila de encabezado
+    for(var di=0;di<Math.min(rows.length,6);di++){
+      if(!rows[di])continue;
+      var dc=rows[di].map(function(h){return String(h||'').toUpperCase().trim();});
+      if(dc.indexOf('SERVIDOR')>=0||dc.indexOf('SERVER')>=0||dc.indexOf('POLLING')>=0){dataStart=di+1;break;}
+    }
+    for(var i=dataStart;i<rows.length;i++){
       var r=rows[i];
       if(!r||!r[0])continue;
       var srv=String(r[0]||'').trim();
-      // Skip header rows
-      if(srv.toUpperCase()==='SERVIDOR'||srv.toUpperCase()==='POLLINGS')continue;
+      if(!srv||srv.toUpperCase()==='SERVIDOR'||srv.toUpperCase()==='POLLINGS'||srv.toUpperCase()==='SERVER')continue;
       var region=String(r[1]||'').trim();
       var phase=String(r[2]||'').trim().toUpperCase();
       var time=String(r[3]||'').trim();
-      if(!srv)continue;
+      // Normalizar fases
+      if(phase==='INICIO'||phase==='BEGIN')phase='BEGINNING';
+      if(phase==='FIN'||phase==='END')phase='ENDING';
       if(phase!=='BEGINNING'&&phase!=='ENDING')continue;
       result.pollings.push({server:srv,region:region||getRegion(srv),phase:phase,time:time||''});
     }
   }
-  // Parse Backups sheet
+  // Parsear hoja de Backups
   if(bkpSheet){
     var ws2=wb.Sheets[bkpSheet];
     var rows2=XLSX.utils.sheet_to_json(ws2,{header:1});
-    for(var j=0;j<rows2.length;j++){
+    var bkpStart=0;
+    for(var bi=0;bi<Math.min(rows2.length,6);bi++){
+      if(!rows2[bi])continue;
+      var bc=rows2[bi].map(function(h){return String(h||'').toUpperCase().trim();});
+      if(bc.indexOf('NOMBRE')>=0||bc.indexOf('BACKUP')>=0||bc.indexOf('BKP')>=0){bkpStart=bi+1;break;}
+    }
+    for(var j=bkpStart;j<rows2.length;j++){
       var r2=rows2[j];
       if(!r2||!r2[0])continue;
       var bname=String(r2[0]||'').trim();
-      if(bname.toUpperCase()==='NOMBRE'||bname.toUpperCase()==='BACKUPS')continue;
+      if(!bname||bname.toUpperCase()==='NOMBRE'||bname.toUpperCase()==='BACKUPS'||bname.toUpperCase()==='BKP')continue;
       result.backups.push({
         name:bname,
         iniTime:String(r2[1]||'').trim(),
@@ -1516,15 +1568,21 @@ function parseXLSXWorkbook(wb){
       });
     }
   }
-  // Parse Processes sheet
+  // Parsear hoja de Procesos
   if(procSheet){
     var ws3=wb.Sheets[procSheet];
     var rows3=XLSX.utils.sheet_to_json(ws3,{header:1});
-    for(var k=0;k<rows3.length;k++){
+    var prcStart=0;
+    for(var pi=0;pi<Math.min(rows3.length,6);pi++){
+      if(!rows3[pi])continue;
+      var pc=rows3[pi].map(function(h){return String(h||'').toUpperCase().trim();});
+      if(pc.indexOf('NOMBRE')>=0||pc.indexOf('PROCESO')>=0){prcStart=pi+1;break;}
+    }
+    for(var k=prcStart;k<rows3.length;k++){
       var r3=rows3[k];
       if(!r3||!r3[0])continue;
       var pname=String(r3[0]||'').trim();
-      if(pname.toUpperCase()==='NOMBRE'||pname.toUpperCase()==='PROCESOS')continue;
+      if(!pname||pname.toUpperCase()==='NOMBRE'||pname.toUpperCase()==='PROCESOS')continue;
       result.processes.push({
         name:pname,
         status:String(r3[1]||'').trim()
@@ -1628,6 +1686,22 @@ function _extractDateFromFilename(fileName){
       return y+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     }
   }
+  // Pattern: 20250115 or 15012025
+  m=fileName.match(/(\d{2})(\d{2})(\d{4})/);
+  if(m){
+    var dd=parseInt(m[1]),mm=parseInt(m[2]),yy=parseInt(m[3]);
+    if(mm>=1&&mm<=12&&dd>=1&&dd<=31&&yy>=2020&&yy<=2030){
+      return yy+'-'+String(mm).padStart(2,'0')+'-'+String(dd).padStart(2,'0');
+    }
+  }
+  // Pattern: 15-01-2025 or 15/01/2025
+  m=fileName.match(/(\d{1,2})[-\/](\d{1,2})[-\/](\d{4})/);
+  if(m){
+    var dd2=parseInt(m[1]),mm2=parseInt(m[2]),yy2=parseInt(m[3]);
+    if(dd2>=1&&dd2<=31&&mm2>=1&&mm2<=12&&yy2>=2020&&yy2<=2030){
+      return yy2+'-'+String(mm2).padStart(2,'0')+'-'+String(dd2).padStart(2,'0');
+    }
+  }
   return null;
 }
 function _extractDateFromSheetHeader(rows){
@@ -1695,28 +1769,62 @@ function handleHistoricImport(input){
   });
 }
 function _showHistoricResults(results){
+  var needDate=results.filter(function(r){return r.parsed&&!r.dateKey;});
   var valid=results.filter(function(r){return r.dateKey&&r.parsed;});
   var errors=results.filter(function(r){return r.error;});
-  if(!valid.length){
-    toast('No se pudo importar ningun archivo');return;
+  // Si no hay nada util, mostrar error detallado
+  if(!valid.length&&!needDate.length){
+    var eh='<div style="padding:8px 0">';
+    eh+='<div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:12px 16px;font-size:12px;color:#991B1B">';
+    eh+='<div style="font-weight:700;margin-bottom:8px">No se pudieron importar los archivos</div>';
+    errors.forEach(function(r){
+      eh+='<div style="margin-bottom:4px"><b>'+escHtml(r.fileName)+'</b>: '+escHtml(r.error)+'</div>';
+    });
+    eh+='<div style="margin-top:10px;padding-top:8px;border-top:1px solid #FECACA;color:#7F1D1D">';
+    eh+='<div style="font-weight:600;margin-bottom:4px">Formatos aceptados:</div>';
+    eh+='<ul style="padding-left:16px;margin:0;line-height:1.7">';
+    eh+='<li>Archivos exportados por esta app (nombre: <code>bitacora_YYYY-MM-DD.xlsx</code>)</li>';
+    eh+='<li>Archivos con hojas llamadas Pollings, Backups, Procesos</li>';
+    eh+='<li>Archivos con columnas: Servidor / Region / Fase / Hora</li>';
+    eh+='<li>La fecha se detecta del nombre del archivo o del encabezado de la hoja</li>';
+    eh+='</ul></div></div></div>';
+    document.getElementById('modalTitle').textContent='Importar históricos';
+    document.getElementById('modalBody').innerHTML=eh;
+    document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal()">Cerrar</button>';
+    openModal();
+    return;
   }
   var h='<div style="padding:8px 0">';
-  h+='<p style="margin-bottom:14px;color:var(--gray-700);font-size:13px;line-height:1.5">Se leyeron <b>'+results.length+'</b> archivo(s). Se detectaron <b>'+valid.length+'</b> con fecha y datos válidos.</p>';
-  // Show detected files table
+  var totalValid=valid.length+needDate.length;
+  h+='<p style="margin-bottom:14px;color:var(--gray-700);font-size:13px;line-height:1.5">Se leyeron <b>'+results.length+'</b> archivo(s). <b>'+totalValid+'</b> tienen datos reconocibles.</p>';
+  // Tabla de archivos
   h+='<div style="max-height:200px;overflow-y:auto;border:1px solid var(--gray-200);border-radius:8px;margin-bottom:14px">';
   h+='<table style="width:100%;border-collapse:collapse;font-size:12px">';
-  h+='<thead><tr><th style="padding:6px 10px;background:var(--gray-100);text-align:left;position:sticky;top:0">Archivo</th><th style="padding:6px 10px;background:var(--gray-100);text-align:left;position:sticky;top:0">Fecha</th><th style="padding:6px 10px;background:var(--gray-100);text-align:center;position:sticky;top:0">Pollings</th><th style="padding:6px 10px;background:var(--gray-100);text-align:center;position:sticky;top:0">BKPs</th><th style="padding:6px 10px;background:var(--gray-100);text-align:center;position:sticky;top:0">Procs</th></tr></thead><tbody>';
+  h+='<thead><tr><th style="padding:6px 10px;background:var(--gray-100);text-align:left;position:sticky;top:0">Archivo</th><th style="padding:6px 10px;background:var(--gray-100);text-align:left;position:sticky;top:0">Fecha</th><th style="padding:6px 10px;background:var(--gray-100);text-align:center;position:sticky;top:0">Polls</th><th style="padding:6px 10px;background:var(--gray-100);text-align:center;position:sticky;top:0">BKPs</th><th style="padding:6px 10px;background:var(--gray-100);text-align:center;position:sticky;top:0">Procs</th></tr></thead><tbody>';
   valid.forEach(function(r){
-    var pC=r.parsed.pollings.length;
-    var bC=r.parsed.backups.length;
-    var prC=r.parsed.processes.length;
-    h+='<tr><td style="padding:4px 10px;border-top:1px solid var(--gray-100);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escHtml(r.fileName)+'">'+escHtml(r.fileName)+'</td>';
+    var pC=r.parsed.pollings.length;var bC=r.parsed.backups.length;var prC=r.parsed.processes.length;
+    h+='<tr><td style="padding:4px 10px;border-top:1px solid var(--gray-100);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escHtml(r.fileName)+'">'+escHtml(r.fileName)+'</td>';
     h+='<td style="padding:4px 10px;border-top:1px solid var(--gray-100);font-weight:600;color:var(--emerald-700)">'+fmt(r.dateKey)+'</td>';
     h+='<td style="padding:4px 10px;border-top:1px solid var(--gray-100);text-align:center">'+pC+'</td>';
     h+='<td style="padding:4px 10px;border-top:1px solid var(--gray-100);text-align:center">'+bC+'</td>';
     h+='<td style="padding:4px 10px;border-top:1px solid var(--gray-100);text-align:center">'+prC+'</td></tr>';
   });
+  // Archivos que tienen datos pero sin fecha - mostrar con input de fecha
+  needDate.forEach(function(r,idx){
+    var pC=r.parsed.pollings.length;var bC=r.parsed.backups.length;var prC=r.parsed.processes.length;
+    var inputId='histDate_'+idx;
+    h+='<tr style="background:#FFFBEB"><td style="padding:4px 10px;border-top:1px solid var(--gray-100);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+escHtml(r.fileName)+'">'+escHtml(r.fileName)+'</td>';
+    h+='<td style="padding:4px 10px;border-top:1px solid var(--gray-100)"><input type="date" id="'+inputId+'" class="hist-date-input" value="" style="padding:3px 6px;border:1px solid var(--gray-300);border-radius:4px;font-size:12px;width:130px"></td>';
+    h+='<td style="padding:4px 10px;border-top:1px solid var(--gray-100);text-align:center;font-weight:600;color:#92400e">'+pC+'</td>';
+    h+='<td style="padding:4px 10px;border-top:1px solid var(--gray-100);text-align:center;font-weight:600;color:#92400e">'+bC+'</td>';
+    h+='<td style="padding:4px 10px;border-top:1px solid var(--gray-100);text-align:center;font-weight:600;color:#92400e">'+prC+'</td></tr>';
+  });
   h+='</tbody></table></div>';
+  if(needDate.length>0){
+    h+='<div style="background:#FFFBEB;border:1px solid #fde68a;border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:11px;color:#92400e">';
+    h+='<b>'+needDate.length+' archivo(s) en amarillo</b>: no se detectó la fecha. Seleccioná la fecha manualmente en cada fila.';
+    h+='</div>';
+  }
   if(errors.length){
     h+='<div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:11px;color:#991B1B">';
     errors.forEach(function(r){
@@ -1733,13 +1841,35 @@ function _showHistoricResults(results){
   h+='</ul></div>';
   h+='</div>';
   document.getElementById('modalTitle').textContent='Importar históricos';
-  document.getElementById('modalBody').innerHTML=h;
-  document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal();_pendingHistoric=null">Cancelar</button><button class="btn btn-primary" onclick="executeHistoricImport()">Importar todo</button>';
-  _pendingHistoric=valid;
+  document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal();_pendingHistoric=null">Cancelar</button><button class="btn btn-primary" onclick="_confirmHistoricImport('+needDate.length+')">Importar todo</button>';
+  // Guardar referencias
+  _pendingHistoricValid=valid;
+  _pendingHistoricNeedDate=needDate;
   openModal();
 }
-var _pendingHistoric=null;
-function executeHistoricImport(){
+var _pendingHistoricValid=null;
+var _pendingHistoricNeedDate=null;
+function _confirmHistoricImport(needDateCount){
+  var items=[];
+  // Los que ya tienen fecha
+  if(_pendingHistoricValid)items=items.concat(_pendingHistoricValid);
+  // Los que necesitan fecha manual
+  if(_pendingHistoricNeedDate&&needDateCount>0){
+    for(var i=0;i<needDateCount;i++){
+      var input=document.getElementById('histDate_'+i);
+      var dateVal=input?input.value:'';
+      if(!dateVal){toast('Seleccioná la fecha para todos los archivos en amarillo');return;}
+      var r=_pendingHistoricNeedDate[i];
+      items.push({fileName:r.fileName,dateKey:dateVal,parsed:r.parsed,error:null});
+    }
+  }
+  _pendingHistoricValid=null;
+  _pendingHistoricNeedDate=null;
+  if(!items.length){toast('No hay datos para importar');return;}
+  _pendingHistoric=items;
+  _execHistoricImport();
+}
+function _execHistoricImport(){
   if(!_pendingHistoric||!_pendingHistoric.length){toast('No hay datos pendientes');return;}
   var items=_pendingHistoric;
   _pendingHistoric=null;
