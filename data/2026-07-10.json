@@ -301,11 +301,10 @@
   ],
   "processes": [
     {
-      "id": "mrkv28c0o0427",
       "name": "MONTAJE DE CINTAS",
-      "status": "",
-      "shift": "",
-      "user": "import"
+      "status": "OK",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     },
     {
       "id": "mrkv28c0rlcwz",
