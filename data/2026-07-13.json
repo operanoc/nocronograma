@@ -405,6 +405,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "ARIVERO"
+    },
+    {
+      "id": "mrk0k6jp2h0t6",
+      "server": "Perú D2",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-13",
+      "time": "21:32",
+      "note": null,
+      "shift": "TARDE",
+      "user": "FGODOY"
+    },
+    {
+      "id": "mrk0k6jpjvegx",
+      "server": "Perú D2",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-13",
+      "time": "21:44",
+      "note": null,
+      "shift": "TARDE",
+      "user": "FGODOY"
     }
   ],
   "backups": [
