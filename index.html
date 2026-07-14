@@ -972,17 +972,9 @@ html.dark .notif-item.unread{background:#082f49}
         </div>
       </div>
     </div>
-    <div class="ai-suggestions" id="aiSuggestions">
-      <button class="ai-sug-btn" onclick="aiSendSuggestion(this)">\u00bfCu\u00e1ntos pollings hay hoy?</button>
-      <button class="ai-sug-btn" onclick="aiSendSuggestion(this)">Resumen del turno actual</button>
-      <button class="ai-sug-btn" onclick="aiSendSuggestion(this)">\u00bfHay backups pendientes?</button>
-      <button class="ai-sug-btn" onclick="aiSendSuggestion(this)">Analizar \u00faltima semana</button>
-      <button class="ai-sug-btn" onclick="aiSendSuggestion(this)">Tendencia de pollings por d\u00eda</button>
-      <button class="ai-sug-btn" onclick="aiSendSuggestion(this)">Servidores con m\u00e1s incidencias</button>
-    </div>
     <div class="ai-typing" id="aiTyping"><span></span><span></span><span></span></div>
   </div>
-  <div class="ai-config-link" id="aiConfigLink" onclick="openAIConfigModal()">\u2699 Configurar API de IA</div>
+  <div class="ai-config-link" id="aiConfigLink" onclick="openAIConfigModal()" style="display:none">\u2699 Configurar API de IA</div>
   <div class="ai-input-bar">
     <textarea id="aiInput" placeholder="Escrib\u00ed tu consulta..." maxlength="2000" rows="1" onkeydown="aiInputKeydown(event)" oninput="aiAutoResize(this)"></textarea>
     <button id="aiSendBtn" onclick="aiSend()" title="Enviar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
@@ -4536,15 +4528,18 @@ function toggleAIChat(){
 function _aiUpdateUserTag(){
   var tag=document.getElementById('aiUserTag');
   var welUser=document.getElementById('aiWelcomeUser');
+  var cfgLink=document.getElementById('aiConfigLink');
   if(currentUser){
     var name=currentUser.username||'';
     var shift=currentUser.shiftKey||'';
     var label=name+(shift?' ('+shift+')':'');
     if(tag){tag.textContent=label;tag.style.display='';}
     if(welUser)welUser.textContent='Hola, '+name;
+    if(cfgLink)cfgLink.style.display=(currentUser.role==='admin')?'':'none';
   }else{
     if(tag)tag.style.display='none';
     if(welUser)welUser.textContent='Hola';
+    if(cfgLink)cfgLink.style.display='none';
   }
 }
 
@@ -4552,9 +4547,7 @@ function aiClearChat(){
   _aiMessages=[];
   _aiSaveHistory();
   var welcome=document.getElementById('aiWelcome');
-  var sugs=document.getElementById('aiSuggestions');
   if(welcome)welcome.style.display='';
-  if(sugs)sugs.style.display='';
   var msgs=document.getElementById('aiMsgs');
   var msgEls=msgs.querySelectorAll('.ai-msg');
   msgEls.forEach(function(el){el.remove();});
@@ -4583,13 +4576,10 @@ function _aiRenderMessages(){
   var old=msgs.querySelectorAll('.ai-msg');
   old.forEach(function(el){el.remove();});
   var welcome=document.getElementById('aiWelcome');
-  var sugs=document.getElementById('aiSuggestions');
   if(_aiMessages.length>0){
     if(welcome)welcome.style.display='none';
-    if(sugs)sugs.style.display='none';
   }else{
     if(welcome)welcome.style.display='';
-    if(sugs)sugs.style.display='';
   }
   var typing=document.getElementById('aiTyping');
   _aiMessages.forEach(function(m){
@@ -4624,9 +4614,7 @@ function _aiAddMsg(role,content){
   div.innerHTML='<div class="ai-msg-label">'+escHtml(label)+'</div><div>'+_aiFormatContent(content)+'</div>';
   msgs.insertBefore(div,typing);
   var welcome=document.getElementById('aiWelcome');
-  var sugs=document.getElementById('aiSuggestions');
   if(welcome)welcome.style.display='none';
-  if(sugs)sugs.style.display='none';
   msgs.scrollTop=msgs.scrollHeight;
 }
 
