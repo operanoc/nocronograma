@@ -3,17 +3,6 @@
   "dayType": "DIARIA",
   "pollings": [
     {
-      "id": "mrkewx2gyin47",
-      "server": "Perú Aserviban MT",
-      "region": "PERU",
-      "phase": "BEGINNING",
-      "date": "2026-07-14",
-      "time": "06:51",
-      "note": null,
-      "shift": "MANANA",
-      "user": "STORREZ"
-    },
-    {
       "id": "mrkfjcpyzzepv",
       "server": "México - SIE - M1",
       "region": "MEXICO",
@@ -141,6 +130,28 @@
       "phase": "BEGINNING",
       "date": "2026-07-14",
       "time": "06:52",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrkhxxn5zebga",
+      "server": "Perú Aserviban MT",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-14",
+      "time": "06:51",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrkhxxn5fe718",
+      "server": "Perú Aserviban MT",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-14",
+      "time": "07:10",
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
