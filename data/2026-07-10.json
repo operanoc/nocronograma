@@ -343,11 +343,10 @@
       "user": "OPERAADMIN"
     },
     {
-      "id": "mrkv28c0ay5gj",
       "name": "AFIP 48",
-      "status": "",
-      "shift": "",
-      "user": "import"
+      "status": "OK",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     },
     {
       "id": "mrkv28c0xtv2v",
