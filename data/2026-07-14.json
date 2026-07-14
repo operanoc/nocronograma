@@ -157,17 +157,6 @@
       "user": "STORREZ"
     },
     {
-      "id": "mrki8c3tlsk33",
-      "server": "Chile OC",
-      "region": "CHILE",
-      "phase": "BEGINNING",
-      "date": "2026-07-14",
-      "time": "07:23",
-      "note": null,
-      "shift": "MANANA",
-      "user": "STORREZ"
-    },
-    {
       "id": "mrki8qa9lljnv",
       "server": "Perú OC",
       "region": "PERU",
@@ -229,6 +218,28 @@
       "phase": "BEGINNING",
       "date": "2026-07-14",
       "time": "07:55",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrkjcdj1khsyo",
+      "server": "Chile OC",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-14",
+      "time": "07:23",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrkjcdj1x9gtv",
+      "server": "Chile OC",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-14",
+      "time": "07:46",
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
