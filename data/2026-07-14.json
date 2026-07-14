@@ -445,6 +445,18 @@
       "readBy": {
         "ADMIN": true
       }
+    },
+    {
+      "id": "mrkzaqjw55411",
+      "operator": "Sebastian Torrez",
+      "shift": "MANANA",
+      "shiftLabel": "Mañana",
+      "timestamp": "2026-07-14 15:22:24",
+      "text": "ok todo",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
     }
   ],
   "audit": [
@@ -453,9 +465,29 @@
       "user": "HMAGARINOS",
       "timestamp": "2026-07-14 08:33:56",
       "detail": "Pase de turno - Noche"
+    },
+    {
+      "type": "cierre",
+      "user": "STORREZ",
+      "timestamp": "2026-07-14 15:22:24",
+      "detail": "Pase de turno - Mañana"
     }
   ],
   "notifications": [
+    {
+      "id": "mrkzaqjwk67km",
+      "type": "handover",
+      "title": "Pase de Turno - Mañana",
+      "desc": "ok todo",
+      "operator": "Sebastian Torrez",
+      "shift": "MANANA",
+      "shiftLabel": "Mañana",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "timestamp": "2026-07-14 15:22:24",
+      "readBy": {}
+    },
     {
       "id": "mrkkpfxgjd5oe",
       "type": "handover",
