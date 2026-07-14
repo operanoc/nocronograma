@@ -1005,18 +1005,15 @@ html.dark .notif-item.unread{background:#082f49}
   <div class="modal" style="max-width:480px">
     <div class="modal-header"><h3>Configurar Asistente IA</h3><button class="btn-icon" onclick="closeAIConfigModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
     <div class="modal-body">
-      <p style="color:var(--gray-500);font-size:12px;margin-bottom:14px;line-height:1.5">Configur\u00e1 la API compatible con OpenAI para habilitar el asistente de IA. La clave se guarda localmente en tu navegador.</p>
+      <p style="color:var(--gray-500);font-size:12px;margin-bottom:6px;line-height:1.5">Usamos <b>Groq</b> (gratis y rapido). Solo necesit\u00e1s tu API Key.</p>
+      <p style="color:var(--sky-600);font-size:11px;margin-bottom:14px;line-height:1.4">
+        1. Cre\u00e1 cuenta gratis en <a href="https://console.groq.com" target="_blank" style="color:var(--sky-600);text-decoration:underline;font-weight:600">console.groq.com</a>
+        2. And\u00e1 a API Keys > Create Key
+        3. Pegala abajo
+      </p>
       <label style="display:block;margin-bottom:12px">
-        <span style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:4px">URL de la API</span>
-        <input type="text" id="aiCfgUrl" placeholder="https://api.openai.com/v1/chat/completions" style="width:100%;font-size:12px">
-      </label>
-      <label style="display:block;margin-bottom:12px">
-        <span style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:4px">API Key</span>
-        <input type="password" id="aiCfgKey" placeholder="sk-..." style="width:100%;font-size:12px">
-      </label>
-      <label style="display:block;margin-bottom:12px">
-        <span style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:4px">Modelo</span>
-        <input type="text" id="aiCfgModel" placeholder="gpt-4o-mini" style="width:100%;font-size:12px">
+        <span style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:4px">API Key de Groq</span>
+        <input type="password" id="aiCfgKey" placeholder="gsk_..." style="width:100%;font-size:12px">
       </label>
       <label style="display:block;margin-bottom:14px">
         <span style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:4px">Instrucci\u00f3n del sistema (opcional)</span>
@@ -4457,10 +4454,10 @@ function _aiGetConfig(){
     return {
       url:c.url||'',
       key:c.key||'',
-      model:c.model||'gpt-4o-mini',
+      model:c.model||'llama-3.3-70b-versatile',
       system:c.system||_aiDefaultSystem
     };
-  }catch(e){return {url:'',key:'',model:'gpt-4o-mini',system:_aiDefaultSystem};}
+  }catch(e){return {url:'https://api.groq.com/openai/v1/chat/completions',key:'',model:'llama-3.3-70b-versatile',system:_aiDefaultSystem};}
 }
 
 function _aiIsConfigured(){
@@ -4481,10 +4478,7 @@ function _aiLoadHistory(){
 
 function openAIConfigModal(){
   var c=_aiGetConfig();
-  document.getElementById('aiCfgUrl').value=c.url;
   document.getElementById('aiCfgKey').value=c.key;
-  document.getElementById('aiCfgModel').value=c.model;
-  document.getElementById('aiCfgSystem').value=c.system===_aiDefaultSystem?'':c.system;
   document.getElementById('aiConfigModal').classList.add('show');
 }
 
@@ -4493,16 +4487,13 @@ function closeAIConfigModal(){
 }
 
 function saveAIConfig(){
-  var url=document.getElementById('aiCfgUrl').value.trim();
   var key=document.getElementById('aiCfgKey').value.trim();
-  var model=document.getElementById('aiCfgModel').value.trim()||'gpt-4o-mini';
-  var sys=document.getElementById('aiCfgSystem').value.trim()||_aiDefaultSystem;
-  if(!url||!key){
-    showToast('La URL y la API Key son obligatorias');
+  if(!key){
+    showToast('Pega tu API Key de Groq');
     return;
   }
   try{
-    localStorage.setItem('bitacora_ai_config',JSON.stringify({url:url,key:key,model:model,system:sys}));
+    localStorage.setItem('bitacora_ai_config',JSON.stringify({url:'https://api.groq.com/openai/v1/chat/completions',key:key,model:'llama-3.3-70b-versatile',system:_aiDefaultSystem}));
   }catch(e){}
   closeAIConfigModal();
   showToast('Configuraci\u00f3n de IA guardada');
