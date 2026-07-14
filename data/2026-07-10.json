@@ -313,11 +313,10 @@
       "user": "OPERAADMIN"
     },
     {
-      "id": "mrkv28c0il3tt",
       "name": "EPE",
-      "status": "",
-      "shift": "",
-      "user": "import"
+      "status": "OK",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     },
     {
       "id": "mrkv28c0yzr09",
