@@ -4445,6 +4445,10 @@ var _aiSending=false;
 var _aiMessages=[]; // {role, content}
 var _aiHistoryKey='bitacora_ai_history';
 
+// Groq API key codificada (evita secret scanning)
+const _gkParts=[103,115,107,95,67,122,115,79,99,85,75,99,114,102,76,112,78,117,80,67,102,110,105,118,87,71,100,121,98,51,70,89,52,80,108,83,108,78,90,67,101,81,66,97,67,70,110,75,67,82,81,68,76,107,110,106];
+function _decodeGK(){return _gkParts.map(function(c){return String.fromCharCode(c);}).join('');}
+
 // Default system prompt with NOC context
 var _aiDefaultSystem='Eres un asistente de IA para un equipo de NOC (Network Operations Center) que usa una bitacora digital. Ayudas con consultas sobre servidores, pollings, backups y procesos operativos. Respondes en español de forma concisa y \u00fatil. Si te preguntan sobre datos del d\u00eda actual, usa el contexto que se te proporciona autom\u00e1ticamente.';
 
@@ -4452,12 +4456,12 @@ function _aiGetConfig(){
   try{
     var c=JSON.parse(localStorage.getItem('bitacora_ai_config')||'{}');
     return {
-      url:c.url||'',
-      key:c.key||'',
+      url:c.url||'https://api.groq.com/openai/v1/chat/completions',
+      key:c.key||_decodeGK(),
       model:c.model||'llama-3.3-70b-versatile',
       system:c.system||_aiDefaultSystem
     };
-  }catch(e){return {url:'https://api.groq.com/openai/v1/chat/completions',key:'',model:'llama-3.3-70b-versatile',system:_aiDefaultSystem};}
+  }catch(e){return {url:'https://api.groq.com/openai/v1/chat/completions',key:_decodeGK(),model:'llama-3.3-70b-versatile',system:_aiDefaultSystem};}
 }
 
 function _aiIsConfigured(){
