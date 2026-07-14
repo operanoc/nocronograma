@@ -2,7 +2,7 @@
 <html lang="es" class="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -515,8 +515,6 @@ html.dark .notif-item.unread{background:#082f49}
 .chat-conv-tab .tab-badge{min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:var(--red-500);color:#fff;font-size:9px;font-weight:700;display:none;align-items:center;justify-content:center;margin-left:2px}
 .chat-conv-tab .tab-badge.visible{display:inline-flex}
 .chat-conv-tab .tab-shift{font-size:9px;color:#065f46}
-.chat-conv-tab .tab-close{font-size:14px;line-height:1;color:var(--gray-400);cursor:pointer;margin-left:2px;padding:0 2px;border-radius:4px;transition:color .15s,background .15s}
-.chat-conv-tab .tab-close:hover{color:var(--red-500);background:var(--red-50)}
 .chat-conv-tab-add{padding:6px 8px;color:var(--gray-400);cursor:pointer;border:none;background:none;font-size:16px;line-height:1;border-radius:6px;flex-shrink:0;transition:color .15s,background .15s}
 .chat-conv-tab-add:hover{color:var(--emerald-600);background:var(--gray-100)}
 .chat-msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:8px}
@@ -545,33 +543,7 @@ html.dark .notif-item.unread{background:#082f49}
 .chat-shift-tag.inactive{background:var(--gray-100);color:var(--gray-400);border:1px solid var(--gray-200)}
 .chat-empty{text-align:center;padding:40px 16px;color:var(--gray-400);font-size:13px}
 .chat-date-sep{text-align:center;font-size:10px;color:var(--gray-400);padding:4px 0}
-@media(max-width:640px){
-  .chat-fab{bottom:calc(16px + env(safe-area-inset-bottom));right:16px;width:52px;height:52px}
-  .chat-fab:active{transform:scale(.95)}
-  .chat-fab.has-unread::after{top:-6px;right:-6px;min-width:20px;height:20px;font-size:11px}
-  .chat-panel{
-    right:0;bottom:0;left:0;
-    width:100%;height:100%;
-    max-height:100vh;
-    max-height:100dvh;
-    border-radius:0;
-    border:none;
-    padding-bottom:env(safe-area-inset-bottom);
-  }
-  .chat-head{padding:12px 14px;padding-top:calc(12px + env(safe-area-inset-top))}
-  .chat-head h4{font-size:15px}
-  .chat-conv-tabs{padding:0 6px;gap:0}
-  .chat-conv-tab{padding:8px 10px;font-size:12px;min-height:40px}
-  .chat-conv-tab .tab-close{font-size:16px;padding:4px}
-  .chat-msgs{padding:10px 12px;gap:6px}
-  .chat-msg{max-width:85%;font-size:14px;padding:10px 14px}
-  .chat-input-bar{padding:8px 10px;gap:6px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
-  .chat-input-bar input{font-size:16px;padding:10px 14px}
-  .chat-input-bar button{width:40px;height:40px}
-  .chat-users-bar{padding:8px 10px}
-  .chat-user-select{font-size:14px;padding:8px 10px}
-  .chat-empty{padding:30px 16px;font-size:14px}
-}
+@media(max-width:640px){.chat-panel{right:8px;bottom:80px;width:calc(100vw - 16px);height:calc(100vh - 100px);max-height:none;border-radius:12px}.chat-fab{bottom:16px;right:16px;width:48px;height:48px}}
 
 /* Admin hamburger menu */
 .admin-menu{position:fixed;top:0;left:0;bottom:0;width:240px;background:var(--white);border-right:1px solid var(--gray-200);box-shadow:4px 0 20px rgba(0,0,0,.1);z-index:200;overflow:hidden;padding:16px 0;transform:translateX(-100%);transition:transform .2s ease;display:flex;flex-direction:column}
@@ -2972,13 +2944,18 @@ function _chatPoll(){
     var msgs=parsed.messages||[];
     if(msgs.length)_chatLastId=msgs[msgs.length-1].id;
     _chatMessages=msgs;
-    // Calcular unread por conversacion (solo mensajes NUEVOS no vistos)
+    // Calcular unread por conversacion
     var me=currentUser.username;
+    var prevUnread={};
+    Object.assign(prevUnread,_chatConvUnread);
     _chatConvUnread={};
     msgs.forEach(function(m){
-      if(m.from!==me&&m.to===me&&!_chatLastSeenIds[m.id]){
+      if(m.from!==me&&m.to===me){
         var partner=m.from;
-        _chatConvUnread[partner]=(_chatConvUnread[partner]||0)+1;
+        // Si no es la conversacion activa, o el chat esta cerrado, contar como no leido
+        if(!_chatOpen||partner!==_chatActiveUser){
+          _chatConvUnread[partner]=(_chatConvUnread[partner]||0)+1;
+        }
       }
     });
     // Detectar mensajes nuevos para sonido
@@ -2986,7 +2963,6 @@ function _chatPoll(){
     msgs.forEach(function(m){
       if(m.from!==me&&m.to===me&&!_chatLastSeenIds[m.id])newMsgCount++;
     });
-    // Actualizar IDs vistos
     _chatLastSeenIds={};
     msgs.forEach(function(m){_chatLastSeenIds[m.id]=true;});
     if(newMsgCount>0)_chatPlayNotif();
@@ -3028,10 +3004,9 @@ function _renderConvTabs(){
     var isOnShift=onShift.has(u);
     var name=usr?(usr.name||u):u;
     html+='<div class="chat-conv-tab'+(isActive?' active':'')+'" onclick="_chatSwitchConv(\''+u+'\')">';
-    html+='<span class="tab-name">'+escHtml(name)+'</span>';
+    html+=escHtml(name);
     if(isOnShift)html+='<span class="tab-shift">\u2705</span>';
     if(unread>0)html+='<span class="tab-badge visible">'+unread+'</span>';
-    html+='<span class="tab-close" onclick="event.stopPropagation();_chatCloseConv(\''+u+'\')" title="Cerrar conversaci\u00f3n">&times;</span>';
     html+='</div>';
   });
   // Boton + para nueva conversacion
@@ -3047,20 +3022,6 @@ function _chatSwitchConv(u){
   _renderConvTabs();
   renderChatMessages();
   document.getElementById('chatInput').focus();
-}
-function _chatCloseConv(u){
-  _chatConvUnread[u]=0;
-  _chatUpdateFabBadge();
-  var convos=_chatMyConversations();
-  if(_chatActiveUser===u){
-    // Cerrar la activa: ir a la primera otra, o a vista vacia
-    var other=null;
-    for(var i=0;i<convos.length;i++){if(convos[i]!==u){other=convos[i];break;}}
-    _chatActiveUser=other;
-    if(!other)_chatSelectMode=false;
-  }
-  _renderConvTabs();
-  renderChatMessages();
 }
 function _chatShowNewConv(){
   _chatSelectMode=true;
@@ -3161,7 +3122,7 @@ function renderChatMessages(){
     html+='<div class="chat-msg '+(isMine?'mine':'theirs')+'">';
     if(!isMine)html+='<div class="chat-msg-sender">'+escHtml(_chatSenderName(m.from))+'</div>';
     html+='<div>'+escHtml(m.text)+'</div>';
-    html+='<div class="chat-msg-time">'+(m.ts?m.ts.split(' ')[1]:'')+'</div>';
+    html+='<div class="chat-msg-time">'+(m.ts?m.ts.split(' ')[1].substring(0,5):'')+'</div>';
     html+='</div>';
   });
   el.innerHTML=html;
