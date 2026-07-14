@@ -422,6 +422,12 @@
       "status": "OK",
       "shift": "TARDE",
       "user": "FGODOY"
+    },
+    {
+      "name": "Montaje de cintas",
+      "status": "OK",
+      "shift": "TARDE",
+      "user": "FGODOY"
     }
   ],
   "notes": "",
