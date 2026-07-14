@@ -319,11 +319,10 @@
       "user": "OPERAADMIN"
     },
     {
-      "id": "mrkv28c0yzr09",
       "name": "BANCOR",
-      "status": "",
-      "shift": "",
-      "user": "import"
+      "status": "OK",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     },
     {
       "id": "mrkv28c0lpsor",
