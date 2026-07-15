@@ -111,6 +111,28 @@
       "note": null,
       "shift": "NOCHE",
       "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrlxn7fxd363d",
+      "server": "Perú D3",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-15",
+      "time": "00:04",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrlxn7fxpy7wv",
+      "server": "Perú D3",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-15",
+      "time": "00:11",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
     }
   ],
   "backups": [],
