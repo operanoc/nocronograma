@@ -436,6 +436,18 @@
       "status": "OK",
       "shift": "ADMIN",
       "user": "OPERAADMIN"
+    },
+    {
+      "name": "Pinot",
+      "iniDate": "2026-07-14",
+      "iniTime": "17:00",
+      "endDate": "2026-07-14",
+      "endTime": "17:30",
+      "job": "BKPMIMIX",
+      "duration": "0:30",
+      "status": "OK",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     }
   ],
   "processes": [
