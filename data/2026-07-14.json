@@ -364,6 +364,28 @@
       "note": null,
       "shift": "NOCHE",
       "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrlxh46du8kwx",
+      "server": "Perú D2",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-14",
+      "time": "21:32",
+      "note": null,
+      "shift": "TARDE",
+      "user": "FGODOY"
+    },
+    {
+      "id": "mrlxh46ds19uv",
+      "server": "Perú D2",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-14",
+      "time": "21:42",
+      "note": null,
+      "shift": "TARDE",
+      "user": "FGODOY"
     }
   ],
   "backups": [
