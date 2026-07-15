@@ -400,6 +400,18 @@
       "status": "OK",
       "shift": "NOCHE",
       "user": "HMAGARINOS"
+    },
+    {
+      "name": "Pinot",
+      "iniDate": "2026-07-14",
+      "iniTime": "19:00",
+      "endDate": "2026-07-15",
+      "endTime": "00:37",
+      "job": "BKPDIARIO",
+      "duration": "5:37",
+      "status": "ok",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     }
   ],
   "processes": [
