@@ -39,6 +39,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 a{color:inherit;text-decoration:none}
 button{cursor:pointer;font:inherit;border:none;background:none}
 input,select,textarea{font:inherit;border:1px solid var(--gray-300);border-radius:var(--radius);padding:8px 12px;outline:none;transition:border .15s;background:var(--white);color:var(--gray-800)}
+input[type="time"]{color-scheme:light dark}
 input:focus,select:focus,textarea:focus{border-color:var(--emerald-600);box-shadow:0 0 0 3px rgba(106,13,173,.15)}
 textarea{resize:vertical;min-height:60px}
 
@@ -1298,6 +1299,7 @@ const MN=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Sep
 const DN=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 const DAYN=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 
+function _fmt24(d){var dd=d||new Date();var Y=dd.getFullYear(),M=String(dd.getMonth()+1).padStart(2,'0'),D=String(dd.getDate()).padStart(2,'0'),h=String(dd.getHours()).padStart(2,'0'),m=String(dd.getMinutes()).padStart(2,'0'),s=String(dd.getSeconds()).padStart(2,'0');return D+'/'+M+'/'+Y+' '+h+':'+m+':'+s;}
 function fmt(d){const dt=new Date(d+'T12:00:00');return dt.getDate()+' de '+MN[dt.getMonth()]+' '+dt.getFullYear();}
 function calcDur(s,e){if(!s||!e)return'—';const p=t=>{const x=t.split(':').map(Number);return(x[0]||0)*3600+(x[1]||0)*60+(x[2]||0)};const d=p(e)-p(s);if(d<0)return'—';const h=Math.floor(d/3600),m=Math.floor((d%3600)/60),sc=d%60;if(h>0)return h+'h '+m+'m';if(m>0)return m+'m '+sc+'s';return sc+'s';}
 function sIcon(s){if(!s||s==='')return'<svg class="status-icon none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';const u=s.toUpperCase();if(u==='OK')return'<svg class="status-icon ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';if(u==='ERROR')return'<svg class="status-icon fail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';return'<svg class="status-icon none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';}
@@ -3929,7 +3931,7 @@ function downloadDayReport(){
   var dateStr=_dashCalSelected||currentDate;
   var day=store[dateStr]||{date:dateStr,dayType:'DIARIA',pollings:[],backups:[],processes:[],notes:'',timeline:[],handovers:[]};
   const now=new Date();
-  let h=reportHeader('Bitacora NOC — '+fmt(dateStr),'Generado: '+now.toLocaleString('es-AR'));
+  let h=reportHeader('Bitacora NOC — '+fmt(dateStr),'Generado: '+_fmt24(new Date()));
   // Day info
   const dt=new Date(dateStr+'T12:00:00');
   const dayNames=['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
@@ -4017,7 +4019,7 @@ function downloadDashReport(){
   const procPct=totalProcs>0?Math.round(okProcs/totalProcs*100):0;
   const now=new Date();
 
-  let h=reportHeader('Dashboard NOC - Reporte','Periodo: '+rangeLabel+' | Generado: '+now.toLocaleString('es-AR'));
+  let h=reportHeader('Dashboard NOC - Reporte','Periodo: '+rangeLabel+' | Generado: '+_fmt24(new Date()));
   // Summary cards
   h+='<div class="grid">';
   h+='<div class="card"><div class="val info">'+days.length+'</div><div class="lbl">Dias con datos</div></div>';
@@ -4048,7 +4050,7 @@ function downloadDashReport(){
     serverAvgs.forEach(s=>{h+='<tr><td>'+s.server+'</td><td class="num">'+fmtSecs(s.avg)+'</td><td class="num">'+fmtSecs(s.min)+'</td><td class="num '+(s.max>7200?'fail':s.max>3600?'warn':'')+'">'+fmtSecs(s.max)+'</td><td class="num">'+s.count+'</td></tr>';});
     h+='</tbody></table>';
   }
-  h+='<div class="footer">Bitacora NOC — bitacoranoc.com | Reporte generado el '+now.toLocaleString('es-AR')+'</div></body></html>';
+  h+='<div class="footer">Bitacora NOC — bitacoranoc.com | Reporte generado el '+_fmt24(new Date())+'</div></body></html>';
   triggerDownload(h,'dashboard_noc_'+new Date().toISOString().split('T')[0]+'.html');
 }
 
@@ -4058,7 +4060,7 @@ function downloadCierresReport(){
     if(day.handovers)day.handovers.forEach(h=>allCierres.push({...h,date:dateStr}));
   });
   allCierres.sort((a,b)=>b.timestamp.localeCompare(a.timestamp));
-  let h=reportHeader('Pases de Turno — NOC','Todos los registros | Generado: '+now.toLocaleString('es-AR'));
+  let h=reportHeader('Pases de Turno — NOC','Todos los registros | Generado: '+_fmt24(new Date()));
   if(!allCierres.length){h+='<p style="color:#6b7280;padding:30px;text-align:center">No hay pases de turno registrados</p>';}
   else{
     h+='<p style="font-size:12px;color:#6b7280;margin-bottom:16px">Total: '+allCierres.length+' pase(s) de turno</p>';
@@ -4074,7 +4076,7 @@ function downloadCierresReport(){
       h+='</div></div>';
     });
   }
-  h+='<div class="footer">Bitacora NOC — bitacoranoc.com | Pases de turno al '+now.toLocaleString('es-AR')+'</div></body></html>';
+  h+='<div class="footer">Bitacora NOC — bitacoranoc.com | Pases de turno al '+_fmt24(new Date())+'</div></body></html>';
   triggerDownload(h,'pases_turno_'+new Date().toISOString().split('T')[0]+'.html');
 }
 
@@ -4275,7 +4277,7 @@ async function selfChangePass(){
   if(!store[todayStr])getDay(todayStr);
   var day=store[todayStr];
   if(!day.audit)day.audit=[];
-  var ts=new Date().toLocaleString('es-AR',{timeZone:'America/Argentina/Buenos_Aires'});
+  var ts=_fmt24(new Date());
   day.audit.push({type:'password_change',user:username,timestamp:ts,detail:'Cambio de contrase\u00f1a propio (self-service)'});
   try{await ghPushDay(todayStr,day);}catch(e){}
   msgEl.textContent='Contrase\u00f1a cambiada con \u00e9xito';msgEl.className='chgpw-msg ok';
