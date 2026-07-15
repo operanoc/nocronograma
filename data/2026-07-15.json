@@ -169,6 +169,18 @@
       "status": "OK",
       "shift": "NOCHE",
       "user": "HMAGARINOS"
+    },
+    {
+      "name": "Regional",
+      "iniDate": "2026-07-15",
+      "iniTime": null,
+      "endDate": "2026-07-15",
+      "endTime": null,
+      "job": null,
+      "duration": null,
+      "status": null,
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     }
   ],
   "processes": [
