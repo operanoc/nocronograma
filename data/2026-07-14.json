@@ -424,6 +424,18 @@
       "status": "OK",
       "shift": "ADMIN",
       "user": "OPERAADMIN"
+    },
+    {
+      "name": "Regional",
+      "iniDate": "2026-07-14",
+      "iniTime": "18:00",
+      "endDate": "2026-07-14",
+      "endTime": "18:28",
+      "job": "BKPMIMIX",
+      "duration": "0:28",
+      "status": "OK",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     }
   ],
   "processes": [
