@@ -47,28 +47,6 @@
       "user": "STORREZ"
     },
     {
-      "id": "mrlxlemnc795a",
-      "server": "Argentina P$",
-      "region": "ARGENTINA",
-      "phase": "BEGINNING",
-      "date": "2026-07-15",
-      "time": "13:21",
-      "note": null,
-      "shift": "NOCHE",
-      "user": "HMAGARINOS"
-    },
-    {
-      "id": "mrlxlemno0e7q",
-      "server": "Argentina P$",
-      "region": "ARGENTINA",
-      "phase": "ENDING",
-      "date": "2026-07-15",
-      "time": "03:23",
-      "note": null,
-      "shift": "NOCHE",
-      "user": "HMAGARINOS"
-    },
-    {
       "id": "mrlxlwgko6565",
       "server": "Argentina P1",
       "region": "ARGENTINA",
@@ -155,6 +133,28 @@
       "note": null,
       "shift": "NOCHE",
       "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrm026a2njqb9",
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "date": "2026-07-15",
+      "time": "13:21",
+      "note": null,
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
+    },
+    {
+      "id": "mrm026a21wm9m",
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "date": "2026-07-15",
+      "time": "03:23",
+      "note": null,
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     }
   ],
   "backups": [
