@@ -133,6 +133,28 @@
       "note": null,
       "shift": "NOCHE",
       "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrlxo6m2xg17n",
+      "server": "Panamá D1",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-15",
+      "time": "02:40",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrlxo6m2joybx",
+      "server": "Panamá D1",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-15",
+      "time": "03:09",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
     }
   ],
   "backups": [],
