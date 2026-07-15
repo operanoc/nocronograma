@@ -157,7 +157,20 @@
       "user": "HMAGARINOS"
     }
   ],
-  "backups": [],
+  "backups": [
+    {
+      "name": "Regional",
+      "iniDate": "2026-07-15",
+      "iniTime": "00:13",
+      "endDate": "2026-07-15",
+      "endTime": "02:31",
+      "job": "BKPDIARIO",
+      "duration": "2:18",
+      "status": "OK",
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
+    }
+  ],
   "processes": [
     {
       "name": "Tarjeta Naranja",
