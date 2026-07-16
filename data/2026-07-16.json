@@ -67,6 +67,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "mrnbsv15izldm",
+      "server": "Chile OP",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-16",
+      "time": "06:29",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrnbsv15017ni",
+      "server": "Chile OP",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-16",
+      "time": "06:41",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
