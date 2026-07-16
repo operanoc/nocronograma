@@ -155,6 +155,28 @@
       "note": null,
       "shift": "ADMIN",
       "user": "OPERAADMIN"
+    },
+    {
+      "id": "mrnkafmh8u2no",
+      "server": "Perú D2",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-15",
+      "time": "21:31",
+      "note": null,
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
+    },
+    {
+      "id": "mrnkafmhwjmp2",
+      "server": "Perú D2",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-15",
+      "time": "21:42",
+      "note": null,
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     }
   ],
   "backups": [
