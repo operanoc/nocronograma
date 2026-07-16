@@ -188,6 +188,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "mrnhm62249vsq",
+      "server": "Chile OC",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-16",
+      "time": "07:20",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrnhm622iqj4m",
+      "server": "Chile OC",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-16",
+      "time": "07:46",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
