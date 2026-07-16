@@ -353,6 +353,12 @@
       "status": "OK",
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "name": "AFIP 72",
+      "status": "OK",
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "notes": ""
