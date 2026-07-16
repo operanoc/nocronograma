@@ -298,6 +298,18 @@
       "bkpOk": true,
       "procOk": true,
       "readBy": {}
+    },
+    {
+      "id": "mrnkb6m6fo2vw",
+      "operator": "Fulgencio Godoy",
+      "shift": "TARDE",
+      "shiftLabel": "Tarde",
+      "timestamp": "2026-07-16 10:46:09",
+      "text": "todo ok si novedades",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": false,
+      "readBy": {}
     }
   ],
   "audit": [
@@ -312,21 +324,27 @@
       "user": "STORREZ",
       "timestamp": "2026-07-15 14:38:15",
       "detail": "Pase de turno - Mañana"
+    },
+    {
+      "type": "cierre",
+      "user": "FGODOY",
+      "timestamp": "2026-07-16 10:46:09",
+      "detail": "Pase de turno - Tarde"
     }
   ],
   "notifications": [
     {
-      "id": "mrmd5toskx2c2",
+      "id": "mrnkb6m6v703f",
       "type": "handover",
-      "title": "Pase de Turno - Mañana",
-      "desc": "todo ok, si novedades",
-      "operator": "Sebastian Torrez",
-      "shift": "MANANA",
-      "shiftLabel": "Mañana",
+      "title": "Pase de Turno - Tarde",
+      "desc": "todo ok si novedades",
+      "operator": "Fulgencio Godoy",
+      "shift": "TARDE",
+      "shiftLabel": "Tarde",
       "pollOk": true,
       "bkpOk": true,
-      "procOk": true,
-      "timestamp": "2026-07-15 14:38:15",
+      "procOk": false,
+      "timestamp": "2026-07-16 10:46:09",
       "readBy": {}
     },
     {
@@ -341,6 +359,20 @@
       "bkpOk": true,
       "procOk": true,
       "timestamp": "2026-07-15 07:25:24",
+      "readBy": {}
+    },
+    {
+      "id": "mrmd5toskx2c2",
+      "type": "handover",
+      "title": "Pase de Turno - Mañana",
+      "desc": "todo ok, si novedades",
+      "operator": "Sebastian Torrez",
+      "shift": "MANANA",
+      "shiftLabel": "Mañana",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "timestamp": "2026-07-15 14:38:15",
       "readBy": {}
     }
   ]
