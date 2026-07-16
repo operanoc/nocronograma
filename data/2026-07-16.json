@@ -484,5 +484,43 @@
       "user": "STORREZ"
     }
   ],
-  "notes": ""
+  "notes": "",
+  "handovers": [
+    {
+      "id": "mrnjqt4lqtasw",
+      "operator": "Hugo Magariños",
+      "shift": "NOCHE",
+      "shiftLabel": "Noche",
+      "timestamp": "2026-07-16 10:30:18",
+      "text": "Todo ok sin novedades",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": false,
+      "readBy": {}
+    }
+  ],
+  "audit": [
+    {
+      "type": "cierre",
+      "user": "HMAGARINOS",
+      "timestamp": "2026-07-16 10:30:18",
+      "detail": "Pase de turno - Noche"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "mrnjqt4mgrmyb",
+      "type": "handover",
+      "title": "Pase de Turno - Noche",
+      "desc": "Todo ok sin novedades",
+      "operator": "Hugo Magariños",
+      "shift": "NOCHE",
+      "shiftLabel": "Noche",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": false,
+      "timestamp": "2026-07-16 10:30:18",
+      "readBy": {}
+    }
+  ]
 }
