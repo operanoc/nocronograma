@@ -278,28 +278,6 @@
       "user": "STORREZ"
     },
     {
-      "id": "mrnhqozkucy4g",
-      "server": "Perú Aserviban MT",
-      "region": "PERU",
-      "phase": "BEGINNING",
-      "date": "2026-07-16",
-      "time": "07:12",
-      "note": null,
-      "shift": "MANANA",
-      "user": "STORREZ"
-    },
-    {
-      "id": "mrnhqozkt9aze",
-      "server": "Perú Aserviban MT",
-      "region": "PERU",
-      "phase": "ENDING",
-      "date": "2026-07-16",
-      "time": "08:15",
-      "note": null,
-      "shift": "MANANA",
-      "user": "STORREZ"
-    },
-    {
       "id": "mrnhreaahrjcw",
       "server": "Perú OC",
       "region": "PERU",
@@ -317,6 +295,28 @@
       "phase": "ENDING",
       "date": "2026-07-16",
       "time": "08:15",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrnhs4aqs5560",
+      "server": "Perú Aserviban MT",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-16",
+      "time": "05:50",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrnhs4aq5jeu1",
+      "server": "Perú Aserviban MT",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-16",
+      "time": "07:08",
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
