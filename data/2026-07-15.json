@@ -193,6 +193,18 @@
       "status": "OK",
       "shift": "ADMIN",
       "user": "OPERAADMIN"
+    },
+    {
+      "name": "Semillon",
+      "iniDate": "2026-07-15",
+      "iniTime": "19:00",
+      "endDate": "2026-07-15",
+      "endTime": "22:30",
+      "job": "BKPDIARIO",
+      "duration": "3:30",
+      "status": "OK",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     }
   ],
   "processes": [
