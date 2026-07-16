@@ -181,6 +181,18 @@
       "status": null,
       "shift": "ADMIN",
       "user": "OPERAADMIN"
+    },
+    {
+      "name": "Pinot",
+      "iniDate": "2026-07-15",
+      "iniTime": "19:00",
+      "endDate": "2026-07-16",
+      "endTime": "00:34",
+      "job": "BKPDIARIO",
+      "duration": "5:34",
+      "status": "OK",
+      "shift": "ADMIN",
+      "user": "OPERAADMIN"
     }
   ],
   "processes": [
