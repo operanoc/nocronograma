@@ -155,6 +155,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "DDIPINO"
+    },
+    {
+      "id": "mroxfmd25j135",
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-17",
+      "time": "08:40",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "mroxfmd2nu9de",
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-17",
+      "time": "07:52",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
     }
   ],
   "backups": [
