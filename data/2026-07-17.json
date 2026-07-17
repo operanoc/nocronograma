@@ -128,5 +128,43 @@
     }
   ],
   "processes": [],
-  "notes": ""
+  "notes": "",
+  "handovers": [
+    {
+      "id": "mroxamihg2ldz",
+      "operator": "Hugo Magariños",
+      "shift": "NOCHE",
+      "shiftLabel": "Noche",
+      "timestamp": "2026-07-17 09:37:24",
+      "text": "Todo ok. si novedades",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": false,
+      "readBy": {}
+    }
+  ],
+  "audit": [
+    {
+      "type": "cierre",
+      "user": "HMAGARINOS",
+      "timestamp": "2026-07-17 09:37:24",
+      "detail": "Pase de turno - Noche"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "mroxamihse78x",
+      "type": "handover",
+      "title": "Pase de Turno - Noche",
+      "desc": "Todo ok. si novedades",
+      "operator": "Hugo Magariños",
+      "shift": "NOCHE",
+      "shiftLabel": "Noche",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": false,
+      "timestamp": "2026-07-17 09:37:24",
+      "readBy": {}
+    }
+  ]
 }
