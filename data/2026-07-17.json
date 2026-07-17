@@ -1,0 +1,31 @@
+{
+  "date": "2026-07-17",
+  "dayType": "DIARIA",
+  "pollings": [
+    {
+      "id": "mrox5kbg4t5c5",
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "date": "2026-07-17",
+      "time": "13:21",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrox5kbhwgyv9",
+      "server": "Argentina P$",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "date": "2026-07-17",
+      "time": "03:14",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
+    }
+  ],
+  "backups": [],
+  "processes": [],
+  "notes": ""
+}
