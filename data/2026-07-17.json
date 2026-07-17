@@ -353,6 +353,28 @@
       "note": "SIN AC",
       "shift": "MANANA",
       "user": "DDIPINO"
+    },
+    {
+      "id": "mroxmmcc7e3zo",
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "BEGINNING",
+      "date": "2026-07-17",
+      "time": "06:00",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "mroxmmcc09l3e",
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "ENDING",
+      "date": "2026-07-17",
+      "time": "06:09",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
     }
   ],
   "backups": [
