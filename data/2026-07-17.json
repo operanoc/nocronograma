@@ -177,6 +177,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "DDIPINO"
+    },
+    {
+      "id": "mroxhrhkho1iv",
+      "server": "Panamá Mas Me Dan",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-17",
+      "time": "08:40",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "mroxhrhkax57v",
+      "server": "Panamá Mas Me Dan",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-17",
+      "time": "09:04",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
     }
   ],
   "backups": [
