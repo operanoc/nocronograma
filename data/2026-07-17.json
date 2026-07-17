@@ -111,6 +111,28 @@
       "note": null,
       "shift": "NOCHE",
       "user": "HMAGARINOS"
+    },
+    {
+      "id": "mroxd05060qs1",
+      "server": "Panamá MT",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-17",
+      "time": "06:00",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "mroxd050y0cei",
+      "server": "Panamá MT",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-17",
+      "time": "06:31",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
     }
   ],
   "backups": [
