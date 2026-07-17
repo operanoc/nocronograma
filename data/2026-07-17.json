@@ -113,7 +113,20 @@
       "user": "HMAGARINOS"
     }
   ],
-  "backups": [],
+  "backups": [
+    {
+      "name": "Regional",
+      "iniDate": "2026-07-17",
+      "iniTime": "00:13",
+      "endDate": "2026-07-17",
+      "endTime": "02:34",
+      "job": "BKPDIARIOU",
+      "duration": "2:21",
+      "status": "OK",
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
+    }
+  ],
   "processes": [],
   "notes": ""
 }
