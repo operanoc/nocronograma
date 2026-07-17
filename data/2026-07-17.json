@@ -23,6 +23,28 @@
       "note": null,
       "shift": "NOCHE",
       "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrox5wnmhineb",
+      "server": "Depu Gran Base",
+      "region": "REGIONAL",
+      "phase": "BEGINNING",
+      "date": "2026-07-17",
+      "time": "03:25",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrox5wnmwq4mv",
+      "server": "Depu Gran Base",
+      "region": "REGIONAL",
+      "phase": "ENDING",
+      "date": "2026-07-17",
+      "time": "04:37",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
     }
   ],
   "backups": [],
