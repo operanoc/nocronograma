@@ -478,6 +478,18 @@
       "status": "OK",
       "shift": "TARDE",
       "user": "FGODOY"
+    },
+    {
+      "name": "Semillon",
+      "iniDate": "2026-07-16",
+      "iniTime": "19:00",
+      "endDate": "2026-07-16",
+      "endTime": "22:21",
+      "job": "BKPDIARIO",
+      "duration": "3:21",
+      "status": "ok",
+      "shift": "TARDE",
+      "user": "FGODOY"
     }
   ],
   "processes": [
