@@ -243,6 +243,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "DDIPINO"
+    },
+    {
+      "id": "mroxk6cgh50du",
+      "server": "Chile MT",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-17",
+      "time": "05:59",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "mroxk6cgf8v3z",
+      "server": "Chile MT",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-17",
+      "time": "06:28",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
     }
   ],
   "backups": [
