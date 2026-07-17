@@ -504,6 +504,12 @@
       "status": "OK",
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "name": "Montaje de cintas",
+      "status": "OK",
+      "shift": "TARDE",
+      "user": "FGODOY"
     }
   ],
   "notes": "",
