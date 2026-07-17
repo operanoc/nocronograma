@@ -466,6 +466,18 @@
       "status": "OK",
       "shift": "NOCHE",
       "user": "HMAGARINOS"
+    },
+    {
+      "name": "Pinot",
+      "iniDate": "2026-07-16",
+      "iniTime": "19:00",
+      "endDate": "2026-07-17",
+      "endTime": "00:41",
+      "job": "BKPDIARIO",
+      "duration": "5:41",
+      "status": "OK",
+      "shift": "TARDE",
+      "user": "FGODOY"
     }
   ],
   "processes": [
