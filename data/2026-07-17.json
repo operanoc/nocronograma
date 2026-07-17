@@ -127,7 +127,14 @@
       "user": "HMAGARINOS"
     }
   ],
-  "processes": [],
+  "processes": [
+    {
+      "name": "EPE",
+      "status": "OK",
+      "shift": "MANANA",
+      "user": "DDIPINO"
+    }
+  ],
   "notes": "",
   "handovers": [
     {
