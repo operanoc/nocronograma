@@ -510,6 +510,12 @@
       "status": "OK",
       "shift": "TARDE",
       "user": "FGODOY"
+    },
+    {
+      "name": "Cierre AFIP",
+      "status": "OK",
+      "shift": "TARDE",
+      "user": "FGODOY"
     }
   ],
   "notes": "",
