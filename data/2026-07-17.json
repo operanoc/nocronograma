@@ -23,6 +23,28 @@
       "note": null,
       "shift": "NOCHE",
       "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrox6bwduqeyk",
+      "server": "Argentina P2",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "date": "2026-07-17",
+      "time": "03:25",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
+    },
+    {
+      "id": "mrox6bwdzblrh",
+      "server": "Argentina P2",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "date": "2026-07-17",
+      "time": "04:37",
+      "note": null,
+      "shift": "NOCHE",
+      "user": "HMAGARINOS"
     }
   ],
   "backups": [],
