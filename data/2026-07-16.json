@@ -601,6 +601,18 @@
       "bkpOk": true,
       "procOk": false,
       "readBy": {}
+    },
+    {
+      "id": "mrov9uqn0lqko",
+      "operator": "Fulgencio Godoy",
+      "shift": "TARDE",
+      "shiftLabel": "Tarde",
+      "timestamp": "2026-07-17 08:40:49",
+      "text": "todo ok",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
     }
   ],
   "audit": [
@@ -609,9 +621,29 @@
       "user": "HMAGARINOS",
       "timestamp": "2026-07-16 10:30:18",
       "detail": "Pase de turno - Noche"
+    },
+    {
+      "type": "cierre",
+      "user": "FGODOY",
+      "timestamp": "2026-07-17 08:40:49",
+      "detail": "Pase de turno - Tarde"
     }
   ],
   "notifications": [
+    {
+      "id": "mrov9uqnn0zmv",
+      "type": "handover",
+      "title": "Pase de Turno - Tarde",
+      "desc": "todo ok",
+      "operator": "Fulgencio Godoy",
+      "shift": "TARDE",
+      "shiftLabel": "Tarde",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "timestamp": "2026-07-17 08:40:49",
+      "readBy": {}
+    },
     {
       "id": "mrnjqt4mgrmyb",
       "type": "handover",
