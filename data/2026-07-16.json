@@ -502,6 +502,18 @@
       "status": "OK",
       "shift": "TARDE",
       "user": "FGODOY"
+    },
+    {
+      "name": "Regional",
+      "iniDate": "2026-07-16",
+      "iniTime": "18:00",
+      "endDate": "2026-07-16",
+      "endTime": "18:30",
+      "job": "BKPMIMIX",
+      "duration": "0:30",
+      "status": "OK",
+      "shift": "TARDE",
+      "user": "FGODOY"
     }
   ],
   "processes": [
