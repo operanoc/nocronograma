@@ -265,6 +265,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "DDIPINO"
+    },
+    {
+      "id": "mroxkk913vbdv",
+      "server": "Chile OP",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-17",
+      "time": "06:35",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
+    },
+    {
+      "id": "mroxkk918r5fz",
+      "server": "Chile OP",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-17",
+      "time": "06:47",
+      "note": null,
+      "shift": "MANANA",
+      "user": "DDIPINO"
     }
   ],
   "backups": [
