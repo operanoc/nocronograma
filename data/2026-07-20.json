@@ -414,6 +414,12 @@
       "status": "OK",
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "name": "AFIP 48",
+      "status": "OK",
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "notes": ""
