@@ -309,6 +309,28 @@
       "note": "SIN AC",
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "mrta5hb5u0q7q",
+      "server": "Chile CencoPay",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-20",
+      "time": "10:14",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrta5hb5mahg6",
+      "server": "Chile CencoPay",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-20",
+      "time": "10:43",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
