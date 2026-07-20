@@ -3,7 +3,7 @@
   "dayType": "DIARIA",
   "pollings": [
     {
-      "id": "mrt265azacvfn",
+      "id": "mrt26ih6v0smm",
       "server": "México - SIE - M1",
       "region": "MEXICO",
       "phase": "BEGINNING",
@@ -14,12 +14,12 @@
       "user": "STORREZ"
     },
     {
-      "id": "mrt265az92a3x",
+      "id": "mrt26ih6pkbxr",
       "server": "México - SIE - M1",
       "region": "MEXICO",
       "phase": "ENDING",
       "date": "2026-07-20",
-      "time": "06:19",
+      "time": "06:13",
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
