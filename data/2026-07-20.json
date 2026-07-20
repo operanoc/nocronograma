@@ -21,6 +21,12 @@
       "status": "OK",
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "name": "AFIP 24",
+      "status": "OK",
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "notes": ""
