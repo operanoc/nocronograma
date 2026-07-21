@@ -2684,7 +2684,7 @@ function enterApp(username,forceShift){
   }
   // Chat disponible para todos los usuarios logueados
   document.getElementById('chatFab').style.display='flex';
-  document.getElementById('novWrap').style.display='';
+  if(!isAdmin())document.getElementById('novWrap').style.display='';
   var _aiFab2=document.getElementById('aiFab');
   if(_aiFab2)_aiFab2.style.display='flex';
   startChatPoll();
@@ -4999,9 +4999,8 @@ function novRenderList(){
   var items=[].concat(_novData).reverse();
   items.forEach(function(n){
     var isUnread=!read[n.id];
-    var replyCount=(n.replies||[]).length;
     html+='<div class="nov-item'+(isUnread?' unread':'')+'" onclick="openNovDetail(\''+n.id+'\')">';
-    html+='<div class="nov-item-head"><span>'+escHtml(n.date)+'</span>'+(replyCount?'<span class="nov-item-replies"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> '+replyCount+'</span>':'')+'</div>';
+    html+='<div class="nov-item-head"><span>'+escHtml(n.date)+'</span></div>';
     html+='<div class="nov-item-text">'+escHtml(n.text)+'</div>';
     html+='</div>';
   });
@@ -5021,7 +5020,7 @@ async function novShowPopup(){
   await novLoad();
   var unread=_novData.filter(function(n){return !novGetRead()[n.id];});
   if(!unread.length)return;
-  document.getElementById('novWrap').style.display='';
+  if(!isAdmin())document.getElementById('novWrap').style.display='';
   var body=document.getElementById('novPopupBody');
   var countEl=document.getElementById('novPopupCount');
   countEl.textContent=unread.length;
@@ -5058,29 +5057,6 @@ function openNovDetail(nid){
   var body=document.getElementById('novDetailBody');
   var html='<div class="nov-detail-time">'+escHtml(n.date)+'</div>';
   html+='<div class="nov-detail-text">'+escHtml(n.text)+'</div>';
-  var replies=n.replies||[];
-  html+='<div class="nov-replies"><h4><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Respuestas ('+replies.length+')</h4>';
-  if(replies.length){
-    replies.forEach(function(r){
-      var initial=(r.from||'?').charAt(0);
-      html+='<div class="nov-reply-item">';
-      html+='<div class="nov-reply-avatar">'+escHtml(initial)+'</div>';
-      html+='<div class="nov-reply-content">';
-      html+='<div class="nov-reply-user">'+escHtml(_userLabel(r.from))+'</div>';
-      html+='<div class="nov-reply-text">'+escHtml(r.text)+'</div>';
-      html+='<div class="nov-reply-time">'+escHtml(r.date)+'</div>';
-      html+='</div></div>';
-    });
-  }else{
-    html+='<div style="font-size:12px;color:var(--gray-400);padding:4px 0">Sin respuestas aun.</div>';
-  }
-  html+='</div>';
-  if(currentUser){
-    html+='<div class="nov-reply-input">';
-    html+='<textarea id="novReplyText" placeholder="Escribi tu respuesta..." rows="1" oninput="this.style.height=\'auto\';this.style.height=Math.min(this.scrollHeight,80)+\'px\'"></textarea>';
-    html+='<button onclick="novSendReply()">Enviar</button>';
-    html+='</div>';
-  }
   body.innerHTML=html;
   document.getElementById('novDetailOverlay').classList.add('show');
 }
@@ -5089,27 +5065,6 @@ function closeNovDetail(){
   document.getElementById('novDetailOverlay').classList.remove('show');
   _novDetailId=null;
   novRenderList();
-}
-
-async function novSendReply(){
-  if(!_novDetailId)return;
-  var ta=document.getElementById('novReplyText');
-  var text=ta.value.trim();
-  if(!text)return;
-  var n=_novData.find(function(x){return x.id===_novDetailId;});
-  if(!n)return;
-  if(!n.replies)n.replies=[];
-  n.replies.push({from:currentUser.username,text:text,date:_fmt24(new Date())});
-  try{
-    await novSave();
-    ta.value='';
-    ta.style.height='auto';
-    openNovDetail(_novDetailId);
-    toast('Respuesta enviada');
-  }catch(e){
-    console.error('[novedades] Error enviando respuesta:',e);
-    toast('Error al enviar respuesta');
-  }
 }
 
 function openNovAdminModal(){
@@ -5125,13 +5080,11 @@ function openNovAdminModal(){
   if(_novData.length){
     var items=[].concat(_novData).reverse();
     items.forEach(function(n){
-      var replyCount=(n.replies||[]).length;
       html+='<div style="padding:12px;background:var(--gray-50);border-radius:8px;border:1px solid var(--gray-100);margin-bottom:8px">';
       html+='<div style="display:flex;justify-content:space-between;align-items:start;gap:8px">';
       html+='<div style="flex:1;min-width:0">';
       html+='<div style="font-size:11px;color:var(--gray-400);font-family:\'SF Mono\',Monaco,Consolas,monospace;margin-bottom:4px">'+escHtml(n.date)+'</div>';
       html+='<div style="font-size:13px;color:var(--gray-700);line-height:1.5;white-space:pre-wrap;word-break:break-word">'+escHtml(n.text)+'</div>';
-      if(replyCount)html+='<div style="font-size:11px;color:var(--sky-600);font-weight:600;margin-top:6px">'+replyCount+' respuesta'+(replyCount>1?'s':'')+'</div>';
       html+='</div>';
       html+='<button class="nov-admin-del" onclick="novDelete(\''+n.id+'\')">Eliminar</button>';
       html+='</div></div>';
