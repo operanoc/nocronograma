@@ -177,6 +177,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "mruouhh12p93h",
+      "server": "Panamá OC",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-21",
+      "time": "07:17",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mruouhh1j3g9o",
+      "server": "Panamá OC",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-21",
+      "time": "07:52",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
