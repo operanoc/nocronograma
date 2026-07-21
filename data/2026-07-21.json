@@ -400,5 +400,43 @@
       "user": "STORREZ"
     }
   ],
-  "notes": ""
+  "notes": "",
+  "handovers": [
+    {
+      "id": "mruvwjymkmeer",
+      "operator": "Sebastian Torrez",
+      "shift": "MANANA",
+      "shiftLabel": "Mañana",
+      "timestamp": "2026-07-21 13:45:05",
+      "text": "Buenas Tardes, se està ejecutando el pollings x30.",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
+    }
+  ],
+  "audit": [
+    {
+      "type": "cierre",
+      "user": "STORREZ",
+      "timestamp": "2026-07-21 13:45:05",
+      "detail": "Pase de turno - Mañana"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "mruvwjymzq723",
+      "type": "handover",
+      "title": "Pase de Turno - Mañana",
+      "desc": "Buenas Tardes, se està ejecutando el pollings x30.",
+      "operator": "Sebastian Torrez",
+      "shift": "MANANA",
+      "shiftLabel": "Mañana",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "timestamp": "2026-07-21 13:45:05",
+      "readBy": {}
+    }
+  ]
 }
