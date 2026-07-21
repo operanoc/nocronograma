@@ -1137,7 +1137,7 @@ html.dark .notif-item.unread{background:#082f49}
   <div class="nov-popup">
     <div class="nov-popup-head">
       <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Novedades <span class="nov-popup-count" id="novPopupCount">0</span></h3>
-      <button style="background:none;border:none;cursor:pointer;padding:4px;color:var(--gray-400)" onclick="closeNovPopup()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <button style="background:var(--gray-100);border:none;cursor:pointer;padding:6px;color:var(--gray-600);border-radius:8px;transition:all .15s" onmouseover="this.style.background='var(--gray-200)';this.style.color='var(--gray-800)'" onmouseout="this.style.background='var(--gray-100)';this.style.color='var(--gray-600)'" onclick="closeNovPopup()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="nov-popup-body" id="novPopupBody"></div>
     <div class="nov-popup-foot"><button onclick="closeNovPopup()">Cerrar</button></div>
@@ -1148,7 +1148,7 @@ html.dark .notif-item.unread{background:#082f49}
   <div class="nov-detail">
     <div class="nov-detail-head">
       <h3 id="novDetailTitle">Novedad</h3>
-      <button style="background:none;border:none;cursor:pointer;padding:4px;color:var(--gray-400)" onclick="closeNovDetail()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <button style="background:var(--gray-100);border:none;cursor:pointer;padding:6px;color:var(--gray-600);border-radius:8px;transition:all .15s" onmouseover="this.style.background='var(--gray-200)';this.style.color='var(--gray-800)'" onmouseout="this.style.background='var(--gray-100)';this.style.color='var(--gray-600)'" onclick="closeNovDetail()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div class="nov-detail-body" id="novDetailBody"></div>
   </div>
