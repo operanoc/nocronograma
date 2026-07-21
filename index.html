@@ -2676,9 +2676,11 @@ function enterApp(username,forceShift){
       });
     }
     if(!isReadOnly())startLivePoll();
+    startNovPoll();
   }else{
     document.getElementById('adminMenuWrap').style.display='none';
     stopLivePoll();
+    startNovPoll();
   }
   // Chat disponible para todos los usuarios logueados
   document.getElementById('chatFab').style.display='flex';
@@ -2692,7 +2694,7 @@ function enterApp(username,forceShift){
   render();
   // Re-sync from GitHub after login to ensure fresh data
   syncFromGitHub();
-  novLoad().then(function(){novUpdateBadge();novShowPopup();});
+  novLoad().then(function(){novUpdateBadge();novShowPopup();startNovPoll();});
 }
 
 function doLogin(){
@@ -2735,6 +2737,7 @@ function doLogout(){
   currentUser=null;
   confirmedOperator=null;
   stopLivePoll();
+  stopNovPoll();
   stopChatPoll();
   document.getElementById('chatFab').style.display='none';
   document.getElementById('chatPanel').classList.remove('show');
@@ -4920,8 +4923,34 @@ async function novLoad(){
     var data=await resp.json();
     _novSHA=data.sha;
     var b64=(data.content||'').replace(/\s/g,'');
-    _novData=JSON.parse(decodeURIComponent(escape(atob(b64))));
+    var fresh=JSON.parse(decodeURIComponent(escape(atob(b64))));
+    var oldLen=_novData.length;
+    _novData=fresh;
+    // Si hay mas novedades que antes y estamos logueados, notificar
+    if(currentUser && fresh.length>oldLen){
+      var read=novGetRead();
+      var newUnread=fresh.filter(function(n){return !read[n.id];});
+      if(newUnread.length>0){
+        novUpdateBadge();
+        toast('Tenes '+newUnread.length+' novedad'+(newUnread.length>1?'es':'')+' nueva'+(newUnread.length>1?'s':''));
+      }
+    }
   }catch(e){console.warn('[novedades] Error cargando:',e);}
+}
+
+var _novPollTimer=null;
+var _NOV_POLL_INTERVAL=10000;
+function startNovPoll(){
+  if(_novPollTimer)return;
+  console.log('[novedades] Iniciando polling cada',_NOV_POLL_INTERVAL,'ms');
+  _novPollTimer=setInterval(function(){
+    if(!currentUser){stopNovPoll();return;}
+    novLoad();
+  },_NOV_POLL_INTERVAL);
+}
+function stopNovPoll(){
+  if(_novPollTimer){clearInterval(_novPollTimer);_novPollTimer=null;}
+  console.log('[novedades] Polling detenido');
 }
 
 async function novSave(){
