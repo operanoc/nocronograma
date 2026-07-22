@@ -45,6 +45,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "mrw9wt6uqg8mx",
+      "server": "Perú X30",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-22",
+      "time": "12:01",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrw9wt6uc4i4l",
+      "server": "Perú X30",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-22",
+      "time": "12:58",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
