@@ -23,6 +23,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "mrw9wcf46cehl",
+      "server": "Perú OC",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-22",
+      "time": "07:51",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrw9wcf4pgt9k",
+      "server": "Perú OC",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-22",
+      "time": "10:50",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
