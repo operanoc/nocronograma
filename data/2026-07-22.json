@@ -1,7 +1,30 @@
 {
   "date": "2026-07-22",
   "dayType": "DIARIA",
-  "pollings": [],
+  "pollings": [
+    {
+      "id": "mrw9vp662qve6",
+      "server": "Perú Aserviban MT",
+      "region": "PERU",
+      "phase": "BEGINNING",
+      "date": "2026-07-22",
+      "time": "05:47",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrw9vp66xl4me",
+      "server": "Perú Aserviban MT",
+      "region": "PERU",
+      "phase": "ENDING",
+      "date": "2026-07-22",
+      "time": "07:37",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    }
+  ],
   "backups": [],
   "processes": [
     {
