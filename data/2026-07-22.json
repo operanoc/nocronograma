@@ -411,5 +411,43 @@
       "user": "STORREZ"
     }
   ],
-  "notes": ""
+  "notes": "",
+  "handovers": [
+    {
+      "id": "mrwayp34mvwct",
+      "operator": "Sebastian Torrez",
+      "shift": "MANANA",
+      "shiftLabel": "Mañana",
+      "timestamp": "2026-07-22 13:34:25",
+      "text": "Buenas tardes todos los procesos fueron ejecutados.",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
+    }
+  ],
+  "audit": [
+    {
+      "type": "cierre",
+      "user": "STORREZ",
+      "timestamp": "2026-07-22 13:34:25",
+      "detail": "Pase de turno - Mañana"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "mrwayp34c2syd",
+      "type": "handover",
+      "title": "Pase de Turno - Mañana",
+      "desc": "Buenas tardes todos los procesos fueron ejecutados.",
+      "operator": "Sebastian Torrez",
+      "shift": "MANANA",
+      "shiftLabel": "Mañana",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "timestamp": "2026-07-22 13:34:25",
+      "readBy": {}
+    }
+  ]
 }
