@@ -298,6 +298,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "mrwa46rxq1i2i",
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "BEGINNING",
+      "date": "2026-07-22",
+      "time": "05:46",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mrwa46rxe9gnp",
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "ENDING",
+      "date": "2026-07-22",
+      "time": "05:58",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
