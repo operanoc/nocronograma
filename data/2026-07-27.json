@@ -254,6 +254,12 @@
       "status": "OK",
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "name": "AFIP 24",
+      "status": "Error",
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "notes": ""
