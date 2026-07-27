@@ -298,6 +298,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "ms35d2rsfel85",
+      "server": "Chile CencoPay",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-27",
+      "time": "08:31",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "ms35d2rswy46w",
+      "server": "Chile CencoPay",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-27",
+      "time": "08:29",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
