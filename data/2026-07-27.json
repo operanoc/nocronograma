@@ -232,6 +232,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "ms34r34r94ata",
+      "server": "Chile Los Heroes",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-27",
+      "time": "",
+      "note": "SIN AC",
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "ms34r34r8i6p5",
+      "server": "Chile Los Heroes",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-27",
+      "time": "",
+      "note": "SIN AC",
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
