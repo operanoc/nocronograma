@@ -67,6 +67,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "ms32mw7dfrb2k",
+      "server": "Chile Vigo",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-27",
+      "time": "06:32",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "ms32mw7d4bxqk",
+      "server": "Chile Vigo",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-27",
+      "time": "06:55",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
