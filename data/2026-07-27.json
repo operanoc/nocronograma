@@ -383,5 +383,43 @@
       "user": "STORREZ"
     }
   ],
-  "notes": ""
+  "notes": "",
+  "handovers": [
+    {
+      "id": "ms3gr16nxju1q",
+      "operator": "Sebastian Torrez",
+      "shift": "MANANA",
+      "shiftLabel": "Mañana",
+      "timestamp": "2026-07-27 13:50:49",
+      "text": "Buenas tardes No se proceso Afip 24, no llegaron los archivos",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "readBy": {}
+    }
+  ],
+  "audit": [
+    {
+      "type": "cierre",
+      "user": "STORREZ",
+      "timestamp": "2026-07-27 13:50:49",
+      "detail": "Pase de turno - Mañana"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "ms3gr16n0gwm6",
+      "type": "handover",
+      "title": "Pase de Turno - Mañana",
+      "desc": "Buenas tardes No se proceso Afip 24, no llegaron los archivos",
+      "operator": "Sebastian Torrez",
+      "shift": "MANANA",
+      "shiftLabel": "Mañana",
+      "pollOk": true,
+      "bkpOk": true,
+      "procOk": true,
+      "timestamp": "2026-07-27 13:50:49",
+      "readBy": {}
+    }
+  ]
 }
