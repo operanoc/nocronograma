@@ -331,6 +331,17 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "ms3gpvvimkqs8",
+      "server": "Argentina P2",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "date": "2026-07-27",
+      "time": "13:01",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
