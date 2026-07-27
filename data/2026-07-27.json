@@ -157,12 +157,23 @@
       "user": "STORREZ"
     },
     {
-      "id": "ms32rswg366zd",
+      "id": "ms32sdbk1jxb6",
       "server": "Panamá OC",
       "region": "PANAMA",
       "phase": "BEGINNING",
       "date": "2026-07-27",
       "time": "06:29",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "ms32sdbkoi0hb",
+      "server": "Panamá OC",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-27",
+      "time": "06:52",
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
