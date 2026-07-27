@@ -254,6 +254,28 @@
       "note": "SIN AC",
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "ms34s11o31soy",
+      "server": "Chile Cencosud",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-07-27",
+      "time": "07:26",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "ms34s11oovzsh",
+      "server": "Chile Cencosud",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-07-27",
+      "time": "07:54",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
