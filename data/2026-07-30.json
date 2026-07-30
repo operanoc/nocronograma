@@ -89,6 +89,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "ms7c4j62q3ucx",
+      "server": "Panamá MT",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-07-30",
+      "time": "05:53",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "ms7c4j62o6i8f",
+      "server": "Panamá MT",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-07-30",
+      "time": "06:22",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
