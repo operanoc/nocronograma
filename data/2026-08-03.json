@@ -89,6 +89,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "msd2lfp6h4ju4",
+      "server": "México - GDE - M2",
+      "region": "MEXICO",
+      "phase": "BEGINNING",
+      "date": "2026-08-03",
+      "time": "06:31",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "msd2lfp6ecgkx",
+      "server": "México - GDE - M2",
+      "region": "MEXICO",
+      "phase": "ENDING",
+      "date": "2026-08-03",
+      "time": "06:38",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
