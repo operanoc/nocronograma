@@ -43,5 +43,15 @@
       "shift": "ADMIN"
     }
   ],
-  "notes": ""
+  "notes": "",
+  "timeline": [
+    {
+      "id": "msf2d92e8tcp5",
+      "operator": "Anibal Rivero",
+      "text": "ajdksajkdjsalkdsa",
+      "time": "16:41:25",
+      "date": "2026-08-02",
+      "shift": "ADMIN"
+    }
+  ]
 }
