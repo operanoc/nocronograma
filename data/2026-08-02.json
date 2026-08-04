@@ -1,7 +1,28 @@
 {
   "date": "2026-08-02",
   "dayType": "FIN_DE_SEMANA",
-  "pollings": [],
+  "pollings": [
+    {
+      "id": "msf2c9xff0zg3",
+      "server": "Chile Vigo",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-08-02",
+      "time": "02:32",
+      "note": null,
+      "shift": "ADMIN"
+    },
+    {
+      "id": "msf2c9xfs5mdw",
+      "server": "Chile Vigo",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-08-02",
+      "time": "03:21",
+      "note": null,
+      "shift": "ADMIN"
+    }
+  ],
   "backups": [],
   "processes": [],
   "notes": ""
