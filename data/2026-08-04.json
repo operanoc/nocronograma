@@ -1,7 +1,30 @@
 {
   "date": "2026-08-04",
   "dayType": "DIARIA",
-  "pollings": [],
+  "pollings": [
+    {
+      "id": "mseivqc6dh77m",
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "BEGINNING",
+      "date": "2026-08-04",
+      "time": "05:45",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "mseivqc6yyf65",
+      "server": "México - SIE - M1",
+      "region": "MEXICO",
+      "phase": "ENDING",
+      "date": "2026-08-04",
+      "time": "05:52",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    }
+  ],
   "backups": [],
   "processes": [
     {
