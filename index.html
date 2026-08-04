@@ -693,7 +693,7 @@ html.dark .notif-item.unread{background:#082f49}
 .nov-item-head span{font-size:11px;color:var(--gray-400);font-family:'SF Mono',Monaco,Consolas,monospace}
 .nov-item-text{font-size:13px;color:var(--gray-700);line-height:1.5;word-break:break-word;white-space:pre-wrap}
 .nov-item-meta{display:flex;align-items:center;gap:8px;margin-top:8px}
-.nov-item-replies{font-size:11px;color:var(--sky-600);font-weight:600;display:flex;align-items:center;gap:3px}
+
 .nov-empty{padding:30px;text-align:center;color:var(--gray-400);font-size:13px}
 .nov-popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px)}
 .nov-popup-overlay.show{display:flex}
@@ -722,21 +722,7 @@ html.dark .notif-item.unread{background:#082f49}
 .nov-detail-body::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:2px}
 .nov-detail-text{font-size:14px;color:var(--gray-700);line-height:1.7;white-space:pre-wrap;word-break:break-word;padding:14px 16px;background:var(--gray-50);border-radius:10px;border:1px solid var(--gray-100);margin-bottom:16px}
 .nov-detail-time{font-size:11px;color:var(--gray-400);font-family:'SF Mono',Monaco,Consolas,monospace;margin-bottom:12px}
-.nov-replies{margin-top:16px}
-.nov-replies h4{font-size:13px;font-weight:700;color:var(--gray-600);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.nov-reply-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--gray-50)}
-.nov-reply-item:last-child{border-bottom:none}
-.nov-reply-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-.nov-reply-content{flex:1;min-width:0}
-.nov-reply-user{font-size:12px;font-weight:700;color:var(--gray-800)}
-.nov-reply-text{font-size:13px;color:var(--gray-600);line-height:1.5;margin-top:2px;white-space:pre-wrap;word-break:break-word}
-.nov-reply-time{font-size:10px;color:var(--gray-400);margin-top:3px}
-.nov-reply-input{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--gray-100)}
-.nov-reply-input textarea{flex:1;min-height:38px;max-height:80px;padding:8px 12px;font-size:13px;border:1px solid var(--gray-200);border-radius:8px;resize:none;outline:none;font-family:inherit}
-.nov-reply-input textarea:focus{border-color:var(--sky-600)}
-.nov-reply-input button{align-self:flex-end;padding:8px 16px;border-radius:8px;background:var(--sky-600);color:#fff;font-size:12px;font-weight:600;cursor:pointer;border:none;white-space:nowrap;transition:background .15s}
-.nov-reply-input button:hover{background:var(--sky-700)}
-.nov-reply-input button:disabled{opacity:.5;cursor:not-allowed}
+
 .nov-admin-input{width:100%;min-height:80px;padding:12px;font-size:14px;border:1px solid var(--gray-200);border-radius:10px;resize:vertical;outline:none;font-family:inherit;line-height:1.5}
 .nov-admin-input:focus{border-color:var(--emerald-600);box-shadow:0 0 0 3px rgba(16,185,129,.15)}
 .nov-admin-actions{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
@@ -2801,6 +2787,11 @@ function checkSession(){
     startChatPoll();
     _aiLoadHistory();
     _aiUpdateDot();
+    // Novedades: mostrar boton y arrancar polling para no-admin
+    if(!isAdmin()){
+      document.getElementById('novWrap').style.display='';
+    }
+    novLoad().then(function(){novUpdateBadge();novShowPopup();startNovPoll();});
   }
 }
 document.getElementById('loginPass').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
@@ -4755,46 +4746,65 @@ function _aiGetDayContext(){
   var ctx='ESTAS HABLANDO CON: '+userName;
   if(userShift)ctx+=' | Turno: '+userShift;
   if(userRole)ctx+=' | Rol: '+userRole;
-  ctx+='\n\nFecha seleccionada en la app: '+currentDate;
-  ctx+='\nTipo de d\u00eda seleccionado: '+document.getElementById('typeSelect').value;
-  ctx+='\n--- DATOS DISPONIBLES (todos los d\u00edas cargados) ---';
-  var dates=Object.keys(store).filter(function(k){return k&&k.match(/^\d{4}-\d{2}-\d{2}$/);}).sort();
-  if(dates.length===0)return ctx+'\nSin datos cargados.';
-  dates.forEach(function(dateKey){
-    var d=store[dateKey];
-    var hasData=(d.pollings&&d.pollings.length)||(d.backups&&d.backups.length)||(d.processes&&d.processes.length)||(d.timeline&&d.timeline.length);
-    if(!hasData)return;
-    var marker=dateKey===currentDate?'  *DIA ACTUAL*':'';
-    ctx+='\n\n['+dateKey+']'+marker+(d.dayType?' | Tipo: '+d.dayType:'');
-    var p=d.pollings||[];
-    if(p.length){
-      ctx+='\n  Pollings:';
-      p.forEach(function(x,i){
-        ctx+='\n    '+(i+1)+'. '+x.server+(x.region?' ('+x.region+')':'')+' | Fase: '+x.phase+' | Hora: '+(x.time||'-')+(x.note?' | Nota: '+x.note:'');
-      });
-    }
-    var b=d.backups||[];
-    if(b.length){
-      ctx+='\n  Backups:';
-      b.forEach(function(x,i){
-        ctx+='\n    '+(i+1)+'. '+x.name+(x.job?' | JOB: '+x.job:'')+' | Inicio: '+(x.iniTime||'-')+' | Fin: '+(x.endTime||'-')+' | Duraci\u00f3n: '+(x.duration||'-')+' | Estado: '+(x.status||'-');
-      });
-    }
-    var pr=d.processes||[];
-    if(pr.length){
-      ctx+='\n  Procesos:';
-      pr.forEach(function(x,i){
-        ctx+='\n    '+(i+1)+'. '+x.name+' | Estado: '+(x.status||'-');
-      });
-    }
-    var tl=d.timeline||[];
-    if(tl.length){
-      ctx+='\n  Notas del turno:';
-      tl.forEach(function(x,i){
-        ctx+='\n    '+(i+1)+'. ['+(x.time||'-')+'] '+(x.text||'-')+' \u2014 '+(x.user||'-');
-      });
-    }
-  });
+  ctx+('
+
+Fecha seleccionada en la app: '+currentDate);
+  ctx+('
+Tipo de día seleccionado: '+document.getElementById('typeSelect').value);
+
+  // Solo enviar dia actual (reduce tokens drasticamente)
+  var d=store[currentDate];
+  if(!d){return ctx+'
+Sin datos para el día actual.';}
+  ctx+('
+--- DATOS DEL DIA ACTUAL ('+currentDate+') ---');
+  if(d.dayType)ctx+=(' | Tipo: '+d.dayType);
+  var p=d.pollings||[];
+  if(p.length){
+    ctx+('
+Pollings:');
+    p.forEach(function(x,i){
+      ctx+=('
+  '+(i+1)+'. '+x.server+(x.region?' ('+x.region+')':'')+' | Fase: '+x.phase+' | Hora: '+(x.time||'-')+(x.note?' | Nota: '+x.note:''));
+    });
+  }
+  var b=d.backups||[];
+  if(b.length){
+    ctx+('
+Backups:');
+    b.forEach(function(x,i){
+      ctx+=('
+  '+(i+1)+'. '+x.name+(x.job?' | JOB: '+x.job:'')+' | Inicio: '+(x.iniTime||'-')+' | Fin: '+(x.endTime||'-')+' | Duración: '+(x.duration||'-')+' | Estado: '+(x.status||'-'));
+    });
+  }
+  var pr=d.processes||[];
+  if(pr.length){
+    ctx+('
+Procesos:');
+    pr.forEach(function(x,i){
+      ctx+=('
+  '+(i+1)+'. '+x.name+' | Estado: '+(x.status||'-'));
+    });
+  }
+  var tl=d.timeline||[];
+  if(tl.length){
+    ctx+('
+Notas del turno:');
+    tl.forEach(function(x,i){
+      ctx+=('
+  '+(i+1)+'. ['+(x.time||'-')+'] '+(x.text||'-')+' — '+(x.user||'-'));
+    });
+  }
+
+  // Lista resumida de otros dias (solo fechas con datos)
+  var otherDates=Object.keys(store).filter(function(k){return k&&k.match(/^\d{4}-\d{2}-\d{2}$/)&&k!==currentDate;}).sort();
+  if(otherDates.length){
+    ctx+('
+
+Otros días con datos: '+otherDates.join(', '));
+    ctx+=('
+(Preguntá por un día específico si necesitás ver sus datos)');
+  }
   return ctx;
 }
 
@@ -4817,7 +4827,7 @@ async function aiSend(){
   var apiMsgs=[];
   var sysContent=cfg.system+'\n\n--- CONTEXTO ACTUAL DE LA BIT\u00c1CORA ---\n'+_aiGetDayContext();
   apiMsgs.push({role:'system',content:sysContent});
-  var history=_aiMessages.slice(-20);
+  var history=_aiMessages.slice(-8);
   history.forEach(function(m){
     apiMsgs.push({role:m.role,content:m.content});
   });
@@ -5020,7 +5030,6 @@ async function novShowPopup(){
   await novLoad();
   var unread=_novData.filter(function(n){return !novGetRead()[n.id];});
   if(!unread.length)return;
-  if(!isAdmin())document.getElementById('novWrap').style.display='';
   var body=document.getElementById('novPopupBody');
   var countEl=document.getElementById('novPopupCount');
   countEl.textContent=unread.length;
@@ -5101,7 +5110,7 @@ async function novPublish(){
   var ta=document.getElementById('novNewText');
   var text=ta.value.trim();
   if(!text){toast('Escribi algo antes de publicar');return;}
-  _novData.push({id:Date.now().toString(36)+Math.random().toString(36).substr(2,5),text:text,date:_fmt24(new Date()),author:currentUser.username,replies:[]});
+  _novData.push({id:Date.now().toString(36)+Math.random().toString(36).substr(2,5),text:text,date:_fmt24(new Date()),author:currentUser.username,});
   try{
     await novSave();
     ta.value='';
