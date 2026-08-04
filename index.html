@@ -6,6 +6,10 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.sheetjs.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com https://cdn.sheetjs.com; img-src 'self' data:; font-src 'self' data:;">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Bitácora NOC — bitacoranoc.com</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1100,7 +1104,7 @@ html.dark .notif-item.unread{background:#082f49}
   </div>
 </div>
 
-<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js" integrity="sha384-QCIdq2UMVEoSRhR3ZWZwdz2/pivLowr+eokFMdYyukq7qI26VYRxFa4Nl6FKetmL" crossorigin="anonymous"></script>
 <script>
 const INITIAL_DATA = {};
 
@@ -1347,7 +1351,7 @@ function _fmt24(d){var dd=d||new Date();var Y=dd.getFullYear(),M=String(dd.getMo
 function fmt(d){const dt=new Date(d+'T12:00:00');return dt.getDate()+' de '+MN[dt.getMonth()]+' '+dt.getFullYear();}
 function calcDur(s,e){if(!s||!e)return'\u2014';const p=t=>{const x=t.split(':').map(Number);return(x[0]||0)*3600+(x[1]||0)*60+(x[2]||0)};var d=p(e)-p(s);if(d<0)d+=86400;const h=Math.floor(d/3600),m=Math.floor((d%3600)/60),sc=d%60;if(h>0)return h+'h '+m+'m';if(m>0)return m+'m '+sc+'s';return sc+'s';}
 function sIcon(s){if(!s||s==='')return'<svg class="status-icon none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';const u=s.toUpperCase();if(u==='OK')return'<svg class="status-icon ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';if(u==='ERROR')return'<svg class="status-icon fail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';return'<svg class="status-icon none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>';}
-function sBadge(s){if(!s||s==='')return'<span class="badge badge-gray">—</span>';const u=s.toUpperCase();if(u==='OK')return'<span class="badge badge-emerald">'+s+'</span>';if(u==='ERROR')return'<span class="badge badge-red">'+s+'</span>';return'<span class="badge badge-gray">'+s+'</span>';}
+function sBadge(s){if(!s||s==='')return'<span class="badge badge-gray">—</span>';const u=s.toUpperCase();if(u==='OK')return'<span class="badge badge-emerald">'+escHtml(s)+'</span>';if(u==='ERROR')return'<span class="badge badge-red">'+escHtml(s)+'</span>';return'<span class="badge badge-gray">'+escHtml(s)+'</span>';}
 function getRegion(s){if(s.startsWith('Argentina'))return'ARGENTINA';if(s.startsWith('Perú'))return'PERU';if(s.startsWith('Panamá'))return'PANAMA';if(s.startsWith('Chile'))return'CHILE';if(s.startsWith('México'))return'MEXICO';return'REGIONAL';}
 function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,5);}
 let toastT;function toast(m){const e=document.getElementById('toast');e.textContent=m;e.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('show'),2500);}
@@ -1446,7 +1450,7 @@ function renderProcesses(day,locked){
   const addBtn=locked?'':'<button class="btn btn-primary btn-sm" onclick="openProcessModal()">+ Agregar</button>';
   let h='<div class="card"><div class="card-header"><h2>Procesos</h2>'+addBtn+'</div><div class="card-body">';
   if(!day.processes.length){h+='<div class="empty-state"><p>No hay procesos</p></div>';}
-  else{h+='<div style="padding:12px 16px">';day.processes.forEach((p,i)=>{if(!matchesFilter(p.name+(p.status||'')))return;const canAct=!locked&&_canEdit(p.shift);const acts=canAct? sBadge(p.status)+'<button class="btn-icon" onclick="openProcessModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteProcess('+i+')">'+TRASH+'</button>' : sBadge(p.status);h+='<div class="proc-row"><div class="proc-name">'+sIcon(p.status)+'<span>'+p.name+'</span>'+_userBadge(p.user)+'</div><div style="display:flex;align-items:center;gap:6px">'+acts+'</div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
+  else{h+='<div style="padding:12px 16px">';day.processes.forEach((p,i)=>{if(!matchesFilter(p.name+(p.status||'')))return;const canAct=!locked&&_canEdit(p.shift);const acts=canAct? sBadge(p.status)+'<button class="btn-icon" onclick="openProcessModal('+i+')">'+PENCIL+'</button><button class="btn-icon danger" onclick="deleteProcess('+i+')">'+TRASH+'</button>' : sBadge(p.status);h+='<div class="proc-row"><div class="proc-name">'+sIcon(p.status)+'<span>'+escHtml(p.name)+'</span>'+_userBadge(p.user)+'</div><div style="display:flex;align-items:center;gap:6px">'+acts+'</div></div>';});h+='</div>';}h+='</div></div>';el.innerHTML=h;
 }
 
 // Navigation
@@ -2461,16 +2465,16 @@ function deleteProcess(i){_adminGate(function(){var day=getDay(currentDate);var 
 
 // ===== AUTH SYSTEM =====
 const USERS={
-  STORREZ:{pass:'Atos.123$',role:'operator',name:'Sebastian Torrez'},
-  DDIPINO:{pass:'Atos.123$',role:'operator',name:'Daniel Di Pino'},
-  FGODOY:{pass:'Atos.123$',role:'operator',name:'Fulgencio Godoy'},
-  HNUNEZ:{pass:'Atos.123$',role:'operator',name:'Humberto Nu\u00f1ez'},
-  HMAGARINOS:{pass:'Atos.123$',role:'operator',name:'Hugo Magari\u00f1os'},
-  GCASTELLANI:{pass:'Atos.123$',role:'operator',name:'Gustavo Castellani'},
-  ARIVERO:{pass:'Atos.123$',role:'operator',name:'Anibal Rivero'},
-  OBALDOMIR:{pass:'Atos.123$',role:'operator',name:'Omar Baldomir'},
-  OPERAADMIN:{pass:'nocadmin',role:'admin'},
-  OPERAWU:{pass:'0p3r4ci0n35',role:'readonly'}
+  STORREZ:{role:'operator',name:'Sebastian Torrez'},
+  DDIPINO:{role:'operator',name:'Daniel Di Pino'},
+  FGODOY:{role:'operator',name:'Fulgencio Godoy'},
+  HNUNEZ:{role:'operator',name:'Humberto Nu\u00f1ez'},
+  HMAGARINOS:{role:'operator',name:'Hugo Magari\u00f1os'},
+  GCASTELLANI:{role:'operator',name:'Gustavo Castellani'},
+  ARIVERO:{role:'operator',name:'Anibal Rivero'},
+  OBALDOMIR:{role:'operator',name:'Omar Baldomir'},
+  OPERAADMIN:{role:'admin'},
+  OPERAWU:{role:'readonly'}
 };
 let currentUser=null;
 let confirmedOperator=null;
@@ -2631,7 +2635,18 @@ function doLogin(){
   var u=document.getElementById('loginUser').value.trim().toUpperCase();
   var p=document.getElementById('loginPass').value;
   var user=USERS[u];
-  if(!user||user.pass!==p){
+  if(!user){
+    document.getElementById('loginError').textContent='Usuario o contrasena incorrectos';
+    document.getElementById('loginPass').value='';
+    return;
+  }
+  var effectivePass=_getEffectivePass(u);
+  if(effectivePass===null){
+    document.getElementById('loginError').textContent='Error: contrasenas no cargadas. Verifique la conexion a GitHub.';
+    document.getElementById('loginPass').value='';
+    return;
+  }
+  if(effectivePass!==p){
     document.getElementById('loginError').textContent='Usuario o contrasena incorrectos';
     document.getElementById('loginPass').value='';
     return;
@@ -4316,9 +4331,7 @@ async function selfChangePass(){
   if(!overrides)overrides={};
   overrides[username]=newPass;
   _setPasswordOverrides(overrides);
-  USERS[username].pass=newPass;
   await ghPushPasswords();
-  // Audit log on today's file
   var now=new Date();
   var todayStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
   if(!store[todayStr])getDay(todayStr);
@@ -4370,18 +4383,14 @@ async function ghPushPasswords(){
 }
 
 function _applyPasswordOverrides(){
-  var overrides=_getPasswordOverrides();
-  var keys=Object.keys(overrides);
-  for(var i=0;i<keys.length;i++){
-    if(USERS[keys[i]]){USERS[keys[i]].pass=overrides[keys[i]];}
-  }
+  // Passwords are now stored exclusively in passwords.json (GitHub)
+  // _getEffectivePass reads directly from _passOverrides
 }
 
 function _getEffectivePass(username){
   var overrides=_getPasswordOverrides();
   if(overrides&&overrides[username])return overrides[username];
-  var u=USERS[username];
-  return u?u.pass:null;
+  return null;
 }
 
 function openResetPassModal(){
@@ -4434,7 +4443,6 @@ async function resetPass(username){
   var overrides=_getPasswordOverrides();
   overrides[username]=newPass;
   _setPasswordOverrides(overrides);
-  USERS[username].pass=newPass;
   // Sync to GitHub
   await ghPushPasswords();
   toast('Contrase\u00f1a de '+username+' actualizada y sincronizada');
@@ -4446,345 +4454,15 @@ async function resetToDefault(username){
   if(!u)return;
   var defaultPass='Atos.123$';
   var overrides=_getPasswordOverrides();
-  if(overrides&&overrides[username]){
-    delete overrides[username];
-    _setPasswordOverrides(overrides);
-  }
-  if(u.role==='operator'){
-    u.pass=defaultPass;
-  }
+  if(!overrides)overrides={};
+  overrides[username]=defaultPass;
+  _setPasswordOverrides(overrides);
   // Sync to GitHub
   await ghPushPasswords();
   toast('Contrase\u00f1a de '+username+' restaurada y sincronizada');
   openResetPassModal();
 }
 
-// Patch doLogin to use _getEffectivePass instead of USERS[u].pass
-const __origDoLogin2=doLogin;
-doLogin=function(){
-  var u=document.getElementById('loginUser').value.trim().toUpperCase();
-  var p=document.getElementById('loginPass').value;
-  var user=USERS[u];
-  var effectivePass=_getEffectivePass(u);
-  if(!user||p!==effectivePass){
-    document.getElementById('loginError').textContent='Usuario o contrase\u00f1a incorrectos';
-    document.getElementById('loginPass').value='';
-    return;
-  }
-  if(user.role==='operator'){
-    var avail=getOperatorAvailableShifts(u);
-    if(avail.length===1){
-      enterApp(u,avail[0]);
-      return;
-    }
-    if(avail.length>1){
-      document.getElementById('loginOverlay').classList.add('hide');
-      showShiftSelector(u);
-      return;
-    }
-    if(avail.length===0){
-      document.getElementById('loginError').textContent='No tiene turnos asignados';
-      return;
-    }
-  }
-  enterApp(u);
-};
-
-// ========== AI CHAT AGENT ==========
-var _aiOpen=false;
-var _aiSending=false;
-var _aiMessages=[]; // {role, content}
-var _aiHistoryKey='bitacora_ai_history';
-
-// Groq API key codificada (evita secret scanning)
-const _gkParts=[103,115,107,95,67,122,115,79,99,85,75,99,114,102,76,112,78,117,80,67,102,110,105,118,87,71,100,121,98,51,70,89,52,80,108,83,108,78,90,67,101,81,66,97,67,70,110,75,67,82,81,68,76,107,110,106];
-function _decodeGK(){return _gkParts.map(function(c){return String.fromCharCode(c);}).join('');}
-
-// Default system prompt with NOC context
-var _aiDefaultSystem='Te llamás NOCito. Sos un asistente de IA para un equipo de NOC (Network Operations Center) que usa una bitacora digital. Eres simpático, usás lenguaje casual argentino, y ayudás con consultas sobre servidores, pollings, backups y procesos operativos. Respondé en español de forma concisa y \u00fatil. Si te preguntan sobre datos del d\u00eda actual, usa el contexto que se te proporciona autom\u00e1ticamente.';
-
-function _aiGetConfig(){
-  try{
-    var c=JSON.parse(localStorage.getItem('bitacora_ai_config')||'{}');
-    return {
-      url:c.url||'https://api.groq.com/openai/v1/chat/completions',
-      key:c.key||_decodeGK(),
-      model:c.model||'llama-3.3-70b-versatile',
-      system:c.system||_aiDefaultSystem
-    };
-  }catch(e){return {url:'https://api.groq.com/openai/v1/chat/completions',key:_decodeGK(),model:'llama-3.3-70b-versatile',system:_aiDefaultSystem};}
-}
-
-function _aiIsConfigured(){
-  var c=_aiGetConfig();
-  return !!(c.url&&c.key);
-}
-
-function _aiSaveHistory(){
-  try{localStorage.setItem(_aiHistoryKey,JSON.stringify(_aiMessages));}catch(e){}
-}
-
-function _aiLoadHistory(){
-  try{
-    var h=JSON.parse(localStorage.getItem(_aiHistoryKey)||'[]');
-    if(Array.isArray(h)){_aiMessages=h;}
-  }catch(e){_aiMessages=[];}
-}
-
-function openAIConfigModal(){
-  var c=_aiGetConfig();
-  document.getElementById('aiCfgKey').value=c.key;
-  document.getElementById('aiConfigModal').classList.add('show');
-}
-
-function closeAIConfigModal(){
-  document.getElementById('aiConfigModal').classList.remove('show');
-}
-
-function saveAIConfig(){
-  var key=document.getElementById('aiCfgKey').value.trim();
-  if(!key){
-    showToast('Pega tu API Key de Groq');
-    return;
-  }
-  try{
-    localStorage.setItem('bitacora_ai_config',JSON.stringify({url:'https://api.groq.com/openai/v1/chat/completions',key:key,model:'llama-3.3-70b-versatile',system:_aiDefaultSystem}));
-  }catch(e){}
-  closeAIConfigModal();
-  showToast('Configuraci\u00f3n de IA guardada');
-  _aiUpdateDot();
-}
-
-function _aiUpdateDot(){
-  var dot=document.getElementById('aiDot');
-  if(!dot)return;
-  if(_aiIsConfigured()){dot.classList.remove('offline');}
-  else{dot.classList.add('offline');}
-}
-
-function toggleAIChat(){
-  var panel=document.getElementById('aiPanel');
-  _aiOpen=!_aiOpen;
-  if(_aiOpen){
-    panel.classList.add('show');
-    _aiUpdateDot();
-    _aiUpdateUserTag();
-    _aiRenderMessages();
-    setTimeout(function(){document.getElementById('aiInput').focus();},100);
-  }else{
-    panel.classList.remove('show');
-  }
-}
-
-function _aiUpdateUserTag(){
-  var tag=document.getElementById('aiUserTag');
-  var welUser=document.getElementById('aiWelcomeUser');
-  var cfgLink=document.getElementById('aiConfigLink');
-  if(currentUser){
-    var name=currentUser.username||'';
-    var shift=currentUser.shiftKey||'';
-    var label=name+(shift?' ('+shift+')':'');
-    if(tag){tag.textContent=label;tag.style.display='';}
-    if(welUser)welUser.textContent='Hola, '+name;
-    if(cfgLink)cfgLink.style.display=(currentUser.role==='admin')?'':'none';
-  }else{
-    if(tag)tag.style.display='none';
-    if(welUser)welUser.textContent='Hola';
-    if(cfgLink)cfgLink.style.display='none';
-  }
-}
-
-function aiClearChat(){
-  _aiMessages=[];
-  _aiSaveHistory();
-  var welcome=document.getElementById('aiWelcome');
-  if(welcome)welcome.style.display='';
-  var msgs=document.getElementById('aiMsgs');
-  var msgEls=msgs.querySelectorAll('.ai-msg');
-  msgEls.forEach(function(el){el.remove();});
-}
-
-function aiInputKeydown(e){
-  if(e.key==='Enter'&&!e.shiftKey){
-    e.preventDefault();
-    aiSend();
-  }
-}
-
-function aiAutoResize(el){
-  el.style.height='auto';
-  el.style.height=Math.min(el.scrollHeight,100)+'px';
-}
-
-function aiSendSuggestion(btn){
-  var text=btn.textContent;
-  document.getElementById('aiInput').value=text;
-  aiSend();
-}
-
-function _aiRenderMessages(){
-  var msgs=document.getElementById('aiMsgs');
-  var old=msgs.querySelectorAll('.ai-msg');
-  old.forEach(function(el){el.remove();});
-  var welcome=document.getElementById('aiWelcome');
-  if(_aiMessages.length>0){
-    if(welcome)welcome.style.display='none';
-  }else{
-    if(welcome)welcome.style.display='';
-  }
-  var typing=document.getElementById('aiTyping');
-  _aiMessages.forEach(function(m){
-    var div=document.createElement('div');
-    div.className='ai-msg '+m.role;
-    var label=m.role==='user'?'T\u00fa':'IA';
-    div.innerHTML='<div class="ai-msg-label">'+escHtml(label)+'</div><div>'+_aiFormatContent(m.content)+'</div>';
-    msgs.insertBefore(div,typing);
-  });
-  msgs.scrollTop=msgs.scrollHeight;
-}
-
-function _aiFormatContent(text){
-  var s=escHtml(text);
-  s=s.replace(/```(\w*)\n?([\s\S]*?)```/g,function(_,lang,code){
-    return '<pre><code>'+code.trim()+'</code></pre>';
-  });
-  s=s.replace(/`([^`]+)`/g,'<code>$1</code>');
-  s=s.replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>');
-  s=s.replace(/\n/g,'<br>');
-  return s;
-}
-
-function _aiAddMsg(role,content){
-  _aiMessages.push({role:role,content:content});
-  _aiSaveHistory();
-  var msgs=document.getElementById('aiMsgs');
-  var typing=document.getElementById('aiTyping');
-  var div=document.createElement('div');
-  div.className='ai-msg '+role;
-  var label=role==='user'?'T\u00fa':'IA';
-  div.innerHTML='<div class="ai-msg-label">'+escHtml(label)+'</div><div>'+_aiFormatContent(content)+'</div>';
-  msgs.insertBefore(div,typing);
-  var welcome=document.getElementById('aiWelcome');
-  if(welcome)welcome.style.display='none';
-  msgs.scrollTop=msgs.scrollHeight;
-}
-
-function _aiShowTyping(show){
-  var el=document.getElementById('aiTyping');
-  if(show){el.classList.add('show');}
-  else{el.classList.remove('show');}
-  document.getElementById('aiMsgs').scrollTop=document.getElementById('aiMsgs').scrollHeight;
-}
-
-function _aiGetDayContext(){
-  var userName=currentUser?currentUser.username:'desconocido';
-  var userShift=currentUser?currentUser.shiftKey:'';
-  var userRole=currentUser?currentUser.role:'';
-  var ctx='ESTAS HABLANDO CON: '+userName;
-  if(userShift)ctx+=' | Turno: '+userShift;
-  if(userRole)ctx+=' | Rol: '+userRole;
-  ctx+='\n\nFecha seleccionada en la app: '+currentDate;
-  ctx+='\nTipo de día seleccionado: '+document.getElementById('typeSelect').value;
-  var d=store[currentDate];
-  if(!d){return ctx+'\nSin datos para el día actual.';}
-  ctx+='\n--- DATOS DEL DIA ACTUAL ('+currentDate+') ---';
-  if(d.dayType)ctx+=' | Tipo: '+d.dayType;
-  var p=d.pollings||[];
-  if(p.length){
-    ctx+='\nPollings:';
-    p.forEach(function(x,i){
-      ctx+='\n  '+(i+1)+'. '+x.server+(x.region?' ('+x.region+')':'')+' | Fase: '+x.phase+' | Hora: '+(x.time||'-')+(x.note?' | Nota: '+x.note:'');
-    });
-  }
-  var b=d.backups||[];
-  if(b.length){
-    ctx+='\nBackups:';
-    b.forEach(function(x,i){
-      ctx+='\n  '+(i+1)+'. '+x.name+(x.job?' | JOB: '+x.job:'')+' | Inicio: '+(x.iniTime||'-')+' | Fin: '+(x.endTime||'-')+' | Duración: '+(x.duration||'-')+' | Estado: '+(x.status||'-');
-    });
-  }
-  var pr=d.processes||[];
-  if(pr.length){
-    ctx+='\nProcesos:';
-    pr.forEach(function(x,i){
-      ctx+='\n  '+(i+1)+'. '+x.name+' | Estado: '+(x.status||'-');
-    });
-  }
-  var tl=d.timeline||[];
-  if(tl.length){
-    ctx+='\nNotas del turno:';
-    tl.forEach(function(x,i){
-      ctx+='\n  '+(i+1)+'. ['+(x.time||'-')+'] '+(x.text||'-')+' — '+(x.user||'-');
-    });
-  }
-  var otherDates=Object.keys(store).filter(function(k){return k&&k.match(/^\d{4}-\d{2}-\d{2}$/)&&k!==currentDate;}).sort();
-  if(otherDates.length){
-    ctx+='\n\nOtros días con datos: '+otherDates.join(', ');
-    ctx+='\n(Preguntá por un día específico si necesitás ver sus datos)';
-  }
-  return ctx;
-}
-
-async function aiSend(){
-  if(_aiSending)return;
-  var input=document.getElementById('aiInput');
-  var text=input.value.trim();
-  if(!text)return;
-  input.value='';
-  input.style.height='auto';
-
-  if(!_aiIsConfigured()){
-    openAIConfigModal();
-    return;
-  }
-
-  _aiAddMsg('user',text);
-
-  var cfg=_aiGetConfig();
-  var apiMsgs=[];
-  var sysContent=cfg.system+'\n\n--- CONTEXTO ACTUAL DE LA BIT\u00c1CORA ---\n'+_aiGetDayContext();
-  apiMsgs.push({role:'system',content:sysContent});
-  var history=_aiMessages.slice(-8);
-  history.forEach(function(m){
-    apiMsgs.push({role:m.role,content:m.content});
-  });
-
-  _aiSending=true;
-  document.getElementById('aiSendBtn').disabled=true;
-  _aiShowTyping(true);
-
-  try{
-    var resp=await fetch(cfg.url,{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer '+cfg.key
-      },
-      body:JSON.stringify({
-        model:cfg.model,
-        messages:apiMsgs,
-        max_tokens:1024,
-        temperature:0.7
-      })
-    });
-    if(!resp.ok){
-      var errText='';
-      try{errText=await resp.text();}catch(e){}
-      throw new Error('HTTP '+resp.status+(errText?': '+errText.substring(0,200):''));
-    }
-    var data=await resp.json();
-    var reply=data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content;
-    if(!reply)throw new Error('Respuesta vac\u00eda de la API');
-    _aiAddMsg('assistant',reply);
-  }catch(err){
-    console.error('[AI Chat]',err);
-    _aiAddMsg('assistant','Error: '+err.message+'\n\nVerific\u00e1 la configuraci\u00f3n de la API en el men\u00fa Admin > Configurar NOCito.');
-  }finally{
-    _aiSending=false;
-    document.getElementById('aiSendBtn').disabled=false;
-    _aiShowTyping(false);
-  }
-}
 
 // On load, fetch password overrides from GitHub, sync data, then render
 (async function(){
