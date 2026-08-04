@@ -199,6 +199,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "msejqvp49paia",
+      "server": "Chile Cencosud",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-08-04",
+      "time": "07:30",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "msejqvp4146gg",
+      "server": "Chile Cencosud",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-08-04",
+      "time": "07:55",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
