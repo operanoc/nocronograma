@@ -4746,64 +4746,44 @@ function _aiGetDayContext(){
   var ctx='ESTAS HABLANDO CON: '+userName;
   if(userShift)ctx+=' | Turno: '+userShift;
   if(userRole)ctx+=' | Rol: '+userRole;
-  ctx+('
-
-Fecha seleccionada en la app: '+currentDate);
-  ctx+('
-Tipo de día seleccionado: '+document.getElementById('typeSelect').value);
-
-  // Solo enviar dia actual (reduce tokens drasticamente)
+  ctx+='\n\nFecha seleccionada en la app: '+currentDate;
+  ctx+='\nTipo de día seleccionado: '+document.getElementById('typeSelect').value;
   var d=store[currentDate];
-  if(!d){return ctx+'
-Sin datos para el día actual.';}
-  ctx+('
---- DATOS DEL DIA ACTUAL ('+currentDate+') ---');
-  if(d.dayType)ctx+=(' | Tipo: '+d.dayType);
+  if(!d){return ctx+'\nSin datos para el día actual.';}
+  ctx+='\n--- DATOS DEL DIA ACTUAL ('+currentDate+') ---';
+  if(d.dayType)ctx+=' | Tipo: '+d.dayType;
   var p=d.pollings||[];
   if(p.length){
-    ctx+('
-Pollings:');
+    ctx+='\nPollings:';
     p.forEach(function(x,i){
-      ctx+=('
-  '+(i+1)+'. '+x.server+(x.region?' ('+x.region+')':'')+' | Fase: '+x.phase+' | Hora: '+(x.time||'-')+(x.note?' | Nota: '+x.note:''));
+      ctx+='\n  '+(i+1)+'. '+x.server+(x.region?' ('+x.region+')':'')+' | Fase: '+x.phase+' | Hora: '+(x.time||'-')+(x.note?' | Nota: '+x.note:'');
     });
   }
   var b=d.backups||[];
   if(b.length){
-    ctx+('
-Backups:');
+    ctx+='\nBackups:';
     b.forEach(function(x,i){
-      ctx+=('
-  '+(i+1)+'. '+x.name+(x.job?' | JOB: '+x.job:'')+' | Inicio: '+(x.iniTime||'-')+' | Fin: '+(x.endTime||'-')+' | Duración: '+(x.duration||'-')+' | Estado: '+(x.status||'-'));
+      ctx+='\n  '+(i+1)+'. '+x.name+(x.job?' | JOB: '+x.job:'')+' | Inicio: '+(x.iniTime||'-')+' | Fin: '+(x.endTime||'-')+' | Duración: '+(x.duration||'-')+' | Estado: '+(x.status||'-');
     });
   }
   var pr=d.processes||[];
   if(pr.length){
-    ctx+('
-Procesos:');
+    ctx+='\nProcesos:';
     pr.forEach(function(x,i){
-      ctx+=('
-  '+(i+1)+'. '+x.name+' | Estado: '+(x.status||'-'));
+      ctx+='\n  '+(i+1)+'. '+x.name+' | Estado: '+(x.status||'-');
     });
   }
   var tl=d.timeline||[];
   if(tl.length){
-    ctx+('
-Notas del turno:');
+    ctx+='\nNotas del turno:';
     tl.forEach(function(x,i){
-      ctx+=('
-  '+(i+1)+'. ['+(x.time||'-')+'] '+(x.text||'-')+' — '+(x.user||'-'));
+      ctx+='\n  '+(i+1)+'. ['+(x.time||'-')+'] '+(x.text||'-')+' — '+(x.user||'-');
     });
   }
-
-  // Lista resumida de otros dias (solo fechas con datos)
   var otherDates=Object.keys(store).filter(function(k){return k&&k.match(/^\d{4}-\d{2}-\d{2}$/)&&k!==currentDate;}).sort();
   if(otherDates.length){
-    ctx+('
-
-Otros días con datos: '+otherDates.join(', '));
-    ctx+=('
-(Preguntá por un día específico si necesitás ver sus datos)');
+    ctx+='\n\nOtros días con datos: '+otherDates.join(', ');
+    ctx+='\n(Preguntá por un día específico si necesitás ver sus datos)';
   }
   return ctx;
 }
