@@ -923,8 +923,7 @@ html.dark .notif-item.unread{background:#082f49}
   <button class="menu-item" onclick="openNovAdminModal();closeAdminMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/></svg> Centro de Novedades</button>
   <button class="menu-item" onclick="window.open('https://operanoc.github.io/wikinoc/','_blank');closeAdminMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="13" y2="11"/></svg> Wiki NOC</button>
   <hr style="border:none;border-top:1px solid var(--gray-200);margin:8px 0">
-  <button class="menu-item" onclick="openAIConfigModal();closeAdminMenu()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg> Configurar NOCito</button>
-</div>
+  </div>
 <input type="file" id="xlsxImportInput" accept=".xlsx,.xls" style="display:none" onchange="handleXLSXImport(this)">
 <input type="file" id="historicImportInput" accept=".xlsx,.xls" multiple style="display:none" onchange="handleHistoricImport(this)">
 
@@ -1032,35 +1031,6 @@ html.dark .notif-item.unread{background:#082f49}
 <footer class="footer">Bitacora NOC — bitacoranoc.com</footer>
 <div class="toast" id="toast"></div>
 
-<!-- AI Chat Agent -->
-<button class="ai-fab" id="aiFab" onclick="toggleAIChat()" title="NOCito">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16.01"/><line x1="16" y1="16" x2="16" y2="16.01"/><line x1="12" y1="18" x2="12" y2="18.01"/></svg>
-</button>
-<div class="ai-panel" id="aiPanel">
-  <div class="ai-head">
-    <h4><div class="ai-dot" id="aiDot"></div> NOCito <span class="ai-user-tag" id="aiUserTag"></span></h4>
-    <button class="ai-clear-btn" onclick="aiClearChat()" title="Limpiar conversaci\u00f3n"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>Limpiar</button>
-    <button class="ai-close-btn" onclick="toggleAIChat()" title="Cerrar">\u00d7</button>
-  </div>
-  <div class="ai-msgs" id="aiMsgs">
-    <div class="ai-welcome" id="aiWelcome" style="padding:16px 16px 4px">
-      <div style="display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:6px">
-        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16.01"/><line x1="16" y1="16" x2="16" y2="16.01"/></svg></div>
-        <div style="text-align:left">
-          <div style="font-size:14px;font-weight:700;color:var(--gray-800)" id="aiWelcomeUser">Hola</div>
-          <div style="font-size:11px;color:var(--gray-400)">Asistente de operaciones NOC</div>
-        </div>
-      </div>
-    </div>
-    <div class="ai-typing" id="aiTyping"><span></span><span></span><span></span></div>
-  </div>
-  <div class="ai-config-link" id="aiConfigLink" onclick="openAIConfigModal()" style="display:none">\u2699 Configurar API de IA</div>
-  <div class="ai-input-bar">
-    <textarea id="aiInput" placeholder="Escrib\u00ed tu consulta..." maxlength="2000" rows="1" onkeydown="aiInputKeydown(event)" oninput="aiAutoResize(this)"></textarea>
-    <button id="aiSendBtn" onclick="aiSend()" title="Enviar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
-  </div>
-</div>
-
 <!-- Internal Chat (before main script so DOM is always ready) -->
 <button class="chat-fab" id="chatFab" onclick="toggleChat()" title="Chat Interno">
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -1081,31 +1051,7 @@ html.dark .notif-item.unread{background:#082f49}
 </div>
 
 <!-- AI Config Modal -->
-<div class="modal-overlay" id="aiConfigModal" style="z-index:300" onclick="if(event.target===this)closeAIConfigModal()">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-header"><h3>Configurar NOCito</h3><button class="btn-icon" onclick="closeAIConfigModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-    <div class="modal-body">
-      <p style="color:var(--gray-500);font-size:12px;margin-bottom:6px;line-height:1.5">Usamos <b>Groq</b> (gratis y rapido). Solo necesit\u00e1s tu API Key.</p>
-      <p style="color:var(--sky-600);font-size:11px;margin-bottom:14px;line-height:1.4">
-        1. Cre\u00e1 cuenta gratis en <a href="https://console.groq.com" target="_blank" style="color:var(--sky-600);text-decoration:underline;font-weight:600">console.groq.com</a>
-        2. And\u00e1 a API Keys > Create Key
-        3. Pegala abajo
-      </p>
-      <label style="display:block;margin-bottom:12px">
-        <span style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:4px">API Key de Groq</span>
-        <input type="password" id="aiCfgKey" placeholder="gsk_..." style="width:100%;font-size:12px">
-      </label>
-      <label style="display:block;margin-bottom:14px">
-        <span style="font-size:12px;font-weight:600;color:var(--gray-700);display:block;margin-bottom:4px">Instrucci\u00f3n del sistema (opcional)</span>
-        <textarea id="aiCfgSystem" rows="3" placeholder="Eres un asistente de operaciones NOC..." style="width:100%;font-size:12px;resize:vertical;min-height:60px"></textarea>
-      </label>
-      <div style="display:flex;gap:8px;justify-content:flex-end">
-        <button class="btn btn-outline" onclick="closeAIConfigModal()">Cancelar</button>
-        <button class="btn btn-primary" onclick="saveAIConfig()">Guardar</button>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 <div class="modal-overlay" id="lockedModal" style="z-index:200" onclick="if(event.target===this)closeLockedModal()">
   <div class="modal" style="max-width:440px">
@@ -2671,11 +2617,9 @@ function enterApp(username,forceShift){
   // Chat disponible para todos los usuarios logueados
   document.getElementById('chatFab').style.display='flex';
   if(!isAdmin())document.getElementById('novWrap').style.display='';
-  var _aiFab2=document.getElementById('aiFab');
-  if(_aiFab2)_aiFab2.style.display='flex';
+
   startChatPoll();
-  _aiLoadHistory();
-  _aiUpdateDot();
+
   document.getElementById('loginError').textContent='';
   render();
   // Re-sync from GitHub after login to ensure fresh data
@@ -2727,11 +2671,7 @@ function doLogout(){
   stopChatPoll();
   document.getElementById('chatFab').style.display='none';
   document.getElementById('chatPanel').classList.remove('show');
-  var _aiFabOut=document.getElementById('aiFab');
-  if(_aiFabOut)_aiFabOut.style.display='none';
-  document.getElementById('aiPanel').classList.remove('show');
   _chatOpen=false;
-  _aiOpen=false;
   sessionStorage.removeItem('bitacora_user');
   sessionStorage.removeItem('bitacora_operator');
   sessionStorage.removeItem('bitacora_shiftKey');
@@ -2782,11 +2722,8 @@ function checkSession(){
     }
     // Chat disponible para todos los usuarios logueados
     document.getElementById('chatFab').style.display='flex';
-    var _aiFab3=document.getElementById('aiFab');
-    if(_aiFab3)_aiFab3.style.display='flex';
+
     startChatPoll();
-    _aiLoadHistory();
-    _aiUpdateDot();
     // Novedades: mostrar boton y arrancar polling para no-admin
     if(!isAdmin()){
       document.getElementById('novWrap').style.display='';
@@ -4877,11 +4814,7 @@ async function aiSend(){
   if(currentUser){
     var _fab=document.getElementById('chatFab');
     if(_fab)_fab.style.display='flex';
-    var _aiFab=document.getElementById('aiFab');
-    if(_aiFab)_aiFab.style.display='flex';
     startChatPoll();
-    _aiLoadHistory();
-    _aiUpdateDot();
     console.log('[init] Chat habilitado para',currentUser.username);
   }
   // Event delegation para cierre de pestañas de chat (evita problemas con onclick inline)
