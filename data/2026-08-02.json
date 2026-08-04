@@ -23,7 +23,19 @@
       "shift": "ADMIN"
     }
   ],
-  "backups": [],
+  "backups": [
+    {
+      "name": "Regional",
+      "iniDate": "2026-08-02",
+      "iniTime": "02:34",
+      "endDate": "2026-08-02",
+      "endTime": "03:02",
+      "job": "BKPDIARIO",
+      "duration": "0:28",
+      "status": null,
+      "shift": "ADMIN"
+    }
+  ],
   "processes": [],
   "notes": ""
 }
