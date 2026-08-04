@@ -36,6 +36,12 @@
       "shift": "ADMIN"
     }
   ],
-  "processes": [],
+  "processes": [
+    {
+      "name": "AFIP 24",
+      "status": "Error",
+      "shift": "ADMIN"
+    }
+  ],
   "notes": ""
 }
