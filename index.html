@@ -1337,7 +1337,7 @@ const RL={ARGENTINA:'🇦🇷 Argentina',REGIONAL:'🌐 Regional',PERU:'🇵🇪
 const RB={ARGENTINA:'badge-sky',REGIONAL:'badge-violet',PERU:'badge-red',PANAMA:'badge-emerald',CHILE:'badge-amber',MEXICO:'badge-rose'};
 const TL={DIARIA:'Diaria (L-V)',FIN_DE_SEMANA:'Fin de Semana',BKP_MENSUAL:'BKP Mensual'};
 const TB={DIARIA:'badge-emerald',FIN_DE_SEMANA:'badge-amber',BKP_MENSUAL:'badge-rose'};
-const SERVERS=['Depu Gran Base','Argentina P$','Argentina P1','Argentina P2','Perú D1','Perú D2','Perú D3','Perú Aserviban MT','Perú OC','Perú X30','Panamá D1','Panamá MT','Panamá OC','Panamá A. Propias','Panamá Mas Me Dan','Chile MT','Chile OP','Chile Vigo','Chile OC','Chile Cencosud','Chile Los Heroes','Chile CencoPay','México - SIE - M1','México - GDE - M2'];
+const SERVERS=['Depu Gran Base','Argentina P$','Argentina P1','Argentina P2','Perú D1','Perú D2','Perú D3','Perú Aserviban MT','Perú OC','Perú X30','Perú X50','Panamá D1','Panamá MT','Panamá OC','Panamá A. Propias','Panamá Mas Me Dan','Chile MT','Chile OP','Chile Vigo','Chile OC','Chile Cencosud','Chile Los Heroes','Chile CencoPay','México - SIE - M1','México - GDE - M2'];
 const BKN=['Regional','Pinot','Semillon','Semillón','Merlot','REGDRS'];
 const JOBS=['BKPDIARIO','BKPDIARIOU','BKPMIMIX','OP.21','SEMANAL'];
 const PROCS=['Tarjeta Naranja','EPE','BANCOR','Rentas de Córdoba','AFIP 72','AFIP 24','AFIP 48','Cierre AFIP','Montaje de cintas'];
@@ -2380,7 +2380,7 @@ function _openPollingModalInner(server){
   if(isEdit){const es=day.pollings.filter(p=>p.server===server);const b=es.find(e=>e.phase==='BEGINNING');const e=es.find(e=>e.phase==='ENDING');beg=b?b.time:'';end=e?e.time:'';}
   document.getElementById('modalTitle').textContent=isEdit?'Editar Polling':'Nuevo Polling';
   document.getElementById('modalBody').innerHTML='<div class="form-group"><label>Servidor</label><select id="mSrv">'+SERVERS.map(s=>'<option value="'+s+'"'+(s===server?' selected':'')+'>'+s+'</option>').join('')+'</select></div><div class="form-row"><div class="form-group"><label>Hora Inicio</label><input type="time" lang="es-AR" id="mBeg" value="'+beg+'"></div><div class="form-group"><label>Hora Fin</label><input type="time" lang="es-AR" id="mEnd" value="'+end+'"></div></div>';
-  document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="savePolling(\''+server+'\')">'+(isEdit?'Actualizar':'Guardar')+'</button>';
+  document.getElementById('modalFooter').innerHTML='<button class="btn btn-outline" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="savePolling('+(isEdit?"'"+server+"'":"null")+')">'+(isEdit?'Actualizar':'Guardar')+'</button>';
   openModal();
 }
 function savePolling(old){
