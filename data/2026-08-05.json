@@ -221,6 +221,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "msg19qpn8zkcr",
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "BEGINNING",
+      "date": "2026-08-05",
+      "time": "07:23",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "msg19qpnved0d",
+      "server": "Panamá A. Propias",
+      "region": "PANAMA",
+      "phase": "ENDING",
+      "date": "2026-08-05",
+      "time": "07:47",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
