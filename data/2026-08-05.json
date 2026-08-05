@@ -331,6 +331,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "msgbi2zdvx2h0",
+      "server": "Argentina P2",
+      "region": "ARGENTINA",
+      "phase": "BEGINNING",
+      "date": "2026-08-05",
+      "time": "13:00",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "msgbi2zdlu2sw",
+      "server": "Argentina P2",
+      "region": "ARGENTINA",
+      "phase": "ENDING",
+      "date": "2026-08-05",
+      "time": "13:33",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
