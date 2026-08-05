@@ -133,6 +133,28 @@
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
+    },
+    {
+      "id": "msg157nks6gmx",
+      "server": "Chile Los Heroes",
+      "region": "CHILE",
+      "phase": "BEGINNING",
+      "date": "2026-08-05",
+      "time": "08:11",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "msg157nk6v2ob",
+      "server": "Chile Los Heroes",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-08-05",
+      "time": "08:34",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
     }
   ],
   "backups": [],
