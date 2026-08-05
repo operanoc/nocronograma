@@ -91,12 +91,23 @@
       "user": "STORREZ"
     },
     {
-      "id": "msg131t3x0lm8",
+      "id": "msg13chy0mna8",
       "server": "Chile Vigo",
       "region": "CHILE",
       "phase": "BEGINNING",
       "date": "2026-08-05",
       "time": "06:41",
+      "note": null,
+      "shift": "MANANA",
+      "user": "STORREZ"
+    },
+    {
+      "id": "msg13chyy4ke2",
+      "server": "Chile Vigo",
+      "region": "CHILE",
+      "phase": "ENDING",
+      "date": "2026-08-05",
+      "time": "07:05",
       "note": null,
       "shift": "MANANA",
       "user": "STORREZ"
